@@ -20,8 +20,15 @@ matrix:
     allow_failures:
         - php: "7.4snapshot"
 
-before_script:
-    - composer install --prefer-dist
+env:
+  matrix:
+    - DEPENDENCIES=""
+    - DEPENDENCIES=" --prefer-lowest"
+  global:
+    - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
+
+install:
+    - composer update $DEFAULT_COMPOSER_FLAGS $DEPENDENCIES
 
 script:
     - composer test:syntax
