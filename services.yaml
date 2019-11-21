@@ -1,0 +1,17 @@
+services:
+
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\GraphQL\Example\Controller\:
+    resource: 'src/Controller/*'
+    public: true
+
+  OxidEsales\GraphQL\Example\DataObject\:
+    resource: 'src/DataObject/*Factory.php'
+    public: true
+
+  OxidEsales\GraphQL\Example\Framework\NamespaceMapper:
+    class: OxidEsales\GraphQL\Example\Framework\NamespaceMapper
+    tags: ['graphql_namespace_mapper']

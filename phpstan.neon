@@ -1,0 +1,3 @@
+parameters:
+    memory-limit: -1
+    level: max
