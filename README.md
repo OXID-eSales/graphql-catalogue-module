@@ -1,6 +1,6 @@
 # oxid-esales/graphql-catalogue
 
-[![Build Status](https://img.shields.io/travis/com/OXID-eSales/graphql-catalogue-module/master.svg?style=for-the-badge&logo=travis)](https://travis-ci.com/OXID-eSales/graphql-catalogue-module) [![PHP Version](https://img.shields.io/packagist/php-v/oxid-esales/graphql-catalogue.svg?style=for-the-badge)](https://github.com/oxid-esales/graphql-catalogue-module) [![Stable Version](https://img.shields.io/packagist/v/oxid-esales/graphql-catalogue.svg?style=for-the-badge&label=latest)](https://packagist.org/packages/oxid-esales/graphql-catalogue)
+[![Build Status](https://travis-ci.com/OXID-eSales/graphql-catalogue-module.svg?token=zzAxEw7xZ3Tyg3ueXC3g&branch=master)](https://travis-ci.com/OXID-eSales/graphql-catalogue-module)
 
 This module provides:
 - stuff to be done
