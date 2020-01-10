@@ -81,4 +81,94 @@ class ManufacturerTest extends TestCase
             $result['status']
         );
     }
+
+    public function testGetManufacturerListWithoutFilter()
+    {
+        $result = $this->query('query{
+            manufacturers(){
+                id
+                active
+                icon
+                title
+                shortdesc
+                url
+                timestamp
+            }
+        }');
+        $this->assertEquals(
+            200,
+            $result['status']
+        );
+        // fixtures have 11 active manufacturers
+        $this->assertEquals(
+            11,
+            $result['body']['data']['manufacturers']
+        );
+    }
+
+    public function testGetManufacturerListWithFilter()
+    {
+        $result = $this->query('query{
+            manufacturers(filter: {
+                title: {
+                    contains: "l"
+                }
+            }){
+                id
+            }
+        }');
+        $this->assertEquals(
+            200,
+            $result['status']
+        );
+        // fixtures have 3 active manufacturers with lowercase l and 3 inactive
+        $this->assertEquals(
+            3,
+            $result['body']['data']['manufacturers']
+        );
+    }
+
+    public function testGetEmptyManufacturerListWithFilter()
+    {
+        $result = $this->query('query{
+            manufacturers(filter: {
+                title: {
+                    beginsWith: "Fly"
+                }
+            }){
+                id
+            }
+        }');
+        $this->assertEquals(
+            200,
+            $result['status']
+        );
+        // fixtures have 2 inactive manufacturers starting with Fly
+        $this->assertEquals(
+            0,
+            $result['body']['data']['manufacturers']
+        );
+    }
+
+    public function testGetEmptyManufacturerListWithExactMatchFilter()
+    {
+        $result = $this->query('query{
+            manufacturers(filter: {
+                title: {
+                    equals: "DOES-NOT-EXIST"
+                }
+            }){
+                id
+            }
+        }');
+        $this->assertEquals(
+            200,
+            $result['status']
+        );
+        // fixtures have 0 manufacturers mathing title DOES-NOT-EXIST
+        $this->assertEquals(
+            0,
+            $result['body']['data']['manufacturers']
+        );
+    }
 }
