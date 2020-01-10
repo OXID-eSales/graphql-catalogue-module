@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Catalogue\Dao;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\DataObject\Manufacturer as ManufacturerModel;
 use OxidEsales\GraphQL\Catalogue\DataObject\ManufacturerFilter;
+use OxidEsales\GraphQL\Base\Exception\NotFoundException;
 
 class Manufacturer implements ManufacturerInterface
 {
@@ -47,7 +48,7 @@ class Manufacturer implements ManufacturerInterface
         }
         $row = $result->fetch();
         if (!$row) {
-            throw new \Exception();
+            throw new NotFoundException('Manufacturer could not be found');
         }
         return new ManufacturerModel(
             $row['oxid'],
