@@ -25,10 +25,45 @@ class Manufacturer implements ManufacturerInterface
         $this->queryBuilderFactory = $queryBuilderFactory;
     }
 
+    public function getManufacturer(string $id): ManufacturerModel
+    {
+        $queryBuilder = $this->queryBuilderFactory->create();
+        $queryBuilder->select([
+                        'm.oxid',
+                        'm.oxactive',
+                        'm.oxicon',
+                        'm.oxtitle',
+                        'm.oxshortdesc',
+                        's.oxseourl',
+                        'm.oxtimestamp'
+                     ])
+                     ->from('oxmanufacturers', 'm')
+                     ->leftJoin('m', 'oxseo', 's', 'm.oxid = s.oxobjectid')
+                     ->where('OXID = :oxid')
+                     ->setParameter('oxid', $id);
+        $result = $queryBuilder->execute();
+        if (!$result instanceof \Doctrine\DBAL\Driver\Statement) {
+            throw new \Exception();
+        }
+        $row = $result->fetch();
+        if (!$row) {
+            throw new \Exception();
+        }
+        return new ManufacturerModel(
+            $row['oxid'],
+            intval($row['oxactive']),
+            $row['oxicon'],
+            $row['oxtitle'],
+            $row['oxshortdesc'],
+            $row['oxseourl'],
+            $row['oxtimestamp']
+        );
+    }
+
     /**
      * @return ManufacturerModel[]
      */
-    public function getManufacturer(ManufacturerFilter $filter): array
+    public function getManufacturers(ManufacturerFilter $filter): array
     {
         $manufacturers = [];
         $queryBuilder = $this->queryBuilderFactory->create();
@@ -41,7 +76,7 @@ class Manufacturer implements ManufacturerInterface
                         'oxseourl',
                         'oxtimestamp'
                      ])
-                     ->from('oxmanufacturer');
+                     ->from('oxmanufacturers');
 
         $filters = array_filter($filter->getFilters());
         foreach ($filters as $field => $fieldFilter) {

@@ -26,16 +26,12 @@ class Manufacturer
     }
 
     /**
-     * List of order amounts per day
-     *
      * @Query()
-     *
-     * @return ManufacturerModel[]
      */
-    public function manufacturer(ManufacturerFilter $filter): array
+    public function manufacturer(string $id): ManufacturerModel
     {
         return $this->manufacturerDao->getManufacturer(
-            $filter
+            $id
         );
     }
 }

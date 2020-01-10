@@ -18,5 +18,7 @@ interface ManufacturerInterface
     /**
      * @return ManufacturerModel[]
      */
-    public function getManufacturer(ManufacturerFilter $filter): array;
+    public function getManufacturers(ManufacturerFilter $filter): array;
+
+    public function getManufacturer(string $id): ManufacturerModel;
 }

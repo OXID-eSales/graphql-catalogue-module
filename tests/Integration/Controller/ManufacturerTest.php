@@ -33,7 +33,7 @@ class ManufacturerTest extends TestCase
         unset($result['body']['data']['manufacturer']['timestamp']);
         $this->assertEquals(
             [
-                'id' => self::OREILLY_ID,
+                'id' => self::$ACTIVE_MANUFACTURER,
                 'active' => 1,
                 'icon' => 'oreilly_1_mico.png',
                 'title' => 'O\'Reilly',
