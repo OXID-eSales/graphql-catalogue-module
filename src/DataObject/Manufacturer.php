@@ -60,6 +60,22 @@ class Manufacturer
     }
 
     /**
+     * @param string[] $result
+     */
+    public static function fromDatabaseResult(array $result): self
+    {
+        return new self(
+            (string)$result['oxid'],
+            (int)   $result['oxactive'],
+            (string)$result['oxicon'],
+            (string)$result['oxtitle'],
+            (string)$result['oxshortdesc'],
+            (string)$result['oxseourl'],
+            (string)$result['oxtimestamp']
+        );
+    }
+
+    /**
      * @Field()
      */
     public function getId(): ID
