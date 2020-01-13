@@ -15,18 +15,18 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 
 class ManufacturerFilter
 {
-    /** @var StringFilter */
+    /** @var ?StringFilter */
     private $title;
 
     public function __construct(
-        StringFilter $title
+        ?StringFilter $title = null
     ) {
         $this->title = $title;
     }
 
     /**
      * @return array{
-     *  oxtitle: StringFilter
+     *  oxtitle: ?StringFilter
      * }
      */
     public function getFilters(): array
