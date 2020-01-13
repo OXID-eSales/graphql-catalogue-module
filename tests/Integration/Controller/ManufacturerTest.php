@@ -85,7 +85,7 @@ class ManufacturerTest extends TestCase
     public function testGetManufacturerListWithoutFilter()
     {
         $result = $this->query('query{
-            manufacturers(){
+            manufacturers {
                 id
                 active
                 icon
