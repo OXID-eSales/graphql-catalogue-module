@@ -64,4 +64,27 @@ class Manufacturer
 
         throw new InvalidLoginException("Unauthorized");
     }
+
+    /**
+     * @Query()
+     * @return ManufacturerModel[]
+     */
+    public function manufacturers(?ManufacturerFilter $filter = null): array
+    {
+        try {
+            $manufacturers = $this->manufacturerDao->getManufacturers(
+                $filter ?? new ManufacturerFilter()
+            );
+        } catch (\Exception $e) {
+            return [];
+        }
+        // only return active manufacturers
+        $manufacturers = array_filter(
+            $manufacturers,
+            function (ManufacturerModel $manufacturer) {
+                return $manufacturer->getActive();
+            }
+        );
+        return $manufacturers;
+    }
 }
