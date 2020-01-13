@@ -56,20 +56,10 @@ class Manufacturer implements ManufacturerInterface
         if (!$row) {
             throw new \OutOfBoundsException();
         }
-        return new ManufacturerModel(
-            (string)$row['oxid'],
-            intval($row['oxactive']),
-            (string)$row['oxicon'],
-            (string)$row['oxtitle'],
-            (string)$row['oxshortdesc'],
-            (string)$row['oxseourl'],
-            (string)$row['oxtimestamp']
-        );
+        return ManufacturerModel::fromDatabaseResult($row);
     }
 
     /**
-     * @TODO: refactor code douplication (creating model and select fields, see
-     *        self::getManufacturer). Can be done with #2970
      * @return ManufacturerModel[]
      */
     public function getManufacturers(ManufacturerFilter $filter): array
@@ -91,15 +81,7 @@ class Manufacturer implements ManufacturerInterface
         }
 
         foreach ($result as $row) {
-            $manufacturers[] = new ManufacturerModel(
-                (string)$row['oxid'],
-                intval($row['oxactive']),
-                (string)$row['oxicon'],
-                (string)$row['oxtitle'],
-                (string)$row['oxshortdesc'],
-                (string)$row['oxseourl'],
-                (string)$row['oxtimestamp']
-            );
+            $manufacturers[] = ManufacturerModel::fromDatabaseResult($row);
         }
         return $manufacturers;
     }
