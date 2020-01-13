@@ -12,7 +12,6 @@ namespace OxidEsales\GraphQL\Catalogue\Dao;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\DataObject\Manufacturer as ManufacturerModel;
 use OxidEsales\GraphQL\Catalogue\DataObject\ManufacturerFilter;
-use OxidEsales\GraphQL\Base\Exception\NotFoundException;
 
 class Manufacturer implements ManufacturerInterface
 {
@@ -48,20 +47,22 @@ class Manufacturer implements ManufacturerInterface
         }
         $row = $result->fetch();
         if (!$row) {
-            throw new NotFoundException('Manufacturer could not be found');
+            throw new \OutOfBoundsException();
         }
         return new ManufacturerModel(
-            $row['oxid'],
+            (string)$row['oxid'],
             intval($row['oxactive']),
-            $row['oxicon'],
-            $row['oxtitle'],
-            $row['oxshortdesc'],
-            $row['oxseourl'],
-            $row['oxtimestamp']
+            (string)$row['oxicon'],
+            (string)$row['oxtitle'],
+            (string)$row['oxshortdesc'],
+            (string)$row['oxseourl'],
+            (string)$row['oxtimestamp']
         );
     }
 
     /**
+     * @TODO: refactor code douplication (creating model and select fields, see
+     *        self::getManufacturer). Can be done with #2970
      * @return ManufacturerModel[]
      */
     public function getManufacturers(ManufacturerFilter $filter): array

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
+use OxidEsales\GraphQL\Base\Exception\NotFoundException;
 use OxidEsales\GraphQL\Catalogue\Dao\ManufacturerInterface as ManufacturerDao;
 use OxidEsales\GraphQL\Catalogue\DataObject\Manufacturer as ManufacturerModel;
 use OxidEsales\GraphQL\Catalogue\DataObject\ManufacturerFilter;
@@ -30,8 +31,13 @@ class Manufacturer
      */
     public function manufacturer(string $id): ManufacturerModel
     {
-        return $this->manufacturerDao->getManufacturer(
-            $id
-        );
+        try {
+            $manufacturer = $this->manufacturerDao->getManufacturer(
+                $id
+            );
+        } catch (\OutOfBoundsException $e) {
+            throw new NotFoundException('Manufacturer could not be found');
+        }
+        return $manufacturer;
     }
 }
