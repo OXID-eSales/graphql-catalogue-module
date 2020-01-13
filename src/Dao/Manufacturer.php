@@ -70,15 +70,16 @@ class Manufacturer implements ManufacturerInterface
         $manufacturers = [];
         $queryBuilder = $this->queryBuilderFactory->create();
         $queryBuilder->select([
-                        'oxid',
-                        'oxactive',
-                        'oxicon',
-                        'oxtitle',
-                        'oxshortdesc',
-                        'oxseourl',
-                        'oxtimestamp'
+                        'm.oxid',
+                        'm.oxactive',
+                        'm.oxicon',
+                        'm.oxtitle',
+                        'm.oxshortdesc',
+                        's.oxseourl',
+                        'm.oxtimestamp'
                      ])
-                     ->from('oxmanufacturers');
+                     ->from('oxmanufacturers', 'm')
+                     ->leftJoin('m', 'oxseo', 's', 'm.oxid = s.oxobjectid');
 
         $filters = array_filter($filter->getFilters());
         foreach ($filters as $field => $fieldFilter) {
@@ -93,13 +94,13 @@ class Manufacturer implements ManufacturerInterface
 
         foreach ($result as $row) {
             $manufacturers[] = new ManufacturerModel(
-                $row['OXID'],
-                $row['OXACTIVE'],
-                $row['OXICON'],
-                $row['OXTITLE'],
-                $row['OXSHORTDESC'],
-                $row['OXSEOURL'],
-                $row['OXTIMESTAMP']
+                (string)$row['oxid'],
+                intval($row['oxactive']),
+                (string)$row['oxicon'],
+                (string)$row['oxtitle'],
+                (string)$row['oxshortdesc'],
+                (string)$row['oxseourl'],
+                (string)$row['oxtimestamp']
             );
         }
         return $manufacturers;
