@@ -93,6 +93,7 @@ class Manufacturer
                 }
             );
         }
+
         return $manufacturers;
     }
 }
