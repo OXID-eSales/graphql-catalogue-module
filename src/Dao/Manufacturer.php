@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Dao;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\DataObject\Manufacturer as ManufacturerModel;
 use OxidEsales\GraphQL\Catalogue\DataObject\ManufacturerFilter;
@@ -25,21 +26,27 @@ class Manufacturer implements ManufacturerInterface
         $this->queryBuilderFactory = $queryBuilderFactory;
     }
 
+    private function prepareQueryBuilder(QueryBuilder $queryBuilder): void
+    {
+        $queryBuilder
+            ->select([
+                'm.oxid',
+                'm.oxactive',
+                'm.oxicon',
+                'm.oxtitle',
+                'm.oxshortdesc',
+                's.oxseourl',
+                'm.oxtimestamp'
+            ])
+            ->from('oxmanufacturers', 'm')
+            ->leftJoin('m', 'oxseo', 's', 'm.oxid = s.oxobjectid');
+    }
+
     public function getManufacturer(string $id): ManufacturerModel
     {
         $queryBuilder = $this->queryBuilderFactory->create();
-        $queryBuilder->select([
-                        'm.oxid',
-                        'm.oxactive',
-                        'm.oxicon',
-                        'm.oxtitle',
-                        'm.oxshortdesc',
-                        's.oxseourl',
-                        'm.oxtimestamp'
-                     ])
-                     ->from('oxmanufacturers', 'm')
-                     ->leftJoin('m', 'oxseo', 's', 'm.oxid = s.oxobjectid')
-                     ->where('OXID = :oxid')
+        $this->prepareQueryBuilder($queryBuilder);
+        $queryBuilder->where('OXID = :oxid')
                      ->setParameter('oxid', $id);
         $result = $queryBuilder->execute();
         if (!$result instanceof \Doctrine\DBAL\Driver\Statement) {
@@ -68,18 +75,9 @@ class Manufacturer implements ManufacturerInterface
     public function getManufacturers(ManufacturerFilter $filter): array
     {
         $manufacturers = [];
+
         $queryBuilder = $this->queryBuilderFactory->create();
-        $queryBuilder->select([
-                        'm.oxid',
-                        'm.oxactive',
-                        'm.oxicon',
-                        'm.oxtitle',
-                        'm.oxshortdesc',
-                        's.oxseourl',
-                        'm.oxtimestamp'
-                     ])
-                     ->from('oxmanufacturers', 'm')
-                     ->leftJoin('m', 'oxseo', 's', 'm.oxid = s.oxobjectid');
+        $this->prepareQueryBuilder($queryBuilder);
 
         $filters = array_filter($filter->getFilters());
         foreach ($filters as $field => $fieldFilter) {
