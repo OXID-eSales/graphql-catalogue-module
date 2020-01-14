@@ -77,7 +77,7 @@ class Manufacturer implements ManufacturerInterface
         $result = $queryBuilder->execute();
 
         if (!$result instanceof \Doctrine\DBAL\Driver\Statement) {
-            return $manufacturers;
+            throw new \Exception();
         }
 
         foreach ($result as $row) {
