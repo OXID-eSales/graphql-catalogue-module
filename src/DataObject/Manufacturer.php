@@ -43,7 +43,7 @@ class Manufacturer
 
     public function __construct(
         string $id,
-        int $active,
+        bool $active,
         string $icon,
         string $title,
         string $shortdesc,
@@ -51,7 +51,7 @@ class Manufacturer
         string $timestamp
     ) {
         $this->id = new ID($id);
-        $this->active = (bool)$active;
+        $this->active = $active;
         $this->icon = $icon;
         $this->title = $title;
         $this->shortdesc = $shortdesc;
@@ -66,7 +66,7 @@ class Manufacturer
     {
         return new self(
             (string)$result['oxid'],
-            (int)   $result['oxactive'],
+            (bool)  $result['oxactive'],
             (string)$result['oxicon'],
             (string)$result['oxtitle'],
             (string)$result['oxshortdesc'],
