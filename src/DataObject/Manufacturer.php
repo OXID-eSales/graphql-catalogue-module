@@ -35,7 +35,7 @@ class Manufacturer
     /** @var string */
     private $shortdesc;
 
-    /** @var string */
+    /** @var ?string */
     private $url;
 
     /** @var DateTimeInterface */
@@ -47,7 +47,7 @@ class Manufacturer
         string $icon,
         string $title,
         string $shortdesc,
-        string $url,
+        ?string $url,
         string $timestamp
     ) {
         $this->id = new ID($id);
@@ -70,7 +70,7 @@ class Manufacturer
             (string)$result['oxicon'],
             (string)$result['oxtitle'],
             (string)$result['oxshortdesc'],
-            (string)$result['oxseourl'],
+            $result['oxseourl'],
             (string)$result['oxtimestamp']
         );
     }
@@ -118,7 +118,7 @@ class Manufacturer
     /**
      * @Field()
      */
-    public function getUrl(): string
+    public function getUrl(): ?string
     {
         return $this->url;
     }
