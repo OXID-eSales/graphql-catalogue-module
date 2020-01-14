@@ -42,6 +42,10 @@ class Manufacturer implements ManufacturerInterface
             ->leftJoin('m', 'oxseo', 's', 'm.oxid = s.oxobjectid');
     }
 
+    /**
+     * @throws \Exception if database dies
+     * @throws \OutOfBoundsException if id not found in database
+     */
     public function getManufacturer(string $id): ManufacturerModel
     {
         $queryBuilder = $this->queryBuilderFactory->create();
@@ -61,6 +65,7 @@ class Manufacturer implements ManufacturerInterface
 
     /**
      * @return ManufacturerModel[]
+     * @throws \Exception if the database dies
      */
     public function getManufacturers(ManufacturerFilter $filter): array
     {
