@@ -21,5 +21,5 @@ services:
     tags: ['graphql_namespace_mapper']
 
   OxidEsales\GraphQL\Catalogue\Service\PermissionProvider:
-      class: OxidEsales\GraphQL\Catalogue\Service\PermissionProvider
-      tags: ['graphql_permission_provider']
+    class: OxidEsales\GraphQL\Catalogue\Service\PermissionProvider
+    tags: ['graphql_permission_provider']

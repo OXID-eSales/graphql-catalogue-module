@@ -78,13 +78,21 @@ class Manufacturer
         } catch (\Exception $e) {
             return [];
         }
-        // only return active manufacturers
-        $manufacturers = array_filter(
-            $manufacturers,
-            function (ManufacturerModel $manufacturer) {
-                return $manufacturer->getActive();
-            }
-        );
+
+        // In case of missing permissions
+        // to see inactive manufacturers
+        // only return active ones
+        if (
+            !$this->authenticationService->isLogged() ||
+            !$this->authorizationService->isAllowed('VIEW_INACTIVE_MANUFACTURER')
+        ) {
+            $manufacturers = array_filter(
+                $manufacturers,
+                function (ManufacturerModel $manufacturer) {
+                    return $manufacturer->getActive();
+                }
+            );
+        }
         return $manufacturers;
     }
 }
