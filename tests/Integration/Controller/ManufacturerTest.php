@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
 use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
-use OxidEsales\GraphQL\Base\Service\LegacyServiceInterface;
 
 class ManufacturerTest extends TestCase
 {
