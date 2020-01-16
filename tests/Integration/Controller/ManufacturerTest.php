@@ -5,12 +5,21 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
 use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
+use OxidEsales\GraphQL\Base\Service\LegacyServiceInterface;
 
 class ManufacturerTest extends TestCase
 {
 
     private static $ACTIVE_MANUFACTURER = "oiaf6ab7e12e86291e86dd3ff891fe40";
     private static $INACTIVE_MANUFACTURER  = "dc50589ad69b6ec71721b25bdd403171";
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $language = \OxidEsales\Eshop\Core\Registry::getLang();
+        $language->resetBaseLanguage();
+    }
 
     public function testGetSingleActiveManufacturer()
     {
@@ -170,5 +179,10 @@ class ManufacturerTest extends TestCase
             0,
             count($result['body']['data']['manufacturers'])
         );
+    }
+
+    protected function setGETRequestParameter(string $name, string $value)
+    {
+        $_GET[$name] = $value;
     }
 }
