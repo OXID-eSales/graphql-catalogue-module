@@ -58,7 +58,9 @@ class ManufacturerTest extends TestCase
 
 namespace OxidEsales\GraphQL\Catalogue\Dao;
 
-function getViewName($table, $languageId = null, $shopId = null)
-{
-    return $table;
+if (!function_exists('getViewName')) {
+    function getViewName($table, $languageId = null, $shopId = null)
+    {
+        return $table;
+    }
 }
