@@ -186,12 +186,10 @@ class ManufacturerTest extends TestCase
         return [
             'de' => [
                 'languageId' => '0',
-                'viewName'   => 'oxv_oxmanufacturers_1_de',
                 'title'      => 'Liquid Force'
             ],
             'en' => [
                 'languageId' => '1',
-                'viewName'   => 'oxv_oxmanufacturers_1_en',
                 'title'      => 'Liquid Force Kite'
             ],
         ];
@@ -200,7 +198,7 @@ class ManufacturerTest extends TestCase
     /**
      * @dataProvider providerGetManufacturerMultilanguage
      */
-    public function testGetManufacturerMultilanguage(string $languageId, string $viewName, string $title)
+    public function testGetManufacturerMultilanguage(string $languageId, string $title)
     {
         $query = 'query {
             manufacturer (id: "' . self::$ACTIVE_MULTILANGUAGE_MANUFACTURER . '") {
@@ -209,8 +207,10 @@ class ManufacturerTest extends TestCase
             }
         }';
 
-        $this->setGETRequestParameter('lang', $languageId);
-        $this->assertEquals($viewName, getViewName('oxmanufacturers'));
+        $this->setGETRequestParameter(
+            'lang',
+            $languageId
+        );
 
         $result = $this->query($query);
         $this->assertResponseStatus($result, 200);
@@ -229,12 +229,10 @@ class ManufacturerTest extends TestCase
         return [
             'de' => [
                 'languageId' => '0',
-                'viewName'   => 'oxv_oxmanufacturers_1_de',
                 'count'      => 0
             ],
             'en' => [
                 'languageId' => '1',
-                'viewName'   => 'oxv_oxmanufacturers_1_en',
                 'count'      => 1
             ]
         ];
@@ -243,7 +241,7 @@ class ManufacturerTest extends TestCase
     /**
      * @dataProvider providerGetManufacturerListWithFilterMultilanguage
      */
-    public function testGetManufacturerListWithFilterMultilanguage(string $languageId, string $viewName, int $count)
+    public function testGetManufacturerListWithFilterMultilanguage(string $languageId, int $count)
     {
         $query = 'query{
             manufacturers(filter: {
@@ -255,8 +253,10 @@ class ManufacturerTest extends TestCase
             }
         }';
 
-        $this->setGETRequestParameter('lang', $languageId);
-        $this->assertEquals($viewName, getViewName('oxmanufacturers'));
+        $this->setGETRequestParameter(
+            'lang',
+            $languageId
+        );
 
         $result = $this->query($query);
         $this->assertResponseStatus($result, 200);
