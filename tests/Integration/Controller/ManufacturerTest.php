@@ -13,14 +13,6 @@ class ManufacturerTest extends TestCase
     private static $INACTIVE_MANUFACTURER  = "dc50589ad69b6ec71721b25bdd403171";
     private static $ACTIVE_MULTILANGUAGE_MANUFACTURER = 'adc6df0977329923a6330cc8f3c0a906';
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $language = \OxidEsales\Eshop\Core\Registry::getLang();
-        $language->resetBaseLanguage();
-    }
-
     public function testGetSingleActiveManufacturer()
     {
         $result = $this->query('query {
