@@ -34,9 +34,9 @@ class ManufacturerTest extends TestCase
                 timestamp
             }
         }');
-        $this->assertEquals(
+        $this->assertResponseStatus(
             200,
-            $result['status']
+            $result
         );
         $timestamp = $result['body']['data']['manufacturer']['timestamp'];
         unset($result['body']['data']['manufacturer']['timestamp']);
@@ -66,9 +66,9 @@ class ManufacturerTest extends TestCase
                 timestamp
             }
         }');
-        $this->assertEquals(
+        $this->assertResponseStatus(
             401,
-            $result['status']
+            $result
         );
     }
 
@@ -85,9 +85,9 @@ class ManufacturerTest extends TestCase
                 timestamp
             }
         }');
-        $this->assertEquals(
+        $this->assertResponseStatus(
             404,
-            $result['status']
+            $result
         );
     }
 
@@ -104,9 +104,9 @@ class ManufacturerTest extends TestCase
                 timestamp
             }
         }');
-        $this->assertEquals(
+        $this->assertResponseStatus(
             200,
-            $result['status']
+            $result
         );
         // fixtures have 11 active manufacturers
         $this->assertEquals(
@@ -126,9 +126,9 @@ class ManufacturerTest extends TestCase
                 id
             }
         }');
-        $this->assertEquals(
+        $this->assertResponseStatus(
             200,
-            $result['status']
+            $result
         );
         // fixtures have 3 active manufacturers with lowercase l and 3 inactive
         $this->assertEquals(
@@ -148,9 +148,9 @@ class ManufacturerTest extends TestCase
                 id
             }
         }');
-        $this->assertEquals(
+        $this->assertResponseStatus(
             200,
-            $result['status']
+            $result
         );
         // fixtures have 2 inactive manufacturers starting with Fly
         $this->assertEquals(
@@ -170,9 +170,9 @@ class ManufacturerTest extends TestCase
                 id
             }
         }');
-        $this->assertEquals(
+        $this->assertResponseStatus(
             200,
-            $result['status']
+            $result
         );
         // fixtures have 0 manufacturers matching title DOES-NOT-EXIST
         $this->assertEquals(
