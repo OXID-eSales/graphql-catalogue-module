@@ -266,17 +266,4 @@ class ManufacturerTest extends TestCase
             count($result['body']['data']['manufacturers'])
         );
     }
-
-    private function assertResponseStatus(array $result, int $expectedStatus = 200)
-    {
-        $this->assertEquals(
-            $expectedStatus,
-            $result['status']
-        );
-    }
-
-    protected function setGETRequestParameter(string $name, string $value)
-    {
-        $_GET[$name] = $value;
-    }
 }
