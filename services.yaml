@@ -8,6 +8,10 @@ services:
     class: OxidEsales\GraphQL\Catalogue\Dao\Manufacturer
     public: true
 
+  OxidEsales\GraphQL\Catalogue\Dao\VendorInterface:
+    class: OxidEsales\GraphQL\Catalogue\Dao\Vendor
+    public: true
+
   OxidEsales\GraphQL\Catalogue\Controller\:
     resource: 'src/Controller/*'
     public: true
