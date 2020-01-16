@@ -64,6 +64,8 @@ class Manufacturer
      */
     public static function fromDatabaseResult(array $result): self
     {
+        $result = array_change_key_case($result, CASE_LOWER);
+
         return new self(
             (string)$result['oxid'],
             (bool)  $result['oxactive'],
