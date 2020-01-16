@@ -12,6 +12,7 @@ class ManufacturerTest extends TestCase
 
     private static $ACTIVE_MANUFACTURER = "oiaf6ab7e12e86291e86dd3ff891fe40";
     private static $INACTIVE_MANUFACTURER  = "dc50589ad69b6ec71721b25bdd403171";
+    private static $ACTIVE_MULTILANGUAGE_MANUFACTURER = 'adc6df0977329923a6330cc8f3c0a906';
 
     protected function setUp(): void
     {
@@ -174,10 +175,104 @@ class ManufacturerTest extends TestCase
             200,
             $result['status']
         );
-        // fixtures have 0 manufacturers mathing title DOES-NOT-EXIST
+        // fixtures have 0 manufacturers matching title DOES-NOT-EXIST
         $this->assertEquals(
             0,
             count($result['body']['data']['manufacturers'])
+        );
+    }
+
+    public function providerGetManufacturerMultilanguage()
+    {
+        return [
+            'de' => [
+                'languageId' => '0',
+                'viewName'   => 'oxv_oxmanufacturers_1_de',
+                'title'      => 'Liquid Force'
+            ],
+            'en' => [
+                'languageId' => '1',
+                'viewName'   => 'oxv_oxmanufacturers_1_en',
+                'title'      => 'Liquid Force Kite'
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider providerGetManufacturerMultilanguage
+     */
+    public function testGetManufacturerMultilanguage(string $languageId, string $viewName, string $title)
+    {
+        $query = 'query {
+            manufacturer (id: "' . self::$ACTIVE_MULTILANGUAGE_MANUFACTURER . '") {
+                id
+                title
+            }
+        }';
+
+        $this->setGETRequestParameter('lang', $languageId);
+        $this->assertEquals($viewName, getViewName('oxmanufacturers'));
+
+        $result = $this->query($query);
+        $this->assertResponseStatus($result, 200);
+
+        $this->assertEquals(
+            [
+                'id' => self::$ACTIVE_MULTILANGUAGE_MANUFACTURER,
+                'title' => $title
+            ],
+            $result['body']['data']['manufacturer']
+        );
+    }
+
+    public function providerGetManufacturerListWithFilterMultilanguage()
+    {
+        return [
+            'de' => [
+                'languageId' => '0',
+                'viewName'   => 'oxv_oxmanufacturers_1_de',
+                'count'      => 0
+            ],
+            'en' => [
+                'languageId' => '1',
+                'viewName'   => 'oxv_oxmanufacturers_1_en',
+                'count'      => 1
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider providerGetManufacturerListWithFilterMultilanguage
+     */
+    public function testGetManufacturerListWithFilterMultilanguage(string $languageId, string $viewName, int $count)
+    {
+        $query = 'query{
+            manufacturers(filter: {
+                title: {
+                    contains: "Force Kite"
+                }
+            }){
+                id
+            }
+        }';
+
+        $this->setGETRequestParameter('lang', $languageId);
+        $this->assertEquals($viewName, getViewName('oxmanufacturers'));
+
+        $result = $this->query($query);
+        $this->assertResponseStatus($result, 200);
+
+        $this->assertEquals(
+            $count,
+            count($result['body']['data']['manufacturers'])
+        );
+    }
+
+    private function assertResponseStatus(array $result, int $expectedStatus = 200)
+    {
+        $this->assertEquals(
+            $expectedStatus,
+            $result['status']
         );
     }
 
