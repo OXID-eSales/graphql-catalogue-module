@@ -213,7 +213,10 @@ class ManufacturerTest extends TestCase
         );
 
         $result = $this->query($query);
-        $this->assertResponseStatus($result, 200);
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
 
         $this->assertEquals(
             [
@@ -259,7 +262,10 @@ class ManufacturerTest extends TestCase
         );
 
         $result = $this->query($query);
-        $this->assertResponseStatus($result, 200);
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
 
         $this->assertEquals(
             $count,
