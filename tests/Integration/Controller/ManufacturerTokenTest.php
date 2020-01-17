@@ -9,9 +9,10 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
-use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
+use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
+use TheCodingMachine\GraphQLite\Types\DateTimeType;
 
-final class ManufacturerWithTokenTest extends TestCase
+final class ManufacturerWithTokenTest extends TokenTestCase
 {
     //Kuyichi
     private static $ACTIVE_MANUFACTURER = "9434afb379a46d6c141de9c9e5b94fcf";
@@ -23,14 +24,7 @@ final class ManufacturerWithTokenTest extends TestCase
     {
         parent::setUp();
 
-        $result = $this->query('query {
-            token (
-                username: "admin",
-                password: "admin"
-            )
-        }');
-
-        $this->setAuthToken($result['body']['data']['token']);
+        $this->prepareAdminToken();
     }
 
     public function testGetSingleActiveManufacturer()
@@ -49,6 +43,7 @@ final class ManufacturerWithTokenTest extends TestCase
 
         $this->assertEquals(200, $result['status']);
 
+        $timestamp = $result['body']['data']['manufacturer']['timestamp'];
         unset($result['body']['data']['manufacturer']['timestamp']);
 
         $this->assertEquals(
@@ -62,35 +57,29 @@ final class ManufacturerWithTokenTest extends TestCase
             ],
             $result['body']['data']['manufacturer']
         );
+
+        $dateTimeType = DateTimeType::getInstance();
+
+        //Fixture timestamp can have few seconds difference
+        $this->assertLessThanOrEqual(
+            $dateTimeType->serialize(new \DateTimeImmutable('now')),
+            $timestamp
+        );
     }
 
     public function testGetSingleInactiveManufacturer()
     {
-        $this->setAuthToken(self::$token);
         $result = $this->query('query {
             manufacturer (id: "' . self::$INACTIVE_MANUFACTURER . '") {
                 id
-                active
-                icon
-                title
-                shortdesc
-                url
-                timestamp
             }
         }');
 
         $this->assertEquals(200, $result['status']);
 
-        unset($result['body']['data']['manufacturer']['timestamp']);
-
         $this->assertEquals(
             [
-                'id'        => self::$INACTIVE_MANUFACTURER,
-                'active'    => 0,
-                'icon'      => '',
-                'title'     => 'RRD',
-                'shortdesc' => '',
-                'url'       => '',
+                'id' => self::$INACTIVE_MANUFACTURER,
             ],
             $result['body']['data']['manufacturer']
         );
@@ -101,12 +90,6 @@ final class ManufacturerWithTokenTest extends TestCase
         $result = $this->query('query {
             manufacturer (id: "DOES-NOT-EXIST") {
                 id
-                active
-                icon
-                title
-                shortdesc
-                url
-                timestamp
             }
         }');
 
@@ -118,12 +101,6 @@ final class ManufacturerWithTokenTest extends TestCase
         $result = $this->query('query {
             manufacturers {
                 id
-                active
-                icon
-                title
-                shortdesc
-                url
-                timestamp
             }
         }');
 
@@ -150,8 +127,15 @@ final class ManufacturerWithTokenTest extends TestCase
 
         $this->assertEquals(200, $result['status']);
         $this->assertEquals(
-            2,
-            count($result['body']['data']['manufacturers'])
+            [
+                [
+                    "id" => "dc50589ad69b6ec71721b25bdd403171"
+                ],
+                [
+                    "id" => "dc59459d4d67189182c53ed0e4e777bc"
+                ]
+            ],
+            $result['body']['data']['manufacturers']
         );
     }
 
@@ -169,8 +153,12 @@ final class ManufacturerWithTokenTest extends TestCase
 
         $this->assertEquals(200, $result['status']);
         $this->assertEquals(
-            1,
-            count($result['body']['data']['manufacturers'])
+            [
+                [
+                    "id" => "dc50589ad69b6ec71721b25bdd403171"
+                ]
+            ],
+            $result['body']['data']['manufacturers']
         );
     }
 }
