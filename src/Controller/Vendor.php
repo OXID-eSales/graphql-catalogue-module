@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
+use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
+use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
+use OxidEsales\GraphQL\Catalogue\DataObject\VendorFilter;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 use OxidEsales\GraphQL\Catalogue\Dao\VendorInterface as VendorDao;
 use OxidEsales\GraphQL\Catalogue\DataObject\Vendor as VendorModel;
@@ -18,30 +21,49 @@ class Vendor
     /** @var VendorDao */
     protected $vendorDao;
 
+    /** @var AuthenticationServiceInterface */
+    protected $authenticationService;
+
+    /** @var AuthorizationServiceInterface */
+    protected $authorizationService;
+
     public function __construct(
-        VendorDao $vendorDao
+        VendorDao $vendorDao,
+        AuthenticationServiceInterface $authenticationService,
+        AuthorizationServiceInterface $authorizationService
     ) {
         $this->vendorDao = $vendorDao;
+        $this->authenticationService = $authenticationService;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
      * @Query()
      * @return VendorModel[]
      */
-    public function vendors(): array
+    public function vendors(?VendorFilter $filter = null): array
     {
         try {
-            $vendors = $this->vendorDao->getVendors();
+            $vendors = $this->vendorDao->getVendors(
+                $filter ?? new VendorFilter()
+            );
         } catch (\Exception $e) {
-            return [$e->getMessage()];
+            return [];
         }
 
-        $vendors = array_filter(
-            $vendors,
-            function (VendorModel $vendor) {
-                return $vendor->getActive();
-            }
-        );
+        // In case of missing permissions
+        // only return active vendors
+        if (
+            !$this->authenticationService->isLogged() ||
+            !$this->authorizationService->isAllowed('VIEW_INACTIVE_MANUFACTURER')
+        ) {
+            $vendors = array_filter(
+                $vendors,
+                function (VendorModel $vendor) {
+                    return $vendor->getActive();
+                }
+            );
+        }
 
         return $vendors;
     }
