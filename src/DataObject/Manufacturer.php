@@ -35,7 +35,7 @@ class Manufacturer
     /** @var string */
     private $shortdesc;
 
-    /** @var string */
+    /** @var ?string */
     private $url;
 
     /** @var DateTimeInterface */
@@ -43,20 +43,36 @@ class Manufacturer
 
     public function __construct(
         string $id,
-        int $active,
+        bool $active,
         string $icon,
         string $title,
         string $shortdesc,
-        string $url,
+        ?string $url,
         string $timestamp
     ) {
         $this->id = new ID($id);
-        $this->active = (bool)$active;
+        $this->active = $active;
         $this->icon = $icon;
         $this->title = $title;
         $this->shortdesc = $shortdesc;
         $this->url = $url;
         $this->timestamp = new DateTimeImmutable($timestamp);
+    }
+
+    /**
+     * @param string[] $result
+     */
+    public static function fromDatabaseResult(array $result): self
+    {
+        return new self(
+            (string)$result['oxid'],
+            (bool)  $result['oxactive'],
+            (string)$result['oxicon'],
+            (string)$result['oxtitle'],
+            (string)$result['oxshortdesc'],
+            $result['oxseourl'],
+            (string)$result['oxtimestamp']
+        );
     }
 
     /**
@@ -102,7 +118,7 @@ class Manufacturer
     /**
      * @Field()
      */
-    public function getUrl(): string
+    public function getUrl(): ?string
     {
         return $this->url;
     }

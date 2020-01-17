@@ -64,4 +64,35 @@ class Manufacturer
 
         throw new InvalidLoginException("Unauthorized");
     }
+
+    /**
+     * @Query()
+     * @return ManufacturerModel[]
+     */
+    public function manufacturers(?ManufacturerFilter $filter = null): array
+    {
+        try {
+            $manufacturers = $this->manufacturerDao->getManufacturers(
+                $filter ?? new ManufacturerFilter()
+            );
+        } catch (\Exception $e) {
+            return [];
+        }
+
+        // In case of missing permissions
+        // to see inactive manufacturers
+        // only return active ones
+        if (
+            !$this->authenticationService->isLogged() ||
+            !$this->authorizationService->isAllowed('VIEW_INACTIVE_MANUFACTURER')
+        ) {
+            $manufacturers = array_filter(
+                $manufacturers,
+                function (ManufacturerModel $manufacturer) {
+                    return $manufacturer->getActive();
+                }
+            );
+        }
+        return $manufacturers;
+    }
 }

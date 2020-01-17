@@ -85,7 +85,7 @@ class ManufacturerTest extends TestCase
     public function testGetManufacturerListWithoutFilter()
     {
         $result = $this->query('query{
-            manufacturers(){
+            manufacturers {
                 id
                 active
                 icon
@@ -102,7 +102,7 @@ class ManufacturerTest extends TestCase
         // fixtures have 11 active manufacturers
         $this->assertEquals(
             11,
-            $result['body']['data']['manufacturers']
+            count($result['body']['data']['manufacturers'])
         );
     }
 
@@ -124,7 +124,7 @@ class ManufacturerTest extends TestCase
         // fixtures have 3 active manufacturers with lowercase l and 3 inactive
         $this->assertEquals(
             3,
-            $result['body']['data']['manufacturers']
+            count($result['body']['data']['manufacturers'])
         );
     }
 
@@ -146,7 +146,7 @@ class ManufacturerTest extends TestCase
         // fixtures have 2 inactive manufacturers starting with Fly
         $this->assertEquals(
             0,
-            $result['body']['data']['manufacturers']
+            count($result['body']['data']['manufacturers'])
         );
     }
 
@@ -168,7 +168,7 @@ class ManufacturerTest extends TestCase
         // fixtures have 0 manufacturers mathing title DOES-NOT-EXIST
         $this->assertEquals(
             0,
-            $result['body']['data']['manufacturers']
+            count($result['body']['data']['manufacturers'])
         );
     }
 }

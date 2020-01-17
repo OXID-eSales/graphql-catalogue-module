@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Dao;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\DataObject\Manufacturer as ManufacturerModel;
 use OxidEsales\GraphQL\Catalogue\DataObject\ManufacturerFilter;
@@ -25,21 +26,31 @@ class Manufacturer implements ManufacturerInterface
         $this->queryBuilderFactory = $queryBuilderFactory;
     }
 
+    private function prepareQueryBuilder(QueryBuilder $queryBuilder): void
+    {
+        $queryBuilder
+            ->select([
+                'm.oxid',
+                'm.oxactive',
+                'm.oxicon',
+                'm.oxtitle',
+                'm.oxshortdesc',
+                's.oxseourl',
+                'm.oxtimestamp'
+            ])
+            ->from('oxmanufacturers', 'm')
+            ->leftJoin('m', 'oxseo', 's', 'm.oxid = s.oxobjectid');
+    }
+
+    /**
+     * @throws \Exception if database dies
+     * @throws \OutOfBoundsException if id not found in database
+     */
     public function getManufacturer(string $id): ManufacturerModel
     {
         $queryBuilder = $this->queryBuilderFactory->create();
-        $queryBuilder->select([
-                        'm.oxid',
-                        'm.oxactive',
-                        'm.oxicon',
-                        'm.oxtitle',
-                        'm.oxshortdesc',
-                        's.oxseourl',
-                        'm.oxtimestamp'
-                     ])
-                     ->from('oxmanufacturers', 'm')
-                     ->leftJoin('m', 'oxseo', 's', 'm.oxid = s.oxobjectid')
-                     ->where('OXID = :oxid')
+        $this->prepareQueryBuilder($queryBuilder);
+        $queryBuilder->where('OXID = :oxid')
                      ->setParameter('oxid', $id);
         $result = $queryBuilder->execute();
         if (!$result instanceof \Doctrine\DBAL\Driver\Statement) {
@@ -49,36 +60,19 @@ class Manufacturer implements ManufacturerInterface
         if (!$row) {
             throw new \OutOfBoundsException();
         }
-        return new ManufacturerModel(
-            (string)$row['oxid'],
-            intval($row['oxactive']),
-            (string)$row['oxicon'],
-            (string)$row['oxtitle'],
-            (string)$row['oxshortdesc'],
-            (string)$row['oxseourl'],
-            (string)$row['oxtimestamp']
-        );
+        return ManufacturerModel::fromDatabaseResult($row);
     }
 
     /**
-     * @TODO: refactor code douplication (creating model and select fields, see
-     *        self::getManufacturer). Can be done with #2970
      * @return ManufacturerModel[]
+     * @throws \Exception if the database dies
      */
     public function getManufacturers(ManufacturerFilter $filter): array
     {
         $manufacturers = [];
+
         $queryBuilder = $this->queryBuilderFactory->create();
-        $queryBuilder->select([
-                        'oxid',
-                        'oxactive',
-                        'oxicon',
-                        'oxtitle',
-                        'oxshortdesc',
-                        'oxseourl',
-                        'oxtimestamp'
-                     ])
-                     ->from('oxmanufacturers');
+        $this->prepareQueryBuilder($queryBuilder);
 
         $filters = array_filter($filter->getFilters());
         foreach ($filters as $field => $fieldFilter) {
@@ -88,19 +82,11 @@ class Manufacturer implements ManufacturerInterface
         $result = $queryBuilder->execute();
 
         if (!$result instanceof \Doctrine\DBAL\Driver\Statement) {
-            return $manufacturers;
+            throw new \Exception();
         }
 
         foreach ($result as $row) {
-            $manufacturers[] = new ManufacturerModel(
-                $row['OXID'],
-                $row['OXACTIVE'],
-                $row['OXICON'],
-                $row['OXTITLE'],
-                $row['OXSHORTDESC'],
-                $row['OXSEOURL'],
-                $row['OXTIMESTAMP']
-            );
+            $manufacturers[] = ManufacturerModel::fromDatabaseResult($row);
         }
         return $manufacturers;
     }
