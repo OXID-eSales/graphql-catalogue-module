@@ -55,7 +55,7 @@ class Vendor
         // only return active vendors
         if (
             !$this->authenticationService->isLogged() ||
-            !$this->authorizationService->isAllowed('VIEW_INACTIVE_MANUFACTURER')
+            !$this->authorizationService->isAllowed('VIEW_INACTIVE_VENDOR')
         ) {
             $vendors = array_filter(
                 $vendors,
