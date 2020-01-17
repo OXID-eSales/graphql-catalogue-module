@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Catalogue\Tests;
+namespace OxidEsales\GraphQL\Catalogue\Tests\Integration;
 
 use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
