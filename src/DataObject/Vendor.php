@@ -35,7 +35,7 @@ class Vendor
     /** @var string */
     private $shortdesc;
 
-    /** @var string */
+    /** @var string|null */
     private $url;
 
     /** @var DateTimeInterface */
@@ -102,7 +102,7 @@ class Vendor
     /**
      * @Field()
      */
-    public function getUrl(): string
+    public function getUrl(): ?string
     {
         return $this->url;
     }

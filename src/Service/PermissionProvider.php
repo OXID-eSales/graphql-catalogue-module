@@ -17,7 +17,8 @@ class PermissionProvider implements PermissionProviderInterface
     {
         return [
             'admin' => [
-                'VIEW_INACTIVE_MANUFACTURER'
+                'VIEW_INACTIVE_MANUFACTURER',
+                'VIEW_INACTIVE_VENDOR',
             ]
         ];
     }

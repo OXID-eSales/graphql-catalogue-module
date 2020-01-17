@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Catalogue\Dao;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\DataObject\Vendor as VendorModel;
+use OxidEsales\GraphQL\Catalogue\DataObject\VendorFilter;
 
 class Vendor implements VendorInterface
 {
@@ -24,9 +25,11 @@ class Vendor implements VendorInterface
     }
 
     /**
+     * @param VendorFilter $filter
+     *
      * @return VendorModel[]
      */
-    public function getVendors(): array
+    public function getVendors(VendorFilter $filter): array
     {
         $vendors = [];
 
@@ -43,8 +46,12 @@ class Vendor implements VendorInterface
             ]
         )
             ->from('oxvendor', 'v')
-            ->leftJoin('v', 'oxseo', 's', 'v.oxid = s.oxobjectid')
-        ;
+            ->leftJoin('v', 'oxseo', 's', 'v.oxid = s.oxobjectid');
+
+        $filters = array_filter($filter->getFilters());
+        foreach ($filters as $field => $fieldFilter) {
+            $fieldFilter->addToQuery($queryBuilder, $field);
+        }
 
         $result = $queryBuilder->execute();
         if (!$result instanceof \Doctrine\DBAL\Driver\Statement) {
