@@ -60,6 +60,24 @@ class Vendor
     }
 
     /**
+     * @param string[] $result
+     *
+     * @return Vendor
+     */
+    public static function fromDatabaseResult(array $result): self
+    {
+        return new self(
+            $result['oxid'],
+            (int) $result['oxactive'],
+            $result['oxicon'],
+            $result['oxtitle'],
+            $result['oxshortdesc'],
+            $result['oxseourl'],
+            $result['oxtimestamp']
+        );
+    }
+
+    /**
      * @Field()
      */
     public function getId(): ID

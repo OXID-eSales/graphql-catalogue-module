@@ -18,4 +18,9 @@ interface VendorInterface
      * @return VendorModel[]
      */
     public function getVendors(VendorFilter $filter): array;
+
+    /**
+     * @return VendorModel
+     */
+    public function getVendor(string $id): VendorModel;
 }

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Dao;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataObject\Vendor as VendorModel;
 use OxidEsales\GraphQL\Catalogue\DataObject\VendorFilter;
 
@@ -59,17 +60,50 @@ class Vendor implements VendorInterface
         }
 
         foreach ($result as $row) {
-            $vendors[] = new VendorModel(
-                $row['oxid'],
-                (int) $row['oxactive'],
-                $row['oxicon'],
-                $row['oxtitle'],
-                $row['oxshortdesc'],
-                $row['oxseourl'],
-                $row['oxtimestamp']
-            );
+            $vendors[] = VendorModel::fromDatabaseResult($row);
         }
 
         return $vendors;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return VendorModel
+     *
+     * @throws NotFound
+     */
+    public function getVendor(string $id): VendorModel
+    {
+        $queryBuilder = $this->queryBuilderFactory->create();
+        $queryBuilder->select(
+            [
+                'v.oxid',
+                'v.oxactive',
+                'v.oxicon',
+                'v.oxtitle',
+                'v.oxshortdesc',
+                's.oxseourl',
+                'v.oxtimestamp',
+            ]
+        )
+            ->from('oxvendor', 'v')
+            ->leftJoin('v', 'oxseo', 's', 'v.oxid = s.oxobjectid')
+            ->where($queryBuilder->expr()->eq('v.oxid', ':oxid'))
+            ->setParameter('oxid', $id);
+
+        $result = $queryBuilder->execute();
+
+        if (!$result instanceof \Doctrine\DBAL\Driver\Statement) {
+            throw new NotFound();
+        }
+
+        $row = $result->fetch();
+
+        if (!$row) {
+            throw new NotFound();
+        }
+
+        return VendorModel::fromDatabaseResult($row);
     }
 }
