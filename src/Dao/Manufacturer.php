@@ -57,7 +57,7 @@ class Manufacturer implements ManufacturerInterface
         if (!$result instanceof \Doctrine\DBAL\Driver\Statement) {
             throw new \Exception();
         }
-        $row = $result->fetch();
+        $row = $result->fetch(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
         if (!$row) {
             throw ManufacturerNotFound::byId($id);
         }
