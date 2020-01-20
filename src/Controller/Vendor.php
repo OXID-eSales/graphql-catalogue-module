@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
+use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
+use OxidEsales\GraphQL\Base\Exception\NotFound;
+use OxidEsales\GraphQL\Base\Exception\NotFoundException;
 use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
 use OxidEsales\GraphQL\Catalogue\DataObject\VendorFilter;
@@ -66,5 +69,40 @@ class Vendor
         }
 
         return $vendors;
+    }
+
+    /**
+     * @Query()
+     * @param string $id
+     *
+     * @return null|VendorModel
+     *
+     * @throws NotFoundException
+     * @throws InvalidLoginException
+     */
+    public function vendor(string $id): ?VendorModel
+    {
+        try {
+            $vendor = $this->vendorDao->getVendor($id);
+        } catch (\Exception $e) {
+            throw new NotFoundException();
+        }
+
+        if (!$vendor instanceof VendorModel) {
+            throw new NotFoundException();
+        }
+
+        if ($vendor->getActive()) {
+            return $vendor;
+        }
+
+        if (
+            !$this->authenticationService->isLogged() ||
+            !$this->authorizationService->isAllowed('VIEW_INACTIVE_VENDOR')
+        ) {
+            throw new InvalidLoginException("Unauthorized");
+        }
+
+        return $vendor;
     }
 }
