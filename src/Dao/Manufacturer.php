@@ -38,7 +38,7 @@ class Manufacturer implements ManufacturerInterface
                 's.oxseourl',
                 'm.oxtimestamp'
             ])
-            ->from('oxmanufacturers', 'm')
+            ->from(getViewName('oxmanufacturers'), 'm')
             ->leftJoin('m', 'oxseo', 's', 'm.oxid = s.oxobjectid');
     }
 

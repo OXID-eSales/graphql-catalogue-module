@@ -55,3 +55,12 @@ class ManufacturerTest extends TestCase
         );
     }
 }
+
+namespace OxidEsales\GraphQL\Catalogue\Dao;
+
+if (!function_exists('getViewName')) {
+    function getViewName($table, $languageId = null, $shopId = null)
+    {
+        return $table;
+    }
+}

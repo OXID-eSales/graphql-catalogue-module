@@ -1,2 +1,5 @@
 parameters:
     level: max
+    autoload_files:
+        - vendor/oxid-esales/oxideshop-ce/source/oxfunctions.php
+        - vendor/oxid-esales/oxideshop-ce/source/overridablefunctions.php
