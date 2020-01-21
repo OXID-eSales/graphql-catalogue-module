@@ -10,12 +10,12 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
-use OxidEsales\GraphQL\Base\Exception\NotFoundException;
 use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
 use OxidEsales\GraphQL\Catalogue\Dao\ManufacturerInterface as ManufacturerDao;
 use OxidEsales\GraphQL\Catalogue\DataObject\Manufacturer as ManufacturerModel;
 use OxidEsales\GraphQL\Catalogue\DataObject\ManufacturerFilter;
+use OxidEsales\GraphQL\Catalogue\Exception\ManufacturerNotFound;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Manufacturer
@@ -49,7 +49,7 @@ class Manufacturer
                 $id
             );
         } catch (\OutOfBoundsException $e) {
-            throw new NotFoundException('Manufacturer could not be found');
+            throw ManufacturerNotFound::byId($id);
         }
 
         if (
