@@ -11,7 +11,6 @@ namespace OxidEsales\GraphQL\Catalogue\Controller;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
-use OxidEsales\GraphQL\Base\Exception\NotFoundException;
 use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
 use OxidEsales\GraphQL\Catalogue\DataObject\VendorFilter;
@@ -77,7 +76,7 @@ class Vendor
      *
      * @return null|VendorModel
      *
-     * @throws NotFoundException
+     * @throws NotFound
      * @throws InvalidLoginException
      */
     public function vendor(string $id): ?VendorModel
@@ -85,11 +84,11 @@ class Vendor
         try {
             $vendor = $this->vendorDao->getVendor($id);
         } catch (\Exception $e) {
-            throw new NotFoundException();
+            throw new NotFound();
         }
 
         if (!$vendor instanceof VendorModel) {
-            throw new NotFoundException();
+            throw new NotFound();
         }
 
         if ($vendor->getActive()) {
