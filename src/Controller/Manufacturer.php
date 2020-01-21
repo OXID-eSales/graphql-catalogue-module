@@ -44,13 +44,7 @@ class Manufacturer
      */
     public function manufacturer(string $id): ManufacturerModel
     {
-        try {
-            $manufacturer = $this->manufacturerDao->getManufacturer(
-                $id
-            );
-        } catch (\OutOfBoundsException $e) {
-            throw ManufacturerNotFound::byId($id);
-        }
+        $manufacturer = $this->manufacturerDao->getManufacturer($id);
 
         if (
             $manufacturer->getActive() ||

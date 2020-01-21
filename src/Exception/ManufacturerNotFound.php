@@ -19,7 +19,7 @@ class ManufacturerNotFound extends NotFound
 
     /**
      * @param string $id
-     * @return static
+     * @return self
      */
     public static function byId(string $id): self
     {

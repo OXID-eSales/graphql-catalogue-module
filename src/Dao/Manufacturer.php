@@ -13,6 +13,7 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\DataObject\Manufacturer as ManufacturerModel;
 use OxidEsales\GraphQL\Catalogue\DataObject\ManufacturerFilter;
+use OxidEsales\GraphQL\Catalogue\Exception\ManufacturerNotFound;
 
 class Manufacturer implements ManufacturerInterface
 {
@@ -44,7 +45,7 @@ class Manufacturer implements ManufacturerInterface
 
     /**
      * @throws \Exception if database dies
-     * @throws \OutOfBoundsException if id not found in database
+     * @throws ManufacturerNotFound if id not found in database
      */
     public function getManufacturer(string $id): ManufacturerModel
     {
@@ -58,7 +59,7 @@ class Manufacturer implements ManufacturerInterface
         }
         $row = $result->fetch();
         if (!$row) {
-            throw new \OutOfBoundsException();
+            throw ManufacturerNotFound::byId($id);
         }
         return ManufacturerModel::fromDatabaseResult($row);
     }
