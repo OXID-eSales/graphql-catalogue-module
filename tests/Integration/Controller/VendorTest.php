@@ -13,6 +13,89 @@ use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
 final class VendorTest extends TokenTestCase
 {
+    private static $ACTIVE_VENDOR = "fe07958b49de225bd1dbc7594fb9a6b0";
+    private static $INACTIVE_VENDOR  = "05833e961f65616e55a2208c2ed7c6b8";
+
+    public function testGetSingleActiveVendor()
+    {
+        $result = $this->query('query {
+            vendor (id: "' . self::$ACTIVE_VENDOR . '") {
+                id
+                active
+                icon
+                title
+                shortdesc
+                url
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertEquals(
+            [
+                'id' => self::$ACTIVE_VENDOR,
+                'active' => 1,
+                'icon' => '',
+                'title' => 'https://fashioncity.com',
+                'shortdesc' => 'Fashion city',
+                'url' => 'Nach-Lieferant/https-fashioncity-com/',
+            ],
+            $result['body']['data']['vendor']
+        );
+    }
+
+    public function testGetSingleInactiveVendorWithoutToken()
+    {
+        $result = $this->query('query {
+            vendor (id: "' . self::$INACTIVE_VENDOR . '") {
+                id
+                active
+                icon
+                title
+                shortdesc
+                url
+            }
+        }');
+
+        $this->assertResponseStatus(
+            401,
+            $result
+        );
+    }
+
+    public function testGetSingleInactiveVendorWithToken()
+    {
+        $this->prepareAdminToken();
+
+        $result = $this->query('query {
+            vendor (id: "' . self::$INACTIVE_VENDOR . '") {
+                id
+            }
+        }');
+
+        $this->assertEquals(200, $result['status']);
+        $this->assertEquals(
+            [
+                'id' => self::$INACTIVE_VENDOR,
+            ],
+            $result['body']['data']['vendor']
+        );
+    }
+
+    public function testGetSingleNonExistingVendor()
+    {
+        $result = $this->query('query {
+            vendor (id: "DOES-NOT-EXIST") {
+                id
+            }
+        }');
+
+        $this->assertEquals(404, $result['status']);
+    }
+
     public function testGetVendorListWithoutFilter()
     {
         $result = $this->query('query {
