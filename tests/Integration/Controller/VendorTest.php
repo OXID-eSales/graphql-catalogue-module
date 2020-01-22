@@ -39,9 +39,9 @@ final class VendorTest extends TokenTestCase
                 'id' => self::$ACTIVE_VENDOR,
                 'active' => 1,
                 'icon' => '',
-                'title' => 'https://fashioncity.com',
+                'title' => 'https://fashioncity.com/de',
                 'shortdesc' => 'Fashion city',
-                'url' => 'Nach-Lieferant/https-fashioncity-com/',
+                'url' => 'Nach-Lieferant/https-fashioncity-com-de/',
             ],
             $result['body']['data']['vendor']
         );
@@ -124,9 +124,9 @@ final class VendorTest extends TokenTestCase
                     "id"        => "fe07958b49de225bd1dbc7594fb9a6b0",
                     "active"    => true,
                     "icon"      => "",
-                    "title"     => "https://fashioncity.com",
+                    "title"     => "https://fashioncity.com/de",
                     "shortdesc" => "Fashion city",
-                    "url"       => "Nach-Lieferant/https-fashioncity-com/"
+                    "url"       => "Nach-Lieferant/https-fashioncity-com-de/"
                 ],
             ],
             $result['body']['data']['vendors']

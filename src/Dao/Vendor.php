@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Dao;
 
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataObject\Vendor as VendorModel;
@@ -46,8 +47,12 @@ class Vendor implements VendorInterface
                 'v.oxtimestamp'
             ]
         )
-            ->from('oxvendor', 'v')
-            ->leftJoin('v', 'oxseo', 's', 'v.oxid = s.oxobjectid');
+            ->from(getViewName('oxvendor'), 'v')
+            ->leftJoin('v', 'oxseo', 's', 'v.oxid = s.oxobjectid AND s.oxshopid = :shopid AND s.oxlang = :lang')
+            ->setParameters([
+                ':lang' => Registry::getLang()->getBaseLanguage(),
+                ':shopid' => Registry::getConfig()->getShopId()
+            ]);
 
         $filters = array_filter($filter->getFilters());
         foreach ($filters as $field => $fieldFilter) {
@@ -87,10 +92,14 @@ class Vendor implements VendorInterface
                 'v.oxtimestamp',
             ]
         )
-            ->from('oxvendor', 'v')
-            ->leftJoin('v', 'oxseo', 's', 'v.oxid = s.oxobjectid')
+            ->from(getViewName('oxvendor'), 'v')
+            ->leftJoin('v', 'oxseo', 's', 'v.oxid = s.oxobjectid AND s.oxlang = :lang AND s.oxshopid = :shopid')
             ->where($queryBuilder->expr()->eq('v.oxid', ':oxid'))
-            ->setParameter('oxid', $id);
+            ->setParameters([
+                ':oxid' => $id,
+                ':lang' => Registry::getLang()->getBaseLanguage(),
+                ':shopid' => Registry::getConfig()->getShopId()
+            ]);
 
         $result = $queryBuilder->execute();
 
