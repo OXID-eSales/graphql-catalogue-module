@@ -9,12 +9,12 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
-use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
 use OxidEsales\GraphQL\Catalogue\Dao\ManufacturerInterface as ManufacturerDao;
-use OxidEsales\GraphQL\Catalogue\DataObject\Manufacturer as ManufacturerModel;
-use OxidEsales\GraphQL\Catalogue\DataObject\ManufacturerFilter;
+use OxidEsales\GraphQL\Catalogue\DataType\Manufacturer as ManufacturerDataType;
+use OxidEsales\GraphQL\Catalogue\DataType\ManufacturerFilter;
 use OxidEsales\GraphQL\Catalogue\Exception\ManufacturerNotFound;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
@@ -42,7 +42,7 @@ class Manufacturer
     /**
      * @Query()
      */
-    public function manufacturer(string $id): ManufacturerModel
+    public function manufacturer(string $id): ManufacturerDataType
     {
         $manufacturer = $this->manufacturerDao->getManufacturer($id);
 
@@ -56,12 +56,12 @@ class Manufacturer
             return $manufacturer;
         }
 
-        throw new InvalidLoginException("Unauthorized");
+        throw new InvalidLogin("Unauthorized");
     }
 
     /**
      * @Query()
-     * @return ManufacturerModel[]
+     * @return ManufacturerDataType[]
      */
     public function manufacturers(?ManufacturerFilter $filter = null): array
     {
@@ -82,7 +82,7 @@ class Manufacturer
         ) {
             $manufacturers = array_filter(
                 $manufacturers,
-                function (ManufacturerModel $manufacturer) {
+                function (ManufacturerDataType $manufacturer) {
                     return $manufacturer->getActive();
                 }
             );

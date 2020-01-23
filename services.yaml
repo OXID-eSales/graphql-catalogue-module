@@ -12,8 +12,8 @@ services:
     resource: 'src/Controller/*'
     public: true
 
-  OxidEsales\GraphQL\Catalogue\DataObject\:
-    resource: 'src/DataObject/*Factory.php'
+  OxidEsales\GraphQL\Catalogue\DataType\:
+    resource: 'src/DataType/*Factory.php'
     public: true
 
   OxidEsales\GraphQL\Catalogue\Framework\NamespaceMapper:

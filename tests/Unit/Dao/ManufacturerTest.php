@@ -8,7 +8,7 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Connection;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\Dao\Manufacturer;
-use OxidEsales\GraphQL\Catalogue\DataObject\ManufacturerFilter;
+use OxidEsales\GraphQL\Catalogue\DataType\ManufacturerFilter;
 use PHPUnit\Framework\TestCase;
 
 class ManufacturerTest extends TestCase
