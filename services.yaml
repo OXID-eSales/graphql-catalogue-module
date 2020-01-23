@@ -16,6 +16,16 @@ services:
     resource: 'src/DataType/*Factory.php'
     public: true
 
+  OxidEsales\GraphQL\Catalogue\DataType\CategoryRelationService:
+    class: OxidEsales\GraphQL\Catalogue\DataType\CategoryRelationService
+    public: true
+
+  OxidEsales\GraphQL\Catalogue\Service\CategoryRepository:
+    class: OxidEsales\GraphQL\Catalogue\Service\CategoryRepository
+
+  OxidEsales\GraphQL\Catalogue\Service\ShopRepository:
+    class: OxidEsales\GraphQL\Catalogue\Service\ShopRepository
+
   OxidEsales\GraphQL\Catalogue\Framework\NamespaceMapper:
     class: OxidEsales\GraphQL\Catalogue\Framework\NamespaceMapper
     tags: ['graphql_namespace_mapper']
