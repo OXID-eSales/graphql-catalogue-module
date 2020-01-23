@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
 use OxidEsales\Eshop\Core\Element2ShopRelations;
-use OxidEsales\GraphQL\Catalogue\Tests\Integration\MultishopTestCase;
+use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
 
 /**
  * Class ManufacturerEnterpriseTest
@@ -14,25 +14,6 @@ use OxidEsales\GraphQL\Catalogue\Tests\Integration\MultishopTestCase;
 class ManufacturerEnterpriseTest extends MultishopTestCase
 {
     private const MANUFACTURER_ID = "adc6df0977329923a6330cc8f3c0a906";
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        if ($this->getConfig()->getEdition() !== 'EE') {
-            $this->markTestSkipped("Skip EE related tests for CE/PE edition");
-        }
-
-        $this->ensureShop(2);
-        $this->cleanupCachedRegistry();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->cleanupCachedRegistry();
-
-        parent::tearDown();
-    }
 
     /**
      * Check if active manufacturer from shop 1 is not accessible for
