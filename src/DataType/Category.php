@@ -19,7 +19,7 @@ use TheCodingMachine\GraphQLite\Types\ID;
 /**
  * @Type()
  */
-final class Category
+final class Category implements DataType
 {
     /** @var CategoryModel */
     private $category;
@@ -29,9 +29,12 @@ final class Category
         $this->category = $category;
     }
 
-    public function getCategoryModel(): CategoryModel
+    /**
+     * @return class-string
+     */
+    public static function getModelClass(): string
     {
-        return $this->category;
+        return CategoryModel::class;
     }
 
     /**
@@ -73,9 +76,26 @@ final class Category
     /**
      * @Field()
      */
-    public function isActive(): bool
+    public function isActive(?\DateTimeInterface $now = null): bool
     {
-        return (bool)$this->category->getFieldData('oxactive');
+        $active = (bool)$this->category->getFieldData('oxactive');
+        if ($active) {
+            return true;
+        }
+        $from = new \DateTimeImmutable(
+            (string)$this->category->getFieldData('oxactivefrom')
+        );
+        $to = new \DateTimeImmutable(
+            (string)$this->category->getFieldData('oxactiveto')
+        );
+        $now = $now ?? new \DateTimeImmutable("now");
+        if (
+            $from <= $now &&
+            $to >= $now
+        ) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -86,7 +106,7 @@ final class Category
      */
     public function isHidden(): bool
     {
-        return $this->category->getIsVisible();
+        return !$this->category->getIsVisible();
     }
 
     public function getShopId(): ID

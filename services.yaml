@@ -15,6 +15,7 @@ services:
   OxidEsalesGraphQLCatalogueRealtionsServices:
     namespace: OxidEsales\GraphQL\Catalogue\DataType\
     resource: 'src/DataType/*RelationService.php'
+    public: true
 
   OxidEsalesGraphQLCatalogueRepositories:
     namespace: OxidEsales\GraphQL\Catalogue\Service\
