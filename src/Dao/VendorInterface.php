@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Dao;
 
-use OxidEsales\GraphQL\Catalogue\DataObject\Vendor as VendorModel;
-use OxidEsales\GraphQL\Catalogue\DataObject\VendorFilter;
+use OxidEsales\GraphQL\Catalogue\DataType\Vendor as VendorModel;
+use OxidEsales\GraphQL\Catalogue\DataType\VendorFilter;
 
 interface VendorInterface
 {

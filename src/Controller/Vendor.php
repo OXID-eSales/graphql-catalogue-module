@@ -9,14 +9,14 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
-use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
-use OxidEsales\GraphQL\Catalogue\DataObject\VendorFilter;
+use OxidEsales\GraphQL\Catalogue\DataType\VendorFilter;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 use OxidEsales\GraphQL\Catalogue\Dao\VendorInterface as VendorDao;
-use OxidEsales\GraphQL\Catalogue\DataObject\Vendor as VendorModel;
+use OxidEsales\GraphQL\Catalogue\DataType\Vendor as VendorModel;
 
 class Vendor
 {
@@ -77,7 +77,7 @@ class Vendor
      * @return null|VendorModel
      *
      * @throws NotFound
-     * @throws InvalidLoginException
+     * @throws InvalidLogin
      */
     public function vendor(string $id): ?VendorModel
     {
@@ -99,7 +99,7 @@ class Vendor
             !$this->authenticationService->isLogged() ||
             !$this->authorizationService->isAllowed('VIEW_INACTIVE_VENDOR')
         ) {
-            throw new InvalidLoginException("Unauthorized");
+            throw new InvalidLogin("Unauthorized");
         }
 
         return $vendor;

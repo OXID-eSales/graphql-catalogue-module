@@ -12,8 +12,8 @@ namespace OxidEsales\GraphQL\Catalogue\Dao;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
-use OxidEsales\GraphQL\Catalogue\DataObject\Vendor as VendorModel;
-use OxidEsales\GraphQL\Catalogue\DataObject\VendorFilter;
+use OxidEsales\GraphQL\Catalogue\DataType\Vendor as VendorModel;
+use OxidEsales\GraphQL\Catalogue\DataType\VendorFilter;
 
 class Vendor implements VendorInterface
 {
