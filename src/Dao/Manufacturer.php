@@ -11,8 +11,8 @@ namespace OxidEsales\GraphQL\Catalogue\Dao;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
-use OxidEsales\GraphQL\Catalogue\DataObject\Manufacturer as ManufacturerModel;
-use OxidEsales\GraphQL\Catalogue\DataObject\ManufacturerFilter;
+use OxidEsales\GraphQL\Catalogue\DataType\Manufacturer as ManufacturerDataType;
+use OxidEsales\GraphQL\Catalogue\DataType\ManufacturerFilter;
 use OxidEsales\GraphQL\Catalogue\Exception\ManufacturerNotFound;
 
 class Manufacturer implements ManufacturerInterface
@@ -47,7 +47,7 @@ class Manufacturer implements ManufacturerInterface
      * @throws \Exception if database dies
      * @throws ManufacturerNotFound if id not found in database
      */
-    public function getManufacturer(string $id): ManufacturerModel
+    public function getManufacturer(string $id): ManufacturerDataType
     {
         $queryBuilder = $this->queryBuilderFactory->create();
         $this->prepareQueryBuilder($queryBuilder);
@@ -61,11 +61,11 @@ class Manufacturer implements ManufacturerInterface
         if (!$row) {
             throw ManufacturerNotFound::byId($id);
         }
-        return ManufacturerModel::fromDatabaseResult($row);
+        return ManufacturerDataType::fromDatabaseResult($row);
     }
 
     /**
-     * @return ManufacturerModel[]
+     * @return ManufacturerDataType[]
      * @throws \Exception if the database dies
      */
     public function getManufacturers(ManufacturerFilter $filter): array
@@ -87,7 +87,7 @@ class Manufacturer implements ManufacturerInterface
         }
 
         foreach ($result as $row) {
-            $manufacturers[] = ManufacturerModel::fromDatabaseResult($row);
+            $manufacturers[] = ManufacturerDataType::fromDatabaseResult($row);
         }
         return $manufacturers;
     }

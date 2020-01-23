@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Catalogue\DataObject;
+namespace OxidEsales\GraphQL\Catalogue\DataType;
 
 use DateTimeImmutable;
 use DateTimeInterface;

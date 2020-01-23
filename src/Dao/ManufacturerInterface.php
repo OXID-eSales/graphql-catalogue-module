@@ -10,15 +10,15 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Dao;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
-use OxidEsales\GraphQL\Catalogue\DataObject\Manufacturer as ManufacturerModel;
-use OxidEsales\GraphQL\Catalogue\DataObject\ManufacturerFilter;
+use OxidEsales\GraphQL\Catalogue\DataType\Manufacturer as ManufacturerDataType;
+use OxidEsales\GraphQL\Catalogue\DataType\ManufacturerFilter;
 
 interface ManufacturerInterface
 {
     /**
-     * @return ManufacturerModel[]
+     * @return ManufacturerDataType[]
      */
     public function getManufacturers(ManufacturerFilter $filter): array;
 
-    public function getManufacturer(string $id): ManufacturerModel;
+    public function getManufacturer(string $id): ManufacturerDataType;
 }

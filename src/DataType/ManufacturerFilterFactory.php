@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Catalogue\DataObject;
+namespace OxidEsales\GraphQL\Catalogue\DataType;
 
-use OxidEsales\GraphQL\Base\DataObject\StringFilter;
+use OxidEsales\GraphQL\Base\DataType\StringFilter;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 class ManufacturerFilterFactory
