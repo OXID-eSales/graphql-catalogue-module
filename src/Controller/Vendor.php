@@ -41,13 +41,10 @@ class Vendor
 
     /**
      * @Query()
-     * @param string $id
-     *
-     * @return null|VendorModel
      *
      * @throws VendorNotFound
      */
-    public function vendor(string $id): ?VendorModel
+    public function vendor(string $id): VendorModel
     {
         $vendor = $this->repository->getVendor($id);
 
