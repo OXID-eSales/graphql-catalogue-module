@@ -10,18 +10,18 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
-use OxidEsales\GraphQL\Catalogue\DataType\VendorFilter;
-use TheCodingMachine\GraphQLite\Annotations\Query;
-use OxidEsales\GraphQL\Catalogue\Dao\VendorInterface as VendorDao;
 use OxidEsales\GraphQL\Catalogue\DataType\Vendor as VendorModel;
+use OxidEsales\GraphQL\Catalogue\DataType\VendorFilter;
+use OxidEsales\GraphQL\Catalogue\Exception\VendorNotFound;
+use OxidEsales\GraphQL\Catalogue\Service\VendorRepository;
+use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Vendor
 {
-    /** @var VendorDao */
-    protected $vendorDao;
+    /** @var VendorRepository */
+    protected $repository;
 
     /** @var AuthenticationServiceInterface */
     protected $authenticationService;
@@ -30,13 +30,39 @@ class Vendor
     protected $authorizationService;
 
     public function __construct(
-        VendorDao $vendorDao,
+        VendorRepository $repository,
         AuthenticationServiceInterface $authenticationService,
         AuthorizationServiceInterface $authorizationService
     ) {
-        $this->vendorDao = $vendorDao;
+        $this->repository = $repository;
         $this->authenticationService = $authenticationService;
         $this->authorizationService = $authorizationService;
+    }
+
+    /**
+     * @Query()
+     * @param string $id
+     *
+     * @return null|VendorModel
+     *
+     * @throws VendorNotFound
+     */
+    public function vendor(string $id): ?VendorModel
+    {
+        $vendor = $this->repository->getVendor($id);
+
+        if ($vendor->getActive()) {
+            return $vendor;
+        }
+
+        if (
+            !$this->authenticationService->isLogged() ||
+            !$this->authorizationService->isAllowed('VIEW_INACTIVE_VENDOR')
+        ) {
+            throw new InvalidLogin("Unauthorized");
+        }
+
+        return $vendor;
     }
 
     /**
@@ -46,7 +72,7 @@ class Vendor
     public function vendors(?VendorFilter $filter = null): array
     {
         try {
-            $vendors = $this->vendorDao->getVendors(
+            $vendors = $this->repository->getVendors(
                 $filter ?? new VendorFilter()
             );
         } catch (\Exception $e) {
@@ -70,38 +96,4 @@ class Vendor
         return $vendors;
     }
 
-    /**
-     * @Query()
-     * @param string $id
-     *
-     * @return null|VendorModel
-     *
-     * @throws NotFound
-     * @throws InvalidLogin
-     */
-    public function vendor(string $id): ?VendorModel
-    {
-        try {
-            $vendor = $this->vendorDao->getVendor($id);
-        } catch (\Exception $e) {
-            throw new NotFound();
-        }
-
-        if (!$vendor instanceof VendorModel) {
-            throw new NotFound();
-        }
-
-        if ($vendor->getActive()) {
-            return $vendor;
-        }
-
-        if (
-            !$this->authenticationService->isLogged() ||
-            !$this->authorizationService->isAllowed('VIEW_INACTIVE_VENDOR')
-        ) {
-            throw new InvalidLogin("Unauthorized");
-        }
-
-        return $vendor;
-    }
 }
