@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Example\Service;
+namespace OxidEsales\GraphQL\Catalogue\Service;
 
 use OxidEsales\Eshop\Application\Model\Vendor as VendorModel;
 use OxidEsales\Eshop\Application\Model\VendorList as VendorListModel;
-use OxidEsales\GraphQL\Example\Exception\VendorNotFound;
-use OxidEsales\GraphQL\Example\DataType\Vendor;
-use OxidEsales\GraphQL\Example\DataType\VendorFilter;
+use OxidEsales\GraphQL\Catalogue\Exception\VendorNotFound;
+use OxidEsales\GraphQL\Catalogue\DataType\Vendor;
+use OxidEsales\GraphQL\Catalogue\DataType\VendorFilter;
 
 class VendorRepository
 {
@@ -22,7 +22,11 @@ class VendorRepository
     {
         /** @var VendorModel */
         $vendor = oxNew(VendorModel::class);
-        if (!$vendor->load($id)) {
+        // @TODO refactor when return type annotation in VendorModel is fixed
+        // should be: if (!$vendor->load($id))
+        /** @var bool $loaded */
+        $loaded = $vendor->load($id);
+        if (!$loaded) {
             throw VendorNotFound::byId($id);
         }
         return new Vendor($vendor);
@@ -35,25 +39,42 @@ class VendorRepository
     {
         /** @var VendorListModel */
         $vendorList = oxNew(VendorListModel::class);
-        $vendorList->loadList();
-        $categories = [];
+        $vendorList->loadVendorList();
+        $vendors = [];
         /** @var VendorModel $vendor */
         foreach ($vendorList as $vendor) {
-            $categories[] = new Vendor($vendor);
+            $vendors[] = new Vendor($vendor);
         }
         // as the VendorList model does not allow us to easily inject conditions
         // into the SQL where clause, we filter after the fact. This stinks, but
         // at the moment this is the easiest solution
         if ($filter !== null) {
-            $parentIdFilter = $filter->getFilters()['oxparentid'];
-            $categories = array_filter(
-                $categories,
-                function (Vendor $vendor) use ($parentIdFilter) {
-                    return $parentIdFilter->equals() == $vendor->getParentId();
-                }
-            );
+            $titleFilter = $filter->getFilters()['oxtitle'];
+            if ($titleFilter) {
+                $vendors = array_filter(
+                    $vendors,
+                    function (Vendor $vendor) use ($titleFilter) {
+                        if ($title = $titleFilter->equals()) {
+                            if ($vendor->getTitle() !== $title) {
+                                return false;
+                            }
+                        }
+                        if ($title = $titleFilter->contains()) {
+                            if (strpos($vendor->getTitle(), $title) === false) {
+                                return false;
+                            }
+                        }
+                        if ($title = $titleFilter->beginsWith()) {
+                            if (strpos($vendor->getTitle(), $title) !== 0) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                );
+            }
         }
-        return $categories;
+        return $vendors;
     }
 
     public function save(Vendor $vendor): Vendor

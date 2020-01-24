@@ -30,6 +30,11 @@ class Vendor
         $this->vendor = $vendor;
     }
 
+    public function getVendorModel(): VendorModel
+    {
+        return $this->vendor;
+    }
+
     /**
      * @Field()
      */

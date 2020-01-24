@@ -46,7 +46,7 @@ class Vendor
      */
     public function vendor(string $id): VendorModel
     {
-        $vendor = $this->repository->getVendor($id);
+        $vendor = $this->repository->getById($id);
 
         if ($vendor->getActive()) {
             return $vendor;
@@ -69,7 +69,7 @@ class Vendor
     public function vendors(?VendorFilter $filter = null): array
     {
         try {
-            $vendors = $this->repository->getVendors(
+            $vendors = $this->repository->getByFilter(
                 $filter ?? new VendorFilter()
             );
         } catch (\Exception $e) {
@@ -92,5 +92,4 @@ class Vendor
 
         return $vendors;
     }
-
 }

@@ -16,6 +16,10 @@ services:
     resource: 'src/DataType/*Factory.php'
     public: true
 
+  OxidEsalesGraphQLRepositories:
+    namespace: OxidEsales\GraphQL\Catalogue\Service\
+    resource: 'src/Service/*Repository.php'
+
   OxidEsales\GraphQL\Catalogue\Framework\NamespaceMapper:
     class: OxidEsales\GraphQL\Catalogue\Framework\NamespaceMapper
     tags: ['graphql_namespace_mapper']
