@@ -54,7 +54,7 @@ class Vendor
     /**
      * @Field()
      */
-    public function getIcon(): string
+    public function getIcon(): ?string
     {
         return $this->vendor->getIconUrl();
     }

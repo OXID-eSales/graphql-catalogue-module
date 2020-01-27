@@ -34,14 +34,21 @@ final class VendorTest extends TokenTestCase
             $result
         );
 
+        $url = parse_url($result['body']['data']['vendor']['url']);
+        $this->assertNotFalse(
+            $url
+        );
+
+        $result['body']['data']['vendor']['url'] = $url['path'];
+
         $this->assertEquals(
             [
                 'id' => self::$ACTIVE_VENDOR,
-                'active' => 1,
-                'icon' => '',
+                'active' => true,
+                'icon' => null,
                 'title' => 'https://fashioncity.com/de',
                 'shortdesc' => 'Fashion city',
-                'url' => 'Nach-Lieferant/https-fashioncity-com-de/',
+                'url' => '/Nach-Lieferant/https-fashioncity-com-de/',
             ],
             $result['body']['data']['vendor']
         );
@@ -109,7 +116,21 @@ final class VendorTest extends TokenTestCase
             }
         }');
 
-        $this->assertEquals(200, $result['status']);
+        $this->assertEquals(
+            200,
+            $result['status']
+        );
+        $this->assertCount(
+            2,
+            $result['body']['data']['vendors']
+        );
+        for ($i = 0; $i <= 1; $i++) {
+            $url = parse_url($result['body']['data']['vendors'][$i]['url']);
+            $this->assertNotFalse(
+                $url
+            );
+            $result['body']['data']['vendors'][$i]['url'] = $url['path'];
+        }
         $this->assertEquals(
             [
                 [
@@ -123,7 +144,7 @@ final class VendorTest extends TokenTestCase
                 [
                     "id"        => "fe07958b49de225bd1dbc7594fb9a6b0",
                     "active"    => true,
-                    "icon"      => "",
+                    "icon"      => null,
                     "title"     => "https://fashioncity.com/de",
                     "shortdesc" => "Fashion city",
                     "url"       => "Nach-Lieferant/https-fashioncity-com-de/"
