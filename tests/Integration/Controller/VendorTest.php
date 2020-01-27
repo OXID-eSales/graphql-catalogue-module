@@ -134,20 +134,20 @@ final class VendorTest extends TokenTestCase
         $this->assertEquals(
             [
                 [
-                    "id"        => "a57c56e3ba710eafb2225e98f058d989",
-                    "active"    => true,
-                    "icon"      => "",
-                    "title"     => "www.true-fashion.com",
-                    "shortdesc" => "Ethical style outlet",
-                    "url"       => "Nach-Lieferant/www-true-fashion-com/"
-                ],
-                [
                     "id"        => "fe07958b49de225bd1dbc7594fb9a6b0",
                     "active"    => true,
                     "icon"      => null,
                     "title"     => "https://fashioncity.com/de",
                     "shortdesc" => "Fashion city",
-                    "url"       => "Nach-Lieferant/https-fashioncity-com-de/"
+                    "url"       => "/Nach-Lieferant/https-fashioncity-com-de/"
+                ],
+                [
+                    "id"        => "a57c56e3ba710eafb2225e98f058d989",
+                    "active"    => true,
+                    "icon"      => null,
+                    "title"     => "www.true-fashion.com",
+                    "shortdesc" => "Ethical style outlet",
+                    "url"       => "/Nach-Lieferant/www-true-fashion-com/"
                 ],
             ],
             $result['body']['data']['vendors']
