@@ -22,13 +22,13 @@ final class VendorMultiLanguageTest extends TestCase
      * @param string $languageId
      * @param string $contains
      * @param int    $count
-     * @param array  $vendors
+     * @param array  $vendor
      */
     public function testGetVendorListWithFilterMultiLanguage(
         string $languageId,
         string $contains,
         int $count,
-        array $vendors
+        array $vendor
     ) {
         $query = 'query{
             vendors(filter: {
@@ -46,14 +46,23 @@ final class VendorMultiLanguageTest extends TestCase
         $result = $this->query($query);
         $this->assertResponseStatus(200, $result);
 
-        $this->assertEquals(
+        $this->assertCount(
             $count,
-            count($result['body']['data']['vendors'])
+            $result['body']['data']['vendors']
+        );
+
+        $this->assertNotFalse(
+            parse_url($result['body']['data']['vendors'][0]['url'])
         );
 
         $this->assertEquals(
-            $vendors,
-            $result['body']['data']['vendors']
+            $vendor[0]['title'],
+            $result['body']['data']['vendors'][0]['title']
+        );
+
+        $this->assertEquals(
+            $vendor[0]['url'],
+            parse_url($result['body']['data']['vendors'][0]['url'])['path']
         );
     }
 
@@ -67,7 +76,7 @@ final class VendorMultiLanguageTest extends TestCase
                 'result' => [
                     [
                         'title' => 'https://fashioncity.com/de',
-                        'url' => 'Nach-Lieferant/https-fashioncity-com-de/'
+                        'url' => '/Nach-Lieferant/https-fashioncity-com-de/'
                     ]
                 ]
             ],
@@ -78,7 +87,7 @@ final class VendorMultiLanguageTest extends TestCase
                 'result' => [
                     [
                         'title' => 'https://fashioncity.com/en',
-                        'url' => 'en/By-distributor/https-fashioncity-com-en/'
+                        'url' => '/en/By-distributor/https-fashioncity-com-en/'
                     ]
                 ]
             ]
