@@ -10,13 +10,22 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Service;
 
 use OxidEsales\Eshop\Application\Model\Vendor as VendorModel;
-use OxidEsales\Eshop\Application\Model\VendorList as VendorListModel;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\Exception\VendorNotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\Vendor;
 use OxidEsales\GraphQL\Catalogue\DataType\VendorFilter;
 
 class VendorRepository
 {
+
+    /** @var QueryBuilderFactoryInterface $queryBuilderFactory */
+    private $queryBuilderFactory;
+
+    public function __construct(
+        QueryBuilderFactoryInterface $queryBuilderFactory
+    ) {
+        $this->queryBuilderFactory = $queryBuilderFactory;
+    }
 
     public function getById(string $id): Vendor
     {
@@ -37,42 +46,27 @@ class VendorRepository
      */
     public function getByFilter(?VendorFilter $filter = null): array
     {
-        /** @var VendorListModel */
-        $vendorList = oxNew(VendorListModel::class);
-        $vendorList->loadVendorList();
         $vendors = [];
-        /** @var VendorModel $vendor */
-        foreach ($vendorList as $vendor) {
-            $vendors[] = new Vendor($vendor);
-        }
-        // as the VendorList model does not allow us to easily inject conditions
-        // into the SQL where clause, we filter after the fact. This stinks, but
-        // at the moment this is the easiest solution
-        if ($filter !== null) {
-            $titleFilter = $filter->getFilters()['oxtitle'];
-            if ($titleFilter) {
-                $vendors = array_filter(
-                    $vendors,
-                    function (Vendor $vendor) use ($titleFilter) {
-                        if ($title = $titleFilter->equals()) {
-                            if ($vendor->getTitle() !== $title) {
-                                return false;
-                            }
-                        }
-                        if ($title = $titleFilter->contains()) {
-                            if (strpos($vendor->getTitle(), $title) === false) {
-                                return false;
-                            }
-                        }
-                        if ($title = $titleFilter->beginsWith()) {
-                            if (strpos($vendor->getTitle(), $title) !== 0) {
-                                return false;
-                            }
-                        }
-                        return true;
-                    }
-                );
+        /** @var VendorModel */
+        $vendor = oxNew(VendorModel::class);
+        $queryBuilder = $this->queryBuilderFactory->create();
+        $queryBuilder->select('*')
+                     ->from($vendor->getViewName())
+                     ->orderBy('oxid');
+        if ($filter) {
+            $filters = array_filter($filter->getFilters());
+            foreach ($filters as $field => $fieldFilter) {
+                $fieldFilter->addToQuery($queryBuilder, $field);
             }
+        }
+        $result = $queryBuilder->execute();
+        if (!$result instanceof \Doctrine\DBAL\Driver\Statement) {
+            return $vendors;
+        }
+        foreach ($result as $row) {
+            $newVendor = clone $vendor;
+            $newVendor->assign($row);
+            $vendors[] = new Vendor($newVendor);
         }
         return $vendors;
     }
