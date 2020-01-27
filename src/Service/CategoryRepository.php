@@ -16,9 +16,6 @@ use OxidEsales\GraphQL\Catalogue\Exception\CategoryNotFound;
 class CategoryRepository
 {
     /**
-     * @param string $id
-     *
-     * @return Category
      * @throws CategoryNotFound
      */
     public function getById(string $id): Category

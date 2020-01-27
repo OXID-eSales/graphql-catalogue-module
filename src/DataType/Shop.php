@@ -29,8 +29,6 @@ class Shop
 
     /**
      * @Field()
-     *
-     * @return ID
      */
     public function getId(): ID
     {

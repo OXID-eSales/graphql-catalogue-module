@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\DataType;
 
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\GraphQL\Catalogue\Service\CategoryRepository;
 use PHPUnit\Framework\TestCase;
 use TheCodingMachine\GraphQLite\Types\ID;
@@ -20,30 +21,31 @@ final class CategoryTest extends TestCase
      */
     public function testCategoryDataType()
     {
+        $shopUrl = Registry::getConfig()->getShopUrl();
         $data = [
             'id' => '943a9ba3050e78b443c16e043ae60ef3',
             'parentid' => new ID('oxrootid'),
             'rootid' => new ID('943a9ba3050e78b443c16e043ae60ef3'),
             'position' => 1,
             'active' => true,
-            'hidden' => false,
+            'hidden' => true,
             'shopid' => new ID(1),
             'title' => 'Kiteboarding',
             'description' => '',
             'longdescription' => '',
-            'thumbnail' => 'kiteboarding_1_tc.jpg',
+            'thumbnail' => $shopUrl . 'out/pictures/generated/category/thumb/1140_250_75/kiteboarding_1_tc.jpg',
             'externallink' => '',
             'template' => '',
             'defaultsortfield' => '',
-            'defaultsortmode' => false,
+            'defaultsortmode' => 'ASC',
             'pricefrom' => 0.0,
             'priceto' => 0.0,
-            'icon' => '',
-            'promotionicon' => '',
+            'icon' => null,
+            'promotionicon' => null,
             'vat' => null,
             'skipdiscounts' => false,
             'showsuffix' => true,
-            'url' => 'http://www.oxideshop.local/Kiteboarding/'
+            'url' => $shopUrl . 'Kiteboarding/'
         ];
 
         $repository = new CategoryRepository();
@@ -57,7 +59,7 @@ final class CategoryTest extends TestCase
         $this->assertSame($data['hidden'], $category->isHidden());
         $this->assertEquals($data['shopid'], $category->getShopId());
         $this->assertSame($data['title'], $category->getTitle());
-        $this->assertSame($data['description'], $category->getDescription());
+        $this->assertSame($data['description'], $category->getShortDescription());
         $this->assertSame($data['longdescription'], $category->getLongDescription());
         $this->assertSame($data['thumbnail'], $category->getThumbnail());
         $this->assertSame($data['externallink'], $category->getExternalLink());

@@ -16,9 +16,6 @@ use OxidEsales\GraphQL\Catalogue\Exception\ShopNotFound;
 class ShopRepository
 {
     /**
-     * @param string $id
-     *
-     * @return Shop
      * @throws ShopNotFound
      */
     public function getById(string $id): Shop

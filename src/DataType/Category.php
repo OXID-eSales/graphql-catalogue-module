@@ -24,19 +24,11 @@ final class Category
     /** @var CategoryModel */
     private $category;
 
-    /**
-     * Category constructor.
-     *
-     * @param CategoryModel $category
-     */
     public function __construct(CategoryModel $category)
     {
         $this->category = $category;
     }
 
-    /**
-     * @return CategoryModel
-     */
     public function getCategoryModel(): CategoryModel
     {
         return $this->category;
@@ -44,8 +36,6 @@ final class Category
 
     /**
      * @Field()
-     *
-     * @return ID
      */
     public function getId(): ID
     {
@@ -54,9 +44,6 @@ final class Category
         );
     }
 
-    /**
-     * @return ID
-     */
     public function getParentId(): ID
     {
         return new ID(
@@ -64,9 +51,6 @@ final class Category
         );
     }
 
-    /**
-     * @return ID
-     */
     public function getRootId(): ID
     {
         return new ID(
@@ -80,8 +64,6 @@ final class Category
      * and the category with the highest number at the bottom
      *
      * @Field()
-     *
-     * @return int
      */
     public function getPosition(): int
     {
@@ -90,8 +72,6 @@ final class Category
 
     /**
      * @Field()
-     *
-     * @return bool
      */
     public function isActive(): bool
     {
@@ -103,17 +83,12 @@ final class Category
      * but can be accessed by direct link
      *
      * @Field()
-     *
-     * @return bool
      */
     public function isHidden(): bool
     {
-        return (bool)$this->category->getFieldData('oxhidden');
+        return $this->category->getIsVisible();
     }
 
-    /**
-     * @return ID
-     */
     public function getShopId(): ID
     {
         return new ID(
@@ -123,50 +98,40 @@ final class Category
 
     /**
      * @Field()
-     *
-     * @return string
      */
     public function getTitle(): string
     {
-        return (string)$this->category->getFieldData('oxtitle');
+        return $this->category->getTitle();
     }
 
     /**
      * @Field()
-     *
-     * @return string
      */
-    public function getDescription(): string
+    public function getShortDescription(): string
     {
-        return (string)$this->category->getFieldData('oxdesc');
+        return $this->category->getShortDescription();
     }
 
     /**
      * @Field()
-     *
-     * @return string
      */
     public function getLongDescription(): string
     {
-        return (string)$this->category->getFieldData('oxlongdesc');
+        return $this->category->getLongDesc();
     }
 
     /**
      * @Field()
-     *
-     * @return string
      */
-    public function getThumbnail(): string
+    public function getThumbnail(): ?string
     {
-        return (string)$this->category->getFieldData('oxthumb');
+        return $this->category->getThumbUrl();
     }
 
     /**
      * If the external link is specified it will be opened instead of category content
      *
      * @Field()
-     *
-     * @return string
      */
     public function getExternalLink(): string
     {
@@ -175,8 +140,6 @@ final class Category
 
     /**
      * @Field()
-     *
-     * @return string
      */
     public function getTemplate(): string
     {
@@ -188,26 +151,22 @@ final class Category
      * (most of oxarticles fields)
      *
      * @Field()
-     *
-     * @return string
      */
     public function getDefaultSortField(): string
     {
-        return (string)$this->category->getFieldData('oxdefsort');
+        return $this->category->getDefaultSorting();
     }
 
     /**
      * With default field for sorting you specify the manner
      * in which the products in the category will be sorted
-     * (ASC - false, DESC - true)
+     * (ASC or DESC)
      *
      * @Field()
-     *
-     * @return bool
      */
-    public function getDefaultSortMode(): bool
+    public function getDefaultSortMode(): string
     {
-        return (bool)$this->category->getFieldData('oxdefsortmode');
+        return $this->category->getDefaultSortingMode() ? 'DESC' : 'ASC';
     }
 
     /**
@@ -215,8 +174,6 @@ final class Category
      * will be shown in this category
      *
      * @Field()
-     *
-     * @return float
      */
     public function getPriceFrom(): float
     {
@@ -228,8 +185,6 @@ final class Category
      * will be shown in this category
      *
      * @Field()
-     *
-     * @return float
      */
     public function getPriceTo(): float
     {
@@ -238,33 +193,27 @@ final class Category
 
     /**
      * @Field()
-     *
-     * @return string
      */
-    public function getIcon(): string
+    public function getIcon(): ?string
     {
-        return (string)$this->category->getFieldData('oxicon');
+        return $this->category->getIconUrl();
     }
 
     /**
      * @Field()
-     *
-     * @return string
      */
-    public function getPromotionIcon(): string
+    public function getPromotionIcon(): ?string
     {
-        return (string)$this->category->getFieldData('oxpromoicon');
+        return $this->category->getPromotionIconUrl();
     }
 
     /**
      * @Field()
-     *
-     * @return float|null
      */
     public function getVat(): ?float
     {
         $vat = $this->category->getFieldData('oxvat');
-        return isset($vat) ? (float)$vat : $vat;
+        return is_null($vat) ? $vat : (float)$vat;
     }
 
     /**
@@ -272,8 +221,6 @@ final class Category
      * (Discounts, Vouchers, Delivery ...)
      *
      * @Field()
-     *
-     * @return bool
      */
     public function skipDiscount(): bool
     {
@@ -282,8 +229,6 @@ final class Category
 
     /**
      * @Field()
-     *
-     * @return bool
      */
     public function showSuffix(): bool
     {
@@ -293,7 +238,6 @@ final class Category
     /**
      * @Field()
      *
-     * @return DateTimeInterface
      * @throws \Exception
      */
     public function getTimestamp(): DateTimeInterface
@@ -305,8 +249,6 @@ final class Category
 
     /**
      * @Field
-     *
-     * @return string
      */
     public function getUrl(): string
     {

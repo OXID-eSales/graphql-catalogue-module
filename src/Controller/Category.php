@@ -30,9 +30,6 @@ class Category
     /**
      * @Query()
      *
-     * @param string $id
-     *
-     * @return CategoryDataType
      * @throws CategoryNotFound
      */
     public function category(string $id): CategoryDataType

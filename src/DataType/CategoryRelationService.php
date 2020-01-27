@@ -27,10 +27,6 @@ class CategoryRelationService
     /** @var ShopRepository */
     private $shopRepository;
 
-    /**
-     * @param CategoryRepository $categoryRepository
-     * @param ShopRepository     $shopRepository
-     */
     public function __construct(
         CategoryRepository $categoryRepository,
         ShopRepository $shopRepository
@@ -41,10 +37,6 @@ class CategoryRelationService
 
     /**
      * @Field()
-     *
-     * @param Category $child
-     *
-     * @return Category|null
      */
     public function getParent(Category $child): ?Category
     {
@@ -57,10 +49,6 @@ class CategoryRelationService
 
     /**
      * @Field()
-     *
-     * @param Category $category
-     *
-     * @return Category|null
      */
     public function getRoot(Category $category): ?Category
     {
@@ -73,10 +61,6 @@ class CategoryRelationService
 
     /**
      * @Field()
-     *
-     * @param Category $category
-     *
-     * @return Shop|null
      */
     public function getShop(Category $category): ?Shop
     {

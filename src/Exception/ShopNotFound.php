@@ -15,11 +15,6 @@ use function sprintf;
 
 final class ShopNotFound extends NotFound
 {
-    /**
-     * @param string $id
-     *
-     * @return ShopNotFound
-     */
     public static function byId(string $id): self
     {
         return new self(sprintf('Shop was not found by id: %s', $id));
