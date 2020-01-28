@@ -55,6 +55,10 @@ class VendorRepository
                      ->orderBy('oxid');
         if ($filter) {
             $filters = array_filter($filter->getFilters());
+            if (isset($filters['oxactive']) && $filters['oxactive']->equals() === true) {
+                unset($filters['oxactive']);
+                $queryBuilder->andWhere($vendor->getSqlActiveSnippet());
+            }
             foreach ($filters as $field => $fieldFilter) {
                 $fieldFilter->addToQuery($queryBuilder, $field);
             }

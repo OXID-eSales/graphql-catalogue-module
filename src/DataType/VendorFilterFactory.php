@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
+use OxidEsales\GraphQL\Base\DataType\BoolFilter;
 use OxidEsales\GraphQL\Base\DataType\StringFilter;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
@@ -18,10 +19,12 @@ class VendorFilterFactory
      * @Factory(name="VendorFilter")
      */
     public static function createVendorFilter(
-        StringFilter $title
+        ?StringFilter $title = null,
+        ?BoolFilter $active = null
     ): VendorFilter {
         return new VendorFilter(
-            $title
+            $title,
+            $active
         );
     }
 }

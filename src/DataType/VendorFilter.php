@@ -9,28 +9,36 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
+use OxidEsales\GraphQL\Base\DataType\BoolFilter;
 use OxidEsales\GraphQL\Base\DataType\StringFilter;
 
 class VendorFilter
 {
     /** @var ?StringFilter */
-    private $title;
+    private $title = null;
+
+    /** @var ?BoolFilter */
+    private $active = null;
 
     public function __construct(
-        ?StringFilter $title = null
+        ?StringFilter $title = null,
+        ?BoolFilter $active = null
     ) {
         $this->title = $title;
+        $this->active = $active;
     }
 
     /**
      * @return array{
-     *  oxtitle: ?StringFilter
+     *  oxtitle: ?StringFilter,
+     *  oxactive: ?BoolFilter
      * }
      */
     public function getFilters(): array
     {
         return [
-            'oxtitle' => $this->title
+            'oxtitle' => $this->title,
+            'oxactive' => $this->active
         ];
     }
 }
