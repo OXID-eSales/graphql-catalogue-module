@@ -19,7 +19,7 @@ use DateTimeInterface;
 /**
  * @Type()
  */
-class Vendor
+class Vendor implements DataType
 {
     /** @var VendorModel */
     private $vendor;
@@ -30,7 +30,7 @@ class Vendor
         $this->vendor = $vendor;
     }
 
-    public function getVendorModel(): VendorModel
+    public function getModel(): VendorModel
     {
         return $this->vendor;
     }

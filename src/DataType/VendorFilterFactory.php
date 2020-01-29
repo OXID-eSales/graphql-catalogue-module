@@ -16,13 +16,13 @@ use TheCodingMachine\GraphQLite\Annotations\Factory;
 class VendorFilterFactory
 {
     /**
-     * @Factory(name="VendorFilter")
+     * @Factory(name="VendorFilterList")
      */
     public static function createVendorFilter(
         ?StringFilter $title = null,
         ?BoolFilter $active = null
-    ): VendorFilter {
-        return new VendorFilter(
+    ): VendorFilterList {
+        return new VendorFilterList(
             $title,
             $active
         );

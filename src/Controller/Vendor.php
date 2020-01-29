@@ -9,18 +9,20 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
+use OxidEsales\Eshop\Application\Model\Vendor as VendorModel;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
-use OxidEsales\GraphQL\Catalogue\DataType\Vendor as VendorModel;
-use OxidEsales\GraphQL\Catalogue\DataType\VendorFilter;
+use OxidEsales\GraphQL\Catalogue\DataType\Vendor as VendorDataType;
+use OxidEsales\GraphQL\Catalogue\DataType\VendorFilterList;
 use OxidEsales\GraphQL\Catalogue\Exception\VendorNotFound;
-use OxidEsales\GraphQL\Catalogue\Service\VendorRepository;
+use OxidEsales\GraphQL\Catalogue\Service\Repository;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Vendor
 {
-    /** @var VendorRepository */
+    /** @var Repository */
     protected $repository;
 
     /** @var AuthenticationServiceInterface */
@@ -30,7 +32,7 @@ class Vendor
     protected $authorizationService;
 
     public function __construct(
-        VendorRepository $repository,
+        Repository $repository,
         AuthenticationServiceInterface $authenticationService,
         AuthorizationServiceInterface $authorizationService
     ) {
@@ -44,9 +46,17 @@ class Vendor
      *
      * @throws VendorNotFound
      */
-    public function vendor(string $id): VendorModel
+    public function vendor(string $id): VendorDataType
     {
-        $vendor = $this->repository->getById($id);
+        try {
+            $vendor = $this->repository->getById(
+                $id,
+                VendorDataType::class,
+                VendorModel::class
+            );
+        } catch (NotFound $e) {
+            throw VendorNotFound::byId($id);
+        }
 
         if ($vendor->getActive()) {
             return $vendor;
@@ -64,9 +74,9 @@ class Vendor
 
     /**
      * @Query()
-     * @return VendorModel[]
+     * @return VendorDataType[]
      */
-    public function vendors(?VendorFilter $filter = null): array
+    public function vendors(?VendorFilterList $filter = null): array
     {
         // In case of missing permissions
         // only return active vendors
@@ -74,7 +84,7 @@ class Vendor
             !$this->authenticationService->isLogged() ||
             !$this->authorizationService->isAllowed('VIEW_INACTIVE_VENDOR')
         ) {
-            $filter = new VendorFilter(
+            $filter = new VendorFilterList(
                 null,
                 new \OxidEsales\GraphQL\Base\DataType\BoolFilter(true)
             );
@@ -82,7 +92,9 @@ class Vendor
 
         try {
             $vendors = $this->repository->getByFilter(
-                $filter ?? new VendorFilter()
+                $filter ?? new VendorFilterList(),
+                VendorDataType::class,
+                VendorModel::class
             );
         } catch (\Exception $e) {
             return [];

@@ -12,7 +12,7 @@ namespace OxidEsales\GraphQL\Catalogue\DataType;
 use OxidEsales\GraphQL\Base\DataType\BoolFilter;
 use OxidEsales\GraphQL\Base\DataType\StringFilter;
 
-class VendorFilter
+class VendorFilterList implements FilterList
 {
     /** @var ?StringFilter */
     private $title = null;
