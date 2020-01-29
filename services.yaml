@@ -13,7 +13,7 @@ services:
     public: true
 
   OxidEsales\GraphQL\Catalogue\DataType\:
-    resource: 'src/DataType/*Factory.php'
+    resource: 'src/DataType/*FilterList.php'
     public: true
 
   OxidEsalesGraphQLRepositories:

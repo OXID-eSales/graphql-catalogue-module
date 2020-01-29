@@ -29,13 +29,13 @@ class Repository
     /**
      * @template T
      * @template M
-     * @param class-string<T> $dataType
+     * @param class-string<T> $type
      * @param class-string<M> $model
      * @return T
      */
     public function getById(
         string $id,
-        string $dataType,
+        string $type,
         string $model
     ) {
         /** @var BaseModel */
@@ -43,22 +43,22 @@ class Repository
         if (!$model->load($id)) {
             throw new NotFound($id);
         }
-        return new $dataType($model);
+        return new $type($model);
     }
 
     /**
      * @template T
      * @template M
-     * @param class-string<T> $dataType
+     * @param class-string<T> $type
      * @param class-string<M> $model
      * @return T[]
      */
     public function getByFilter(
         FilterList $filter,
-        string $dataType,
+        string $type,
         string $model
     ): array {
-        $models = [];
+        $types = [];
         /** @var BaseModel */
         $model = oxNew($model);
         $queryBuilder = $this->queryBuilderFactory->create();
@@ -75,25 +75,25 @@ class Repository
         }
         $result = $queryBuilder->execute();
         if (!$result instanceof \Doctrine\DBAL\Driver\Statement) {
-            return $models;
+            return $types;
         }
         foreach ($result as $row) {
             $newModel = clone $model;
             $newModel->assign($row);
-            $models[] = new $dataType($newModel);
+            $types[] = new $type($newModel);
         }
-        return $models;
+        return $types;
     }
 
-    public function save(DataType $dataType): DataType
+    public function save(DataType $type): DataType
     {
-        $model = $dataType->getModel();
+        $model = $type->getModel();
         if (!$model->save()) {
             throw new \Exception();
         }
         // reload model
         $model->load($model->getId());
-        $class = get_class($dataType);
+        $class = get_class($type);
         return new $class($model);
     }
 }
