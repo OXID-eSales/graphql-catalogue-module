@@ -42,7 +42,7 @@ class Repository
         if (!($model instanceof BaseModel)) {
             throw new InvalidArgumentException();
         }
-        if (!$model->load($id)) {
+        if (!$model->load($id) || (method_exists($model, 'canView') && !$model->canView())) {
             throw new NotFound($id);
         }
         $type = new $type($model);
@@ -65,6 +65,9 @@ class Repository
         if (!($model instanceof BaseModel)) {
             throw new InvalidArgumentException();
         }
+
+        $wherePart = $model->getSqlActiveSnippet();
+
         $queryBuilder = $this->queryBuilderFactory->create();
         $queryBuilder->select('*')
                      ->from($model->getViewName())
@@ -74,7 +77,7 @@ class Repository
             $filter->getActive() !== null &&
             $filter->getActive()->equals() === true
         ) {
-            $queryBuilder->andWhere($model->getSqlActiveSnippet());
+            $queryBuilder->andWhere($wherePart);
         }
 
         $filters = array_filter($filter->getFilters());
