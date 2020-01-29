@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Catalogue\DataType;
 
 use OxidEsales\GraphQL\Base\DataType\BoolFilter;
 use OxidEsales\GraphQL\Base\DataType\StringFilter;
+use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 class VendorFilterList implements FilterList
 {
@@ -26,6 +27,19 @@ class VendorFilterList implements FilterList
     ) {
         $this->title = $title;
         $this->active = $active;
+    }
+
+    /**
+     * @Factory(name="VendorFilterList")
+     */
+    public static function createVendorFilterList(
+        ?StringFilter $title = null,
+        ?BoolFilter $active = null
+    ): self {
+        return new self(
+            $title,
+            $active
+        );
     }
 
     /**
