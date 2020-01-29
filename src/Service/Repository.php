@@ -65,15 +65,21 @@ class Repository
         $queryBuilder->select('*')
                      ->from($model->getViewName())
                      ->orderBy('oxid');
-        $filters = array_filter($filter->getFilters());
-        if (isset($filters['oxactive']) && $filters['oxactive']->equals() === true) {
-            unset($filters['oxactive']);
+
+        if (
+            $filter->getActive() !== null &&
+            $filter->getActive()->equals() === true
+        ) {
             $queryBuilder->andWhere($model->getSqlActiveSnippet());
         }
+
+        $filters = array_filter($filter->getFilters());
         foreach ($filters as $field => $fieldFilter) {
             $fieldFilter->addToQuery($queryBuilder, $field);
         }
+
         $result = $queryBuilder->execute();
+
         if (!$result instanceof \Doctrine\DBAL\Driver\Statement) {
             return $types;
         }

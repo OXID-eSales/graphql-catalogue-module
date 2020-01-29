@@ -78,21 +78,21 @@ class Vendor
      */
     public function vendors(?VendorFilterList $filter = null): array
     {
+        $filter = $filter ?? new VendorFilterList();
         // In case of missing permissions
         // only return active vendors
         if (
             !$this->authenticationService->isLogged() ||
             !$this->authorizationService->isAllowed('VIEW_INACTIVE_VENDOR')
         ) {
-            $filter = new VendorFilterList(
-                null,
+            $filter = $filter->withActiveFilter(
                 new \OxidEsales\GraphQL\Base\DataType\BoolFilter(true)
             );
         }
 
         try {
             $vendors = $this->repository->getByFilter(
-                $filter ?? new VendorFilterList(),
+                $filter,
                 VendorDataType::class,
                 VendorModel::class
             );

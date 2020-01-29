@@ -13,13 +13,10 @@ use OxidEsales\GraphQL\Base\DataType\BoolFilter;
 use OxidEsales\GraphQL\Base\DataType\StringFilter;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
-class VendorFilterList implements FilterList
+class VendorFilterList extends FilterList
 {
     /** @var ?StringFilter */
     private $title = null;
-
-    /** @var ?BoolFilter */
-    private $active = null;
 
     public function __construct(
         ?StringFilter $title = null,
@@ -44,15 +41,13 @@ class VendorFilterList implements FilterList
 
     /**
      * @return array{
-     *  oxtitle: ?StringFilter,
-     *  oxactive: ?BoolFilter
+     *  oxtitle: ?StringFilter
      * }
      */
     public function getFilters(): array
     {
         return [
-            'oxtitle' => $this->title,
-            'oxactive' => $this->active
+            'oxtitle' => $this->title
         ];
     }
 }

@@ -9,7 +9,24 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
-interface FilterList
+use OxidEsales\GraphQL\Base\DataType\BoolFilter;
+
+abstract class FilterList
 {
-    public function getFilters(): array;
+    /** @var ?BoolFilter */
+    protected $active = null;
+
+    abstract public function getFilters(): array;
+
+    public function withActiveFilter(BoolFilter $active): self
+    {
+        $filterList = clone $this;
+        $filterList->active = $active;
+        return $filterList;
+    }
+
+    public function getActive(): ?BoolFilter
+    {
+        return $this->active;
+    }
 }

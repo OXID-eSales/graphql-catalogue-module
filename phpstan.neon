@@ -1,4 +1,5 @@
 parameters:
+    checkMissingIterableValueType: false
     level: max
     autoload_files:
         - vendor/oxid-esales/oxideshop-ce/source/oxfunctions.php
