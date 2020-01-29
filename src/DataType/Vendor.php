@@ -36,6 +36,14 @@ class Vendor implements DataType
     }
 
     /**
+     * @return class-string
+     */
+    public static function getModelClass(): string
+    {
+        return VendorModel::class;
+    }
+
+    /**
      * @Field()
      */
     public function getId(): ID

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Service;
 
+use InvalidArgumentException;
 use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
@@ -28,39 +29,44 @@ class Repository
 
     /**
      * @template T
-     * @template M
      * @param class-string<T> $type
-     * @param class-string<M> $model
      * @return T
+     * @throws InvalidArgumentException if $type is not instance of DataType
+     * @throws NotFound if BaseModel can not be loaded
      */
     public function getById(
         string $id,
-        string $type,
-        string $model
+        string $type
     ) {
-        /** @var BaseModel */
-        $model = oxNew($model);
+        $model = oxNew($type::getModelClass());
+        if (!($model instanceof BaseModel)) {
+            throw new InvalidArgumentException();
+        }
         if (!$model->load($id)) {
             throw new NotFound($id);
         }
-        return new $type($model);
+        $type = new $type($model);
+        if (!($type instanceof DataType)) {
+            throw new InvalidArgumentException();
+        }
+        return $type;
     }
 
     /**
      * @template T
-     * @template M
      * @param class-string<T> $type
-     * @param class-string<M> $model
      * @return T[]
+     * @throws InvalidArgumentException if $model is not instance of BaseModel
      */
     public function getByFilter(
         FilterList $filter,
-        string $type,
-        string $model
+        string $type
     ): array {
         $types = [];
-        /** @var BaseModel */
-        $model = oxNew($model);
+        $model = oxNew($type::getModelClass());
+        if (!($model instanceof BaseModel)) {
+            throw new InvalidArgumentException();
+        }
         $queryBuilder = $this->queryBuilderFactory->create();
         $queryBuilder->select('*')
                      ->from($model->getViewName())

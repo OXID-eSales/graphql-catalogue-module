@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
-use OxidEsales\Eshop\Application\Model\Vendor as VendorModel;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
@@ -51,8 +50,7 @@ class Vendor
         try {
             $vendor = $this->repository->getById(
                 $id,
-                VendorDataType::class,
-                VendorModel::class
+                VendorDataType::class
             );
         } catch (NotFound $e) {
             throw VendorNotFound::byId($id);
@@ -93,8 +91,7 @@ class Vendor
         try {
             $vendors = $this->repository->getByFilter(
                 $filter,
-                VendorDataType::class,
-                VendorModel::class
+                VendorDataType::class
             );
         } catch (\Exception $e) {
             return [];
