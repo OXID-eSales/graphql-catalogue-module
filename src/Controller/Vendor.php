@@ -11,39 +11,18 @@ namespace OxidEsales\GraphQL\Catalogue\Controller;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
-use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
-use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
 use OxidEsales\GraphQL\Catalogue\DataType\Vendor as VendorDataType;
 use OxidEsales\GraphQL\Catalogue\DataType\VendorFilterList;
 use OxidEsales\GraphQL\Catalogue\Exception\VendorNotFound;
-use OxidEsales\GraphQL\Catalogue\Service\Repository;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
-class Vendor
+class Vendor extends Base
 {
-    /** @var Repository */
-    protected $repository;
-
-    /** @var AuthenticationServiceInterface */
-    protected $authenticationService;
-
-    /** @var AuthorizationServiceInterface */
-    protected $authorizationService;
-
-    public function __construct(
-        Repository $repository,
-        AuthenticationServiceInterface $authenticationService,
-        AuthorizationServiceInterface $authorizationService
-    ) {
-        $this->repository = $repository;
-        $this->authenticationService = $authenticationService;
-        $this->authorizationService = $authorizationService;
-    }
-
     /**
      * @Query()
      *
      * @throws VendorNotFound
+     * @throws InvalidLogin
      */
     public function vendor(string $id): VendorDataType
     {
@@ -60,10 +39,7 @@ class Vendor
             return $vendor;
         }
 
-        if (
-            !$this->authenticationService->isLogged() ||
-            !$this->authorizationService->isAllowed('VIEW_INACTIVE_VENDOR')
-        ) {
+        if (!$this->isAuthorized('VIEW_INACTIVE_VENDOR')) {
             throw new InvalidLogin("Unauthorized");
         }
 
@@ -79,10 +55,7 @@ class Vendor
         $filter = $filter ?? new VendorFilterList();
         // In case of missing permissions
         // only return active vendors
-        if (
-            !$this->authenticationService->isLogged() ||
-            !$this->authorizationService->isAllowed('VIEW_INACTIVE_VENDOR')
-        ) {
+        if (!$this->isAuthorized('VIEW_INACTIVE_VENDOR')) {
             $filter = $filter->withActiveFilter(
                 new \OxidEsales\GraphQL\Base\DataType\BoolFilter(true)
             );
