@@ -14,7 +14,7 @@ use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
 final class VendorMultiLanguageTest extends TestCase
 {
-    private static $ACTIVE_VENDOR = 'fe07958b49de225bd1dbc7594fb9a6b0';
+    private const ACTIVE_VENDOR = 'fe07958b49de225bd1dbc7594fb9a6b0';
 
     /**
      * @dataProvider providerGetVendorListWithFilterMultiLanguage
@@ -103,7 +103,7 @@ final class VendorMultiLanguageTest extends TestCase
     public function testGetVendorMultiLanguage(string $languageId, string $title)
     {
         $query = 'query {
-            vendor (id: "' . self::$ACTIVE_VENDOR . '") {
+            vendor (id: "' . self::ACTIVE_VENDOR . '") {
                 id
                 title
             }
@@ -119,7 +119,7 @@ final class VendorMultiLanguageTest extends TestCase
 
         $this->assertEquals(
             [
-                'id' => self::$ACTIVE_VENDOR,
+                'id' => self::ACTIVE_VENDOR,
                 'title' => $title
             ],
             $result['body']['data']['vendor']

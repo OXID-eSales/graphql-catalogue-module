@@ -13,13 +13,13 @@ use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
 final class VendorTest extends TokenTestCase
 {
-    private static $ACTIVE_VENDOR = "fe07958b49de225bd1dbc7594fb9a6b0";
-    private static $INACTIVE_VENDOR  = "05833e961f65616e55a2208c2ed7c6b8";
+    private const ACTIVE_VENDOR = "fe07958b49de225bd1dbc7594fb9a6b0";
+    private const INACTIVE_VENDOR  = "05833e961f65616e55a2208c2ed7c6b8";
 
     public function testGetSingleActiveVendor()
     {
         $result = $this->query('query {
-            vendor (id: "' . self::$ACTIVE_VENDOR . '") {
+            vendor (id: "' . self::ACTIVE_VENDOR . '") {
                 id
                 active
                 icon
@@ -43,7 +43,7 @@ final class VendorTest extends TokenTestCase
 
         $this->assertEquals(
             [
-                'id' => self::$ACTIVE_VENDOR,
+                'id' => self::ACTIVE_VENDOR,
                 'active' => true,
                 'icon' => null,
                 'title' => 'https://fashioncity.com/de',
@@ -57,7 +57,7 @@ final class VendorTest extends TokenTestCase
     public function testGetSingleInactiveVendorWithoutToken()
     {
         $result = $this->query('query {
-            vendor (id: "' . self::$INACTIVE_VENDOR . '") {
+            vendor (id: "' . self::INACTIVE_VENDOR . '") {
                 id
                 active
                 icon
@@ -78,7 +78,7 @@ final class VendorTest extends TokenTestCase
         $this->prepareAdminToken();
 
         $result = $this->query('query {
-            vendor (id: "' . self::$INACTIVE_VENDOR . '") {
+            vendor (id: "' . self::INACTIVE_VENDOR . '") {
                 id
             }
         }');
@@ -86,7 +86,7 @@ final class VendorTest extends TokenTestCase
         $this->assertEquals(200, $result['status']);
         $this->assertEquals(
             [
-                'id' => self::$INACTIVE_VENDOR,
+                'id' => self::INACTIVE_VENDOR,
             ],
             $result['body']['data']['vendor']
         );
