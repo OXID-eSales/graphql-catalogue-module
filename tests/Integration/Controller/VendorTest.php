@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
+use TheCodingMachine\GraphQLite\Types\DateTimeType;
 
 final class VendorTest extends TokenTestCase
 {
@@ -26,6 +27,7 @@ final class VendorTest extends TokenTestCase
                 title
                 shortdesc
                 url
+                timestamp
             }
         }');
 
@@ -42,13 +44,21 @@ final class VendorTest extends TokenTestCase
         $this->assertSame('Fashion city', $vendor['shortdesc']);
         $this->assertRegExp('@https?://.*/Nach-Lieferant/https-fashioncity-com-de/$@', $vendor['url']);
 
+        $dateTimeType = DateTimeType::getInstance();
+        //Fixture timestamp can have few seconds difference
+        $this->assertLessThanOrEqual(
+            $dateTimeType->serialize(new \DateTimeImmutable('now')),
+            $vendor['timestamp']
+        );
+
         $this->assertEmpty(array_diff(array_keys($vendor), [
             'id',
             'active',
             'icon',
             'title',
             'shortdesc',
-            'url'
+            'url',
+            'timestamp'
         ]));
     }
 
