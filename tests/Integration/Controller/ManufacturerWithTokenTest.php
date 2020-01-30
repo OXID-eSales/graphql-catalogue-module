@@ -15,10 +15,10 @@ use TheCodingMachine\GraphQLite\Types\DateTimeType;
 final class ManufacturerWithTokenTest extends TokenTestCase
 {
     //Kuyichi
-    private static $ACTIVE_MANUFACTURER = "9434afb379a46d6c141de9c9e5b94fcf";
+    private const ACTIVE_MANUFACTURER = "9434afb379a46d6c141de9c9e5b94fcf";
 
     //RRD
-    private static $INACTIVE_MANUFACTURER  = "adca51c88a3caa1c7b939fd6a229ae3a";
+    private const INACTIVE_MANUFACTURER  = "adca51c88a3caa1c7b939fd6a229ae3a";
 
     protected function setUp(): void
     {
@@ -30,7 +30,7 @@ final class ManufacturerWithTokenTest extends TokenTestCase
     public function testGetSingleActiveManufacturer()
     {
         $result = $this->query('query {
-            manufacturer (id: "' . self::$ACTIVE_MANUFACTURER . '") {
+            manufacturer (id: "' . self::ACTIVE_MANUFACTURER . '") {
                 id
                 active
                 icon
@@ -45,7 +45,7 @@ final class ManufacturerWithTokenTest extends TokenTestCase
 
         $manufacturer = $result['body']['data']['manufacturer'];
 
-        $this->assertSame(self::$ACTIVE_MANUFACTURER, $manufacturer['id']);
+        $this->assertSame(self::ACTIVE_MANUFACTURER, $manufacturer['id']);
         $this->assertSame(true, $manufacturer['active']);
         $this->assertRegExp('@https?://.*logo3_ico.png$@', $manufacturer['icon']);
         $this->assertSame('Kuyichi', $manufacturer['title']);
@@ -73,7 +73,7 @@ final class ManufacturerWithTokenTest extends TokenTestCase
     public function testGetSingleInactiveManufacturer()
     {
         $result = $this->query('query {
-            manufacturer (id: "' . self::$INACTIVE_MANUFACTURER . '") {
+            manufacturer (id: "' . self::INACTIVE_MANUFACTURER . '") {
                 id
             }
         }');
@@ -82,7 +82,7 @@ final class ManufacturerWithTokenTest extends TokenTestCase
 
         $this->assertEquals(
             [
-                'id' => self::$INACTIVE_MANUFACTURER,
+                'id' => self::INACTIVE_MANUFACTURER,
             ],
             $result['body']['data']['manufacturer']
         );

@@ -9,14 +9,14 @@ use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 class ManufacturerTest extends TestCase
 {
 
-    private static $ACTIVE_MANUFACTURER = "oiaf6ab7e12e86291e86dd3ff891fe40";
-    private static $INACTIVE_MANUFACTURER  = "dc50589ad69b6ec71721b25bdd403171";
-    private static $ACTIVE_MULTILANGUAGE_MANUFACTURER = 'adc6df0977329923a6330cc8f3c0a906';
+    private const ACTIVE_MANUFACTURER = "oiaf6ab7e12e86291e86dd3ff891fe40";
+    private const INACTIVE_MANUFACTURER  = "dc50589ad69b6ec71721b25bdd403171";
+    private const ACTIVE_MULTILANGUAGE_MANUFACTURER = 'adc6df0977329923a6330cc8f3c0a906';
 
     public function testGetSingleActiveManufacturer()
     {
         $result = $this->query('query {
-            manufacturer (id: "' . self::$ACTIVE_MANUFACTURER . '") {
+            manufacturer (id: "' . self::ACTIVE_MANUFACTURER . '") {
                 id
                 active
                 icon
@@ -33,7 +33,7 @@ class ManufacturerTest extends TestCase
 
         $manufacturer = $result['body']['data']['manufacturer'];
 
-        $this->assertSame(self::$ACTIVE_MANUFACTURER, $manufacturer['id']);
+        $this->assertSame(self::ACTIVE_MANUFACTURER, $manufacturer['id']);
         $this->assertSame(true, $manufacturer['active']);
         $this->assertRegExp('@https?://.*oreilly_1_mico.png$@', $manufacturer['icon']);
         $this->assertEquals('O&#039;Reilly', $manufacturer['title']);
@@ -54,7 +54,7 @@ class ManufacturerTest extends TestCase
     public function testGet401ForSingleInactiveManufacturer()
     {
         $result = $this->query('query {
-            manufacturer (id: "' . self::$INACTIVE_MANUFACTURER . '") {
+            manufacturer (id: "' . self::INACTIVE_MANUFACTURER . '") {
                 id
                 active
                 icon
@@ -199,7 +199,7 @@ class ManufacturerTest extends TestCase
     public function testGetManufacturerMultilanguage(string $languageId, string $title)
     {
         $query = 'query {
-            manufacturer (id: "' . self::$ACTIVE_MULTILANGUAGE_MANUFACTURER . '") {
+            manufacturer (id: "' . self::ACTIVE_MULTILANGUAGE_MANUFACTURER . '") {
                 id
                 title
             }
@@ -218,7 +218,7 @@ class ManufacturerTest extends TestCase
 
         $this->assertEquals(
             [
-                'id' => self::$ACTIVE_MULTILANGUAGE_MANUFACTURER,
+                'id' => self::ACTIVE_MULTILANGUAGE_MANUFACTURER,
                 'title' => $title
             ],
             $result['body']['data']['manufacturer']
