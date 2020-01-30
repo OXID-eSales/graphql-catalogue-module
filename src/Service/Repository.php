@@ -96,16 +96,4 @@ class Repository
         }
         return $types;
     }
-
-    public function save(DataType $type): DataType
-    {
-        $model = $type->getModel();
-        if (!$model->save()) {
-            throw new \Exception();
-        }
-        // reload model
-        $model->load($model->getId());
-        $class = get_class($type);
-        return new $class($model);
-    }
 }
