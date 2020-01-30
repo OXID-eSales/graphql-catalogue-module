@@ -30,11 +30,6 @@ class Vendor implements DataType
         $this->vendor = $vendor;
     }
 
-    public function getModel(): VendorModel
-    {
-        return $this->vendor;
-    }
-
     /**
      * @return class-string
      */

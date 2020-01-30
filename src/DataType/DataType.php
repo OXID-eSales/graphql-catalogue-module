@@ -14,11 +14,6 @@ use OxidEsales\Eshop\Core\Model\BaseModel;
 interface DataType
 {
     /**
-     * @return BaseModel
-     */
-    public function getModel();
-
-    /**
      * @return class-string
      */
     public static function getModelClass(): string;

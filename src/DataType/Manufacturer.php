@@ -30,11 +30,6 @@ class Manufacturer implements DataType
         $this->manufacturer = $manufacturer;
     }
 
-    public function getModel(): ManufacturerModel
-    {
-        return $this->manufacturer;
-    }
-
     /**
      * @return class-string
      */
