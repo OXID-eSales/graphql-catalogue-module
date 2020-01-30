@@ -4,10 +4,6 @@ services:
     public: false
     autowire: true
 
-  OxidEsales\GraphQL\Catalogue\Dao\ManufacturerInterface:
-    class: OxidEsales\GraphQL\Catalogue\Dao\Manufacturer
-    public: true
-
   OxidEsales\GraphQL\Catalogue\Controller\:
     resource: 'src/Controller/*'
     public: true

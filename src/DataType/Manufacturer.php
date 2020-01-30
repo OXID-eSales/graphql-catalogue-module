@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Catalogue\DataType;
 
 use DateTimeImmutable;
 use DateTimeInterface;
+use OxidEsales\Eshop\Application\Model\Manufacturer as ManufacturerModel;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 use TheCodingMachine\GraphQLite\Types\ID;
@@ -18,63 +19,28 @@ use TheCodingMachine\GraphQLite\Types\ID;
 /**
  * @Type()
  */
-class Manufacturer
+class Manufacturer implements DataType
 {
-    /** @var ID */
-    private $id;
-
-    /** @var bool */
-    private $active;
-
-    /** @var string */
-    private $icon;
-
-    /** @var string */
-    private $title;
-
-    /** @var string */
-    private $shortdesc;
-
-    /** @var ?string */
-    private $url;
-
-    /** @var DateTimeInterface */
-    private $timestamp;
+    /** @var ManufacturerModel */
+    private $manufacturer;
 
     public function __construct(
-        string $id,
-        bool $active,
-        string $icon,
-        string $title,
-        string $shortdesc,
-        ?string $url,
-        string $timestamp
+        ManufacturerModel $manufacturer
     ) {
-        $this->id = new ID($id);
-        $this->active = $active;
-        $this->icon = $icon;
-        $this->title = $title;
-        $this->shortdesc = $shortdesc;
-        $this->url = $url;
-        $this->timestamp = new DateTimeImmutable($timestamp);
+        $this->manufacturer = $manufacturer;
+    }
+
+    public function getModel(): ManufacturerModel
+    {
+        return $this->manufacturer;
     }
 
     /**
-     * @param string[] $result
+     * @return class-string
      */
-    public static function fromDatabaseResult(array $result): self
+    public static function getModelClass(): string
     {
-        $result = array_change_key_case($result, CASE_LOWER);
-
-        return new self(
-            (string)$result['oxid'],
-            (bool)  $result['oxactive'],
-            (string)$result['oxicon'],
-            (string)$result['oxtitle'],
-            (string)$result['oxshortdesc'],
-            $result['oxseourl'],
-            (string)$result['oxtimestamp']
-        );
+        return ManufacturerModel::class;
     }
 
     /**
@@ -82,7 +48,7 @@ class Manufacturer
      */
     public function getId(): ID
     {
-        return $this->id;
+        return new ID($this->manufacturer->getId());
     }
 
     /**
@@ -90,15 +56,15 @@ class Manufacturer
      */
     public function getActive(): bool
     {
-        return $this->active;
+        return (bool)$this->manufacturer->getFieldData('oxactive');
     }
 
     /**
      * @Field()
      */
-    public function getIcon(): string
+    public function getIcon(): ?string
     {
-        return $this->icon;
+        return $this->manufacturer->getIconUrl();
     }
 
     /**
@@ -106,7 +72,7 @@ class Manufacturer
      */
     public function getTitle(): string
     {
-        return $this->title;
+        return $this->manufacturer->getTitle();
     }
 
     /**
@@ -114,15 +80,15 @@ class Manufacturer
      */
     public function getShortdesc(): string
     {
-        return $this->shortdesc;
+        return $this->manufacturer->getShortDescription();
     }
 
     /**
      * @Field()
      */
-    public function getUrl(): ?string
+    public function getUrl(): string
     {
-        return $this->url;
+        return $this->manufacturer->getLink();
     }
 
     /**
@@ -130,6 +96,6 @@ class Manufacturer
      */
     public function getTimestamp(): DateTimeInterface
     {
-        return $this->timestamp;
+        return new DateTimeImmutable((string)$this->manufacturer->getFieldData('oxtimestamp'));
     }
 }

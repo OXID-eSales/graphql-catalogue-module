@@ -30,19 +30,25 @@ class ManufacturerTest extends TestCase
             200,
             $result
         );
-        $timestamp = $result['body']['data']['manufacturer']['timestamp'];
-        unset($result['body']['data']['manufacturer']['timestamp']);
-        $this->assertEquals(
-            [
-                'id' => self::$ACTIVE_MANUFACTURER,
-                'active' => 1,
-                'icon' => 'oreilly_1_mico.png',
-                'title' => 'O\'Reilly',
-                'shortdesc' => '',
-                'url' => 'Nach-Hersteller/O-Reilly/',
-            ],
-            $result['body']['data']['manufacturer']
-        );
+
+        $manufacturer = $result['body']['data']['manufacturer'];
+
+        $this->assertSame(self::$ACTIVE_MANUFACTURER, $manufacturer['id']);
+        $this->assertSame(true, $manufacturer['active']);
+        $this->assertRegExp('@oreilly_1_mico.png$@', $manufacturer['icon']);
+        $this->assertEquals('O&#039;Reilly', $manufacturer['title']);
+        $this->assertSame('', $manufacturer['shortdesc']);
+        $this->assertRegExp('@Nach-Hersteller/O-Reilly/$@', $manufacturer['url']);
+
+        $this->assertEmpty(array_diff(array_keys($manufacturer), [
+            'id',
+            'active',
+            'icon',
+            'title',
+            'shortdesc',
+            'url',
+            'timestamp'
+        ]));
     }
 
     public function testGet401ForSingleInactiveManufacturer()

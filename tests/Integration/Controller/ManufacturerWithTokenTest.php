@@ -43,28 +43,31 @@ final class ManufacturerWithTokenTest extends TokenTestCase
 
         $this->assertEquals(200, $result['status']);
 
-        $timestamp = $result['body']['data']['manufacturer']['timestamp'];
-        unset($result['body']['data']['manufacturer']['timestamp']);
+        $manufacturer = $result['body']['data']['manufacturer'];
 
-        $this->assertEquals(
-            [
-                'id'        => self::$ACTIVE_MANUFACTURER,
-                'active'    => true,
-                'icon'      => 'logo3_ico.png',
-                'title'     => 'Kuyichi',
-                'shortdesc' => 'Eine stilbewusste Marke',
-                'url'       => 'Nach-Hersteller/Kuyichi/',
-            ],
-            $result['body']['data']['manufacturer']
-        );
+        $this->assertSame(self::$ACTIVE_MANUFACTURER, $manufacturer['id']);
+        $this->assertSame(true, $manufacturer['active']);
+        $this->assertRegExp('@logo3_ico.png$@', $manufacturer['icon']);
+        $this->assertSame('Kuyichi', $manufacturer['title']);
+        $this->assertSame('Eine stilbewusste Marke', $manufacturer['shortdesc']);
+        $this->assertRegExp('@Nach-Hersteller/Kuyichi/$@', $manufacturer['url']);
 
         $dateTimeType = DateTimeType::getInstance();
-
         //Fixture timestamp can have few seconds difference
         $this->assertLessThanOrEqual(
             $dateTimeType->serialize(new \DateTimeImmutable('now')),
-            $timestamp
+            $result['body']['data']['manufacturer']['timestamp']
         );
+
+        $this->assertEmpty(array_diff(array_keys($manufacturer), [
+            'id',
+            'active',
+            'icon',
+            'title',
+            'shortdesc',
+            'url',
+            'timestamp'
+        ]));
     }
 
     public function testGetSingleInactiveManufacturer()

@@ -10,82 +10,68 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
-use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
-use OxidEsales\GraphQL\Catalogue\Dao\ManufacturerInterface as ManufacturerDao;
+use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\Manufacturer as ManufacturerDataType;
-use OxidEsales\GraphQL\Catalogue\DataType\ManufacturerFilter;
+use OxidEsales\GraphQL\Catalogue\DataType\ManufacturerFilterList;
 use OxidEsales\GraphQL\Catalogue\Exception\ManufacturerNotFound;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
-class Manufacturer
+class Manufacturer extends Base
 {
-    /** @var ManufacturerDao */
-    protected $manufacturerDao;
-
-    /** @var AuthorizationServiceInterface */
-    protected $authorizationService;
-
-    /** @var AuthenticationServiceInterface */
-    protected $authenticationService;
-
-    public function __construct(
-        ManufacturerDao $manufacturerDao,
-        AuthorizationServiceInterface $authorizationService,
-        AuthenticationServiceInterface $authenticationService
-    ) {
-        $this->manufacturerDao = $manufacturerDao;
-        $this->authorizationService = $authorizationService;
-        $this->authenticationService = $authenticationService;
-    }
-
     /**
      * @Query()
+     *
+     * @return ManufacturerDataType
+     *
+     * @throws ManufacturerNotFound
+     * @throws InvalidLogin
      */
     public function manufacturer(string $id): ManufacturerDataType
     {
-        $manufacturer = $this->manufacturerDao->getManufacturer($id);
+        try {
+            /** @var ManufacturerDataType $manufacturer */
+            $manufacturer = $this->repository->getById(
+                $id,
+                ManufacturerDataType::class
+            );
+        } catch (NotFound $e) {
+            throw ManufacturerNotFound::byId($id);
+        }
 
-        if (
-            $manufacturer->getActive() ||
-            (
-                $this->authenticationService->isLogged() &&
-                $this->authorizationService->isAllowed('VIEW_INACTIVE_MANUFACTURER')
-            )
-        ) {
+        if ($manufacturer->getActive()) {
             return $manufacturer;
         }
 
-        throw new InvalidLogin("Unauthorized");
+        if (!$this->isAuthorized('VIEW_INACTIVE_MANUFACTURER')) {
+            throw new InvalidLogin("Unauthorized");
+        }
+
+        return $manufacturer;
     }
 
     /**
      * @Query()
+     *
      * @return ManufacturerDataType[]
      */
-    public function manufacturers(?ManufacturerFilter $filter = null): array
+    public function manufacturers(?ManufacturerFilterList $filter = null): array
     {
+        $filter = $filter ?? new ManufacturerFilterList();
+        // In case of missing permissions
+        // only return active vendors
+        if (!$this->isAuthorized('VIEW_INACTIVE_MANUFACTURER')) {
+            $filter = $filter->withActiveFilter(
+                new \OxidEsales\GraphQL\Base\DataType\BoolFilter(true)
+            );
+        }
+
         try {
-            $manufacturers = $this->manufacturerDao->getManufacturers(
-                $filter ?? new ManufacturerFilter()
+            $manufacturers = $this->repository->getByFilter(
+                $filter,
+                ManufacturerDataType::class
             );
         } catch (\Exception $e) {
             return [];
-        }
-
-        // In case of missing permissions
-        // to see inactive manufacturers
-        // only return active ones
-        if (
-            !$this->authenticationService->isLogged() ||
-            !$this->authorizationService->isAllowed('VIEW_INACTIVE_MANUFACTURER')
-        ) {
-            $manufacturers = array_filter(
-                $manufacturers,
-                function (ManufacturerDataType $manufacturer) {
-                    return $manufacturer->getActive();
-                }
-            );
         }
 
         return $manufacturers;
