@@ -13,7 +13,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInt
  */
 class RepositoryTest extends TestCase
 {
-    public function testFatalErrorOnWrongClass()
+    public function testFatalErrorOnWrongClassById()
     {
         $this->expectException(\Error::class);
         $repository = new Repository(
@@ -25,7 +25,7 @@ class RepositoryTest extends TestCase
         );
     }
 
-    public function testExceptionOnWrongModel()
+    public function testExceptionOnWrongModelById()
     {
         $this->expectException(\InvalidArgumentException::class);
         $repository = new Repository(
@@ -37,7 +37,7 @@ class RepositoryTest extends TestCase
         );
     }
 
-    public function testExceptionOnWrongType()
+    public function testExceptionOnWrongTypeById()
     {
         $this->expectException(\InvalidArgumentException::class);
         $repository = new Repository(
@@ -48,9 +48,29 @@ class RepositoryTest extends TestCase
             AlsoWrongType::class
         );
     }
+
+    public function testExceptionOnWrongModelByFilter()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $repository = new Repository(
+            $this->createMock(QueryBuilderFactoryInterface::class)
+        );
+        $repository->getByFilter(
+            new EmptyFilterList(),
+            WrongType::class
+        );
+    }
 }
 
 // phpcs:disable
+
+class EmptyFilterList extends \OxidEsales\GraphQL\Catalogue\DataType\FilterList
+{
+    public function getFilters(): array
+    {
+        return [];
+    }
+}
 
 class WrongModel
 {
