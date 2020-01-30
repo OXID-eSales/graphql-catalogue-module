@@ -84,16 +84,14 @@ class Repository
             $fieldFilter->addToQuery($queryBuilder, $field);
         }
 
+        /** @var \Doctrine\DBAL\Statement $result */
         $result = $queryBuilder->execute();
-
-        if (!$result instanceof \Doctrine\DBAL\Driver\Statement) {
-            return $types;
-        }
         foreach ($result as $row) {
             $newModel = clone $model;
             $newModel->assign($row);
             $types[] = new $type($newModel);
         }
+
         return $types;
     }
 }

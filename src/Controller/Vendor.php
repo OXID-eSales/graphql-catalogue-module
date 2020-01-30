@@ -61,14 +61,10 @@ class Vendor extends Base
             );
         }
 
-        try {
-            $vendors = $this->repository->getByFilter(
-                $filter,
-                VendorDataType::class
-            );
-        } catch (\Exception $e) {
-            return [];
-        }
+        $vendors = $this->repository->getByFilter(
+            $filter,
+            VendorDataType::class
+        );
 
         return $vendors;
     }

@@ -65,14 +65,10 @@ class Manufacturer extends Base
             );
         }
 
-        try {
-            $manufacturers = $this->repository->getByFilter(
-                $filter,
-                ManufacturerDataType::class
-            );
-        } catch (\Exception $e) {
-            return [];
-        }
+        $manufacturers = $this->repository->getByFilter(
+            $filter,
+            ManufacturerDataType::class
+        );
 
         return $manufacturers;
     }
