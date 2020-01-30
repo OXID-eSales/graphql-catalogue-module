@@ -35,10 +35,10 @@ class ManufacturerTest extends TestCase
 
         $this->assertSame(self::$ACTIVE_MANUFACTURER, $manufacturer['id']);
         $this->assertSame(true, $manufacturer['active']);
-        $this->assertRegExp('@oreilly_1_mico.png$@', $manufacturer['icon']);
+        $this->assertRegExp('@https?://.*oreilly_1_mico.png$@', $manufacturer['icon']);
         $this->assertEquals('O&#039;Reilly', $manufacturer['title']);
         $this->assertSame('', $manufacturer['shortdesc']);
-        $this->assertRegExp('@Nach-Hersteller/O-Reilly/$@', $manufacturer['url']);
+        $this->assertRegExp('@https?://.*Nach-Hersteller/O-Reilly/$@', $manufacturer['url']);
 
         $this->assertEmpty(array_diff(array_keys($manufacturer), [
             'id',

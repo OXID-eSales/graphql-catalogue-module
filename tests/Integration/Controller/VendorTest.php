@@ -34,24 +34,22 @@ final class VendorTest extends TokenTestCase
             $result
         );
 
-        $url = parse_url($result['body']['data']['vendor']['url']);
-        $this->assertNotFalse(
-            $url
-        );
+        $vendor = $result['body']['data']['vendor'];
+        $this->assertSame(self::ACTIVE_VENDOR, $vendor['id']);
+        $this->assertSame(true, $vendor['active']);
+        $this->assertNull($vendor['icon']);
+        $this->assertEquals('https://fashioncity.com/de', $vendor['title']);
+        $this->assertSame('Fashion city', $vendor['shortdesc']);
+        $this->assertRegExp('@https?://.*/Nach-Lieferant/https-fashioncity-com-de/$@', $vendor['url']);
 
-        $result['body']['data']['vendor']['url'] = $url['path'];
-
-        $this->assertEquals(
-            [
-                'id' => self::ACTIVE_VENDOR,
-                'active' => true,
-                'icon' => null,
-                'title' => 'https://fashioncity.com/de',
-                'shortdesc' => 'Fashion city',
-                'url' => '/Nach-Lieferant/https-fashioncity-com-de/',
-            ],
-            $result['body']['data']['vendor']
-        );
+        $this->assertEmpty(array_diff(array_keys($vendor), [
+            'id',
+            'active',
+            'icon',
+            'title',
+            'shortdesc',
+            'url'
+        ]));
     }
 
     public function testGetSingleInactiveVendorWithoutToken()
@@ -108,11 +106,6 @@ final class VendorTest extends TokenTestCase
         $result = $this->query('query {
             vendors {
                 id
-                active
-                icon
-                title
-                shortdesc
-                url
             }
         }');
 
@@ -124,30 +117,13 @@ final class VendorTest extends TokenTestCase
             2,
             $result['body']['data']['vendors']
         );
-        for ($i = 0; $i <= 1; $i++) {
-            $url = parse_url($result['body']['data']['vendors'][$i]['url']);
-            $this->assertNotFalse(
-                $url
-            );
-            $result['body']['data']['vendors'][$i]['url'] = $url['path'];
-        }
-        $this->assertEquals(
+        $this->assertSame(
             [
                 [
-                    "id"        => "a57c56e3ba710eafb2225e98f058d989",
-                    "active"    => true,
-                    "icon"      => null,
-                    "title"     => "www.true-fashion.com",
-                    "shortdesc" => "Ethical style outlet",
-                    "url"       => "/Nach-Lieferant/www-true-fashion-com/"
+                    "id"        => "a57c56e3ba710eafb2225e98f058d989"
                 ],
                 [
-                    "id"        => "fe07958b49de225bd1dbc7594fb9a6b0",
-                    "active"    => true,
-                    "icon"      => null,
-                    "title"     => "https://fashioncity.com/de",
-                    "shortdesc" => "Fashion city",
-                    "url"       => "/Nach-Lieferant/https-fashioncity-com-de/"
+                    "id"        => "fe07958b49de225bd1dbc7594fb9a6b0"
                 ],
             ],
             $result['body']['data']['vendors']
