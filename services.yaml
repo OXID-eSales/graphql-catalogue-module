@@ -12,7 +12,7 @@ services:
     namespace: OxidEsales\GraphQL\Catalogue\Service\
     resource: 'src/Service/*Repository.php'
 
-  OxidEsalesGraphQLCatalogueRealtionsServices:
+  OxidEsalesGraphQLCatalogueRelationsServices:
     namespace: OxidEsales\GraphQL\Catalogue\DataType\
     resource: 'src/DataType/*RelationService.php'
     public: true
