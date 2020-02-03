@@ -22,6 +22,95 @@ class CategoryEnterpriseTest extends MultishopTestCase
     private const CATEGORY_ID = 'd86fdf0d67bf76dc427aabd2e53e0a97';
 
     /**
+     * Check if only one, related to the shop 2 category is available in list
+     */
+    public function testGetOneCategoryInListOfNotMainShop()
+    {
+        $this->setGETRequestParameter('shp', "2");
+        $this->addCategoryToShops([2]);
+
+        $result = $this->query('query{
+            categories {
+                id
+            }
+        }');
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertEquals(
+            1,
+            count($result['body']['data']['categories'])
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function providerGetCategoryMultilanguage()
+    {
+        return [
+            'shop_1_de' => [
+                'shopId' => '1',
+                'languageId' => '0',
+                'title' => 'Schuhe'
+            ],
+            'shop_1_en' => [
+                'shopId' => '1',
+                'languageId' => '1',
+                'title' => 'Shoes'
+            ],
+            'shop_2_de' => [
+                'shopId' => '2',
+                'languageId' => '0',
+                'title' => 'Schuhe'
+            ],
+            'shop_2_en' => [
+                'shopId' => '2',
+                'languageId' => '1',
+                'title' => 'Shoes'
+            ],
+        ];
+    }
+
+    /**
+     * Check multishop multilanguage data is accessible
+     *
+     * @dataProvider providerGetCategoryMultilanguage
+     */
+    public function testGetListTranslatedSecondShopCategories($shopId, $languageId, $title)
+    {
+        $this->setGETRequestParameter('shp', $shopId);
+        $this->setGETRequestParameter('lang', $languageId);
+        $this->addCategoryToShops([2]);
+
+        $result = $this->query('query {
+            categories(filter: {
+                title: {
+                    equals: "' . $title . '"
+                }
+            }) {
+                id,
+                title
+            }
+        }');
+
+        $this->assertEquals(
+            200,
+            $result['status']
+        );
+
+        $this->assertEquals(
+            [
+                'id' => self::CATEGORY_ID,
+                'title' => $title
+            ],
+            $result['body']['data']['categories'][0]
+        );
+    }
+
+    /**
      * Check if active category from shop 1 is not accessible for
      * shop 2 if its not yet related to shop 2
      */
@@ -70,35 +159,6 @@ class CategoryEnterpriseTest extends MultishopTestCase
             ],
             $result['body']['data']['category']
         );
-    }
-
-    /**
-     * @return array
-     */
-    public function providerGetCategoryMultilanguage()
-    {
-        return [
-            'shop_1_de' => [
-                'shopId' => '1',
-                'languageId' => '0',
-                'title' => 'Schuhe'
-            ],
-            'shop_1_en' => [
-                'shopId' => '1',
-                'languageId' => '1',
-                'title' => 'Shoes'
-            ],
-            'shop_2_de' => [
-                'shopId' => '2',
-                'languageId' => '0',
-                'title' => 'Schuhe'
-            ],
-            'shop_2_en' => [
-                'shopId' => '2',
-                'languageId' => '1',
-                'title' => 'Shoes'
-            ],
-        ];
     }
 
     /**

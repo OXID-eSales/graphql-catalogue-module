@@ -287,4 +287,107 @@ final class CategoryTest extends TokenTestCase
             new \DateTimeImmutable($child['timestamp'])
         );
     }
+
+    public function testGetCategoryListWithoutFilter()
+    {
+        $result = $this->query('query {
+            categories {
+                id
+                position
+                active
+                hidden
+                title
+                shortDescription
+                longDescription
+                thumbnail
+                externalLink
+                template
+                defaultSortField
+                defaultSortMode
+                priceFrom
+                priceTo
+                icon
+                promotionIcon
+                vat
+                skipDiscount
+                showSuffix
+                url
+            }
+        }');
+
+        $this->assertEquals(
+            200,
+            $result['status']
+        );
+        $this->assertCount(
+            24,
+            $result['body']['data']['categories']
+        );
+    }
+
+    public function testGetCategoryListWithPartialFilter()
+    {
+        $result = $this->query('query (filter: {
+                title: {
+                    contains: "l"
+                }
+            }){
+            categories {
+                id
+            }
+        }');
+
+        $this->assertEquals(
+            200,
+            $result['status']
+        );
+        $this->assertCount(
+            2,
+            $result['body']['data']['categories']
+        );
+    }
+
+    public function testGetCategoryListWithExactFilter()
+    {
+        $result = $this->query('query (filter: {
+                title: {
+                    equals: "Jeans"
+                }
+            }){
+            categories {
+                id
+            }
+        }');
+
+        $this->assertEquals(
+            200,
+            $result['status']
+        );
+        $this->assertCount(
+            2,
+            $result['body']['data']['categories']
+        );
+    }
+
+    public function testGetEmptyCategoryListWithFilter()
+    {
+        $result = $this->query('query (filter: {
+                title: {
+                    contains: "DOES-NOT-EXIST"
+                }
+            }){
+            categories {
+                id
+            }
+        }');
+
+        $this->assertEquals(
+            200,
+            $result['status']
+        );
+        $this->assertEquals(
+            0,
+            count($result['body']['data']['vendors'])
+        );
+    }
 }
