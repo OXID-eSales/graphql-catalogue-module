@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
 declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
@@ -12,6 +17,16 @@ class ManufacturerTest extends TestCase
     private const ACTIVE_MANUFACTURER = "oiaf6ab7e12e86291e86dd3ff891fe40";
     private const INACTIVE_MANUFACTURER  = "dc50589ad69b6ec71721b25bdd403171";
     private const ACTIVE_MULTILANGUAGE_MANUFACTURER = 'adc6df0977329923a6330cc8f3c0a906';
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->setGETRequestParameter(
+            'lang',
+            '0'
+        );
+    }
 
     public function testGetSingleActiveManufacturer()
     {

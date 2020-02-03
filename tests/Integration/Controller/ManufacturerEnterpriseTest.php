@@ -52,9 +52,9 @@ class ManufacturerEnterpriseTest extends MultishopTestCase
             $result
         );
         // fixtures have 11 active manufacturers
-        $this->assertEquals(
+        $this->assertCount(
             0,
-            count($result['body']['data']['manufacturers'])
+            $result['body']['data']['manufacturers']
         );
     }
 
@@ -106,9 +106,9 @@ class ManufacturerEnterpriseTest extends MultishopTestCase
             $result
         );
         // fixtures have 11 active manufacturers
-        $this->assertEquals(
+        $this->assertCount(
             1,
-            count($result['body']['data']['manufacturers'])
+            $result['body']['data']['manufacturers']
         );
     }
 

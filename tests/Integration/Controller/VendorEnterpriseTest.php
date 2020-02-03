@@ -58,9 +58,9 @@ class VendorEnterpriseTest extends MultishopTestCase
             $result
         );
         // fixtures have 2 active vendors
-        $this->assertEquals(
+        $this->assertCount(
             0,
-            count($result['body']['data']['vendors'])
+            $result['body']['data']['vendors']
         );
     }
 
@@ -113,9 +113,9 @@ class VendorEnterpriseTest extends MultishopTestCase
             $result
         );
         // fixtures have 2 active vendors
-        $this->assertEquals(
+        $this->assertCount(
             1,
-            count($result['body']['data']['vendors'])
+            $result['body']['data']['vendors']
         );
     }
 
