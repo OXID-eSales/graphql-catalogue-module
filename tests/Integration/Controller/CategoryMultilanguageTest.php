@@ -43,7 +43,7 @@ final class CategoryMultiLanguageTest extends TestCase
 
         $this->assertCount(
             $count,
-            count($result['body']['data']['categories'])
+            $result['body']['data']['categories']
         );
     }
 
