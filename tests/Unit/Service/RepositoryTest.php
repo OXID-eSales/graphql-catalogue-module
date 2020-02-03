@@ -78,7 +78,7 @@ class WrongModel
 
 class WrongType
 {
-    public function getModelClass(): string
+    public static function getModelClass(): string
     {
         return WrongModel::class;
     }
@@ -98,7 +98,7 @@ class CorrectModel extends \OxidEsales\Eshop\Core\Model\BaseModel
 
 class AlsoWrongType
 {
-    public function getModelClass(): string
+    public static function getModelClass(): string
     {
         return CorrectModel::class;
     }
