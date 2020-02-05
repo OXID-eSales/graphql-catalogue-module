@@ -9,10 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
-use OxidEsales\GraphQL\Catalogue\Exception\CategoryNotFound;
-use OxidEsales\GraphQL\Catalogue\Exception\ShopNotFound;
-use OxidEsales\GraphQL\Catalogue\Service\CategoryRepository;
-use OxidEsales\GraphQL\Catalogue\Service\ShopRepository;
+use OxidEsales\GraphQL\Base\Exception\NotFound;
+use OxidEsales\GraphQL\Catalogue\Service\Repository;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 
@@ -21,18 +19,13 @@ use TheCodingMachine\GraphQLite\Annotations\Field;
  */
 class CategoryRelationService
 {
-    /** @var CategoryRepository */
-    private $categoryRepository;
-
-    /** @var ShopRepository */
-    private $shopRepository;
+    /** @var Repository */
+    private $repository;
 
     public function __construct(
-        CategoryRepository $categoryRepository,
-        ShopRepository $shopRepository
+        Repository $repository
     ) {
-        $this->categoryRepository = $categoryRepository;
-        $this->shopRepository = $shopRepository;
+        $this->repository = $repository;
     }
 
     /**
@@ -41,8 +34,11 @@ class CategoryRelationService
     public function getParent(Category $child): ?Category
     {
         try {
-            return $this->categoryRepository->getById((string)$child->getParentId());
-        } catch (CategoryNotFound $e) {
+            return $this->repository->getById(
+                (string)$child->getParentId(),
+                Category::class
+            );
+        } catch (NotFound $e) {
             return null;
         }
     }
@@ -50,24 +46,22 @@ class CategoryRelationService
     /**
      * @Field()
      */
-    public function getRoot(Category $category): ?Category
+    public function getRoot(Category $category): Category
     {
-        try {
-            return $this->categoryRepository->getById((string)$category->getRootId());
-        } catch (CategoryNotFound $e) {
-            return null;
-        }
+        return $this->repository->getById(
+            (string)$category->getRootId(),
+            Category::class
+        );
     }
 
     /**
      * @Field()
      */
-    public function getShop(Category $category): ?Shop
+    public function getShop(Category $category): Shop
     {
-        try {
-            return $this->shopRepository->getById((string)$category->getShopId());
-        } catch (ShopNotFound $e) {
-            return null;
-        }
+        return $this->repository->getById(
+            (string)$category->getShopId(),
+            Shop::class
+        );
     }
 }

@@ -17,7 +17,7 @@ use TheCodingMachine\GraphQLite\Types\ID;
 /**
  * @Type()
  */
-class Shop
+final class Shop implements DataType
 {
     /** @var ShopModel */
     private $shop;
@@ -25,6 +25,14 @@ class Shop
     public function __construct(ShopModel $shop)
     {
         $this->shop = $shop;
+    }
+
+    /**
+     * @return class-string
+     */
+    public static function getModelClass(): string
+    {
+        return ShopModel::class;
     }
 
     /**
