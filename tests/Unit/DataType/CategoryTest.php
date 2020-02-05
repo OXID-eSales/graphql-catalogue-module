@@ -73,8 +73,7 @@ class CategoryModelStub extends CategoryModel
         string $active = '1',
         string $activefrom = '0000-00-00 00:00:00',
         string $activeto = '0000-00-00 00:00:00'
-    )
-    {
+    ) {
         $this->_sCoreTable = 'oxcategories';
         $this->oxcategories__oxactive = new Field(
             $active,
