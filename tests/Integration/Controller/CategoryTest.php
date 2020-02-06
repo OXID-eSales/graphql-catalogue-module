@@ -15,6 +15,8 @@ final class CategoryTest extends TokenTestCase
 {
     private const ACTIVE_CATEGORY = "d86fdf0d67bf76dc427aabd2e53e0a97";
     private const INACTIVE_CATEGORY  = "d8665fef35f4d528e92c3d664f4a00c0";
+    private const CATEGORY_WITHOUT_CHILDREN  = "0f4270b89fbef1481958381410a0dbca";
+    private const CATEGORY_WITH_CHILDREN  = "943173edecf6d6870a0f357b8ac84d32";
 
     public function testGetSingleActiveCategory()
     {
@@ -174,6 +176,115 @@ final class CategoryTest extends TokenTestCase
 
         $this->assertNull(
             $category['root']['parent']
+        );
+    }
+
+    public function testGetChildrenWhenThereAreNoChildren()
+    {
+        $result = $this->query('query{
+            category(id: "' . self::CATEGORY_WITHOUT_CHILDREN . '"){
+                id
+                children{id}
+            }
+        }');
+
+        $children = $result['body']['data']['category']['children'];
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertSame(
+            [],
+            $children
+        );
+    }
+
+    public function testGetChildren()
+    {
+        $result = $this->query('query{
+            category(id: "' . self::CATEGORY_WITH_CHILDREN . '"){
+                id
+                children{id}
+            }
+         }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $children = $result['body']['data']['category']['children'];
+
+        $this->assertSame($children[0]['id'], '0f40c6a077b68c21f164767c4a903fd2');
+        $this->assertSame($children[1]['id'], '0f4270b89fbef1481958381410a0dbca');
+        $this->assertSame($children[2]['id'], 'd86d90e4b441aa3f0004dcda5ba5bb38');
+    }
+
+    public function testGetAllFieldsOfSingleActiveChildCategory()
+    {
+        $result = $this->query('query {
+            category(id: "' . self::CATEGORY_WITH_CHILDREN . '") {
+                children {
+                    id
+                    position
+                    active
+                    hidden
+                    title
+                    shortDescription
+                    longDescription
+                    thumbnail
+                    externalLink
+                    template
+                    defaultSortField
+                    defaultSortMode
+                    priceFrom
+                    priceTo
+                    icon
+                    promotionIcon
+                    vat
+                    skipDiscount
+                    showSuffix
+                    url
+                    timestamp
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $child = $result['body']['data']['category']['children'][0];
+
+        $this->assertSame('0f40c6a077b68c21f164767c4a903fd2', $child['id']);
+        $this->assertSame(202, $child['position']);
+        $this->assertTrue($child['active']);
+        $this->assertFalse($child['hidden']);
+        $this->assertSame('Bindungen', $child['title']);
+        $this->assertEmpty($child['shortDescription']);
+        $this->assertEmpty($child['longDescription']);
+        $this->assertNull($child['thumbnail']);
+        $this->assertEmpty($child['externalLink']);
+        $this->assertEmpty($child['template']);
+        $this->assertEmpty($child['defaultSortField']);
+        $this->assertSame('ASC', $child['defaultSortMode']);
+        $this->assertSame(0.0, $child['priceFrom']);
+        $this->assertSame(0.0, $child['priceTo']);
+        $this->assertRegExp(
+            '@https?://.*/out/pictures/generated/category/icon/.*/wakeboarding_bindings_1_cico.jpg@',
+            $child['icon']
+        );
+        $this->assertNull($child['promotionIcon']);
+        $this->assertNull($child['vat']);
+        $this->assertFalse($child['skipDiscount']);
+        $this->assertTrue($child['showSuffix']);
+        $this->assertRegExp('@https?://.*/Wakeboarding/Bindungen/@', $child['url']);
+        $this->assertInstanceOf(
+            \DateTimeInterface::class,
+            new \DateTimeImmutable($child['timestamp'])
         );
     }
 }

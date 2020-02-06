@@ -58,10 +58,8 @@ class Repository
      * @return T[]
      * @throws InvalidArgumentException if $model is not instance of BaseModel
      */
-    public function getByFilter(
-        FilterList $filter,
-        string $type
-    ): array {
+    public function getByFilter(FilterList $filter, string $type): array
+    {
         $types = [];
         $model = oxNew($type::getModelClass());
         if (!($model instanceof BaseModel)) {

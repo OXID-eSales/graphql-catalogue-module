@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Catalogue\Controller;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\Category as CategoryDataType;
+use OxidEsales\GraphQL\Catalogue\DataType\CategoryFilterList;
 use OxidEsales\GraphQL\Catalogue\Exception\CategoryNotFound;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 

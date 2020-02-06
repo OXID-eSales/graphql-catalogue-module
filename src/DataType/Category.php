@@ -82,6 +82,7 @@ final class Category implements DataType
         if ($active) {
             return true;
         }
+
         $from = new \DateTimeImmutable(
             (string)$this->category->getFieldData('oxactivefrom')
         );
@@ -89,12 +90,10 @@ final class Category implements DataType
             (string)$this->category->getFieldData('oxactiveto')
         );
         $now = $now ?? new \DateTimeImmutable("now");
-        if (
-            $from <= $now &&
-            $to >= $now
-        ) {
+        if ($from <= $now && $to >= $now) {
             return true;
         }
+
         return false;
     }
 
