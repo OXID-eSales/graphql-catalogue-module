@@ -30,12 +30,10 @@ class ManufacturerFilterList extends FilterList
      * @Factory(name="ManufacturerFilterList")
      */
     public static function createManufacturerFilterList(
-        ?StringFilter $title = null,
-        ?BoolFilter $active = null
+        ?StringFilter $title = null
     ): self {
         return new self(
-            $title,
-            $active
+            $title
         );
     }
 
