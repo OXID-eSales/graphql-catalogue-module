@@ -30,12 +30,10 @@ class VendorFilterList extends FilterList
      * @Factory(name="VendorFilterList")
      */
     public static function createVendorFilterList(
-        ?StringFilter $title = null,
-        ?BoolFilter $active = null
+        ?StringFilter $title = null
     ): self {
         return new self(
-            $title,
-            $active
+            $title
         );
     }
 
