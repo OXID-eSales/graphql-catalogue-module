@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
+use OxidEsales\GraphQL\Base\DataType\StringFilter;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
@@ -62,6 +63,25 @@ class CategoryRelationService
         return $this->repository->getById(
             (string)$category->getShopId(),
             Shop::class
+        );
+    }
+
+    /**
+     * @Field()
+     *
+     * @return Category[]
+     */
+    public function getChildren(Category $category): array
+    {
+        $filter = $filter ?? new CategoryFilterList(
+            null,
+            new \OxidEsales\GraphQL\Base\DataType\BoolFilter(true),
+            new \OxidEsales\GraphQL\Base\DataType\StringFilter((string)$category->getId())
+        );
+
+        return $this->repository->getByFilter(
+            $filter,
+            Category::class
         );
     }
 }
