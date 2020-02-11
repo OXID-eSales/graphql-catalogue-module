@@ -75,7 +75,6 @@ class CategoryRelationService
     {
         $filter = $filter ?? new CategoryFilterList(
             null,
-            new \OxidEsales\GraphQL\Base\DataType\BoolFilter(true),
             new \OxidEsales\GraphQL\Base\DataType\StringFilter((string)$category->getId())
         );
 

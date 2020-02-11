@@ -57,12 +57,11 @@ class Manufacturer extends Base
     public function manufacturers(?ManufacturerFilterList $filter = null): array
     {
         $filter = $filter ?? new ManufacturerFilterList();
-        // In case of missing permissions
-        // only return active vendors
-        if (!$this->isAuthorized('VIEW_INACTIVE_MANUFACTURER')) {
-            $filter = $filter->withActiveFilter(
-                new \OxidEsales\GraphQL\Base\DataType\BoolFilter(true)
-            );
+
+        // In case user has VIEW_INACTIVE_MANUFACTURER permissions
+        // return all manufacturers including inactive ones
+        if ($this->isAuthorized('VIEW_INACTIVE_MANUFACTURER')) {
+            $filter = $filter->withActiveFilter(null);
         }
 
         $manufacturers = $this->repository->getByFilter(

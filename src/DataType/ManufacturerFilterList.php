@@ -24,6 +24,7 @@ class ManufacturerFilterList extends FilterList
     ) {
         $this->title = $title;
         $this->active = $active;
+        parent::__construct();
     }
 
     /**

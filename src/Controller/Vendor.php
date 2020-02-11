@@ -53,12 +53,11 @@ class Vendor extends Base
     public function vendors(?VendorFilterList $filter = null): array
     {
         $filter = $filter ?? new VendorFilterList();
-        // In case of missing permissions
-        // only return active vendors
-        if (!$this->isAuthorized('VIEW_INACTIVE_VENDOR')) {
-            $filter = $filter->withActiveFilter(
-                new \OxidEsales\GraphQL\Base\DataType\BoolFilter(true)
-            );
+
+        // In case user has VIEW_INACTIVE_VENDOR permissions
+        // return all vendors including inactive
+        if ($this->isAuthorized('VIEW_INACTIVE_VENDOR')) {
+            $filter = $filter->withActiveFilter(null);
         }
 
         $vendors = $this->repository->getByFilter(

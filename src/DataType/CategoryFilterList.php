@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
-use OxidEsales\GraphQL\Base\DataType\BoolFilter;
 use OxidEsales\GraphQL\Base\DataType\StringFilter;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
@@ -23,12 +22,11 @@ class CategoryFilterList extends FilterList
 
     public function __construct(
         ?StringFilter $title = null,
-        ?BoolFilter $active = null,
         ?StringFilter $parentId = null
     ) {
         $this->title = $title;
-        $this->active = $active;
         $this->parentId = $parentId;
+        parent::__construct();
     }
 
     /**
@@ -36,12 +34,10 @@ class CategoryFilterList extends FilterList
      */
     public static function createCategoryFilterList(
         ?StringFilter $title = null,
-        ?BoolFilter $active = null,
         ?StringFilter $parentId = null
     ): self {
         return new self(
             $title,
-            $active,
             $parentId
         );
     }

@@ -16,9 +16,14 @@ abstract class FilterList
     /** @var ?BoolFilter */
     protected $active = null;
 
+    public function __construct()
+    {
+        $this->active = new BoolFilter(true);
+    }
+
     abstract public function getFilters(): array;
 
-    public function withActiveFilter(BoolFilter $active): self
+    public function withActiveFilter(?BoolFilter $active): self
     {
         $filterList = clone $this;
         $filterList->active = $active;
