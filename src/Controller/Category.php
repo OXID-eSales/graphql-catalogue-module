@@ -61,12 +61,6 @@ class Category extends Base
             $filter = $filter->withActiveFilter(new BoolFilter(true));
         }
 
-        try {
-            $categories = $this->repository->getByFilter($filter, CategoryDataType::class);
-        } catch (\Exception $e) {
-            return [];
-        }
-
-        return $categories;
+        return $this->repository->getByFilter($filter, CategoryDataType::class);
     }
 }
