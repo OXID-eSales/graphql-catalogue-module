@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Catalogue\Controller;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
+use OxidEsales\GraphQL\Base\DataType\BoolFilter;
 use OxidEsales\GraphQL\Catalogue\DataType\Category as CategoryDataType;
 use OxidEsales\GraphQL\Catalogue\DataType\CategoryFilterList;
 use OxidEsales\GraphQL\Catalogue\Exception\CategoryNotFound;
@@ -18,7 +19,6 @@ use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Category extends Base
 {
-
     /**
      * @Query()
      *
@@ -42,5 +42,21 @@ class Category extends Base
         }
 
         return $category;
+    }
+
+    /**
+     * @Query()
+     *
+     * @return CategoryDataType[]
+     */
+    public function categories(?CategoryFilterList $filter = null): array
+    {
+        $filter = $filter ?? new CategoryFilterList();
+
+        if (!$this->isAuthorized('VIEW_INACTIVE_CATEGORY')) {
+            $filter = $filter->withActiveFilter(new BoolFilter(true));
+        }
+
+        return $this->repository->getByFilter($filter, CategoryDataType::class);
     }
 }
