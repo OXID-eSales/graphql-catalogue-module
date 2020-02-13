@@ -26,6 +26,11 @@ final class CategoryEnterpriseAccessRightsTest extends TestCase
  
     protected function setUp(): void
     {
+        if ($this->getConfig()->getEdition() !== 'EE') {
+            $this->markTestSkipped("Skip EE related tests for CE/PE edition");
+            return;
+        }
+
         parent::setUp();
 
         $this->setGETRequestParameter(
