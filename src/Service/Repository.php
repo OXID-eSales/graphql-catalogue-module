@@ -84,8 +84,8 @@ class Repository
             $fieldFilter->addToQuery($queryBuilder, $field);
         }
 
-        /** @var \Doctrine\DBAL\Statement $result */
         $queryBuilder->getConnection()->setFetchMode(PDO::FETCH_ASSOC);
+        /** @var \Doctrine\DBAL\Statement $result */
         $result = $queryBuilder->execute();
         foreach ($result as $row) {
             $newModel = clone $model;
