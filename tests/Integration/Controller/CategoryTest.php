@@ -137,9 +137,6 @@ final class CategoryTest extends TokenTestCase
         $result = $this->query('query {
             category (id: "' . self::ACTIVE_CATEGORY . '") {
                 id
-                shop {
-                    id
-                }
                 parent {
                     id
                 }
@@ -158,11 +155,6 @@ final class CategoryTest extends TokenTestCase
         );
 
         $category = $result['body']['data']['category'];
-
-        $this->assertSame(
-            "1",
-            $category['shop']['id']
-        );
 
         $this->assertSame(
             "fad2d80baf7aca6ac54e819e066f24aa",

@@ -57,17 +57,6 @@ class CategoryRelationService
 
     /**
      * @Field()
-     */
-    public function getShop(Category $category): Shop
-    {
-        return $this->repository->getById(
-            (string)$category->getShopId(),
-            Shop::class
-        );
-    }
-
-    /**
-     * @Field()
      *
      * @return Category[]
      */
