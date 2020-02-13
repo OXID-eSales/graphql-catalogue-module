@@ -15,6 +15,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInt
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\FilterList;
 use OxidEsales\GraphQL\Catalogue\DataType\DataType;
+use PDO;
 
 class Repository
 {
@@ -66,8 +67,6 @@ class Repository
             throw new InvalidArgumentException();
         }
 
-        $wherePart = $model->getSqlActiveSnippet();
-
         $queryBuilder = $this->queryBuilderFactory->create();
         $queryBuilder->select('*')
                      ->from($model->getViewName())
@@ -77,7 +76,7 @@ class Repository
             $filter->getActive() !== null &&
             $filter->getActive()->equals() === true
         ) {
-            $queryBuilder->andWhere($wherePart);
+            $queryBuilder->andWhere($model->getSqlActiveSnippet());
         }
 
         $filters = array_filter($filter->getFilters());
@@ -86,6 +85,7 @@ class Repository
         }
 
         /** @var \Doctrine\DBAL\Statement $result */
+        $queryBuilder->getConnection()->setFetchMode(PDO::FETCH_ASSOC);
         $result = $queryBuilder->execute();
         foreach ($result as $row) {
             $newModel = clone $model;
