@@ -108,13 +108,6 @@ final class Category implements DataType
         return !$this->category->getIsVisible();
     }
 
-    public function getShopId(): ID
-    {
-        return new ID(
-            (int)$this->category->getFieldData('oxshopid')
-        );
-    }
-
     /**
      * @Field()
      */
