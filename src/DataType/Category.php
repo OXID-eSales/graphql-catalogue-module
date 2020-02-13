@@ -11,7 +11,7 @@ namespace OxidEsales\GraphQL\Catalogue\DataType;
 
 use DateTimeImmutable;
 use DateTimeInterface;
-use OxidEsales\EshopCommunity\Application\Model\Category as CategoryModel;
+use OxidEsales\Eshop\Application\Model\Category as CategoryModel;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 use TheCodingMachine\GraphQLite\Types\ID;
@@ -106,13 +106,6 @@ final class Category implements DataType
     public function isHidden(): bool
     {
         return !$this->category->getIsVisible();
-    }
-
-    public function getShopId(): ID
-    {
-        return new ID(
-            (int)$this->category->getFieldData('oxshopid')
-        );
     }
 
     /**

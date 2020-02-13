@@ -15,6 +15,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInt
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\FilterList;
 use OxidEsales\GraphQL\Catalogue\DataType\DataType;
+use PDO;
 
 class Repository
 {
@@ -42,7 +43,7 @@ class Repository
         if (!($model instanceof BaseModel)) {
             throw new InvalidArgumentException();
         }
-        if (!$model->load($id)) {
+        if (!$model->load($id) || (method_exists($model, 'canView') && !$model->canView())) {
             throw new NotFound($id);
         }
         $type = new $type($model);
@@ -65,6 +66,7 @@ class Repository
         if (!($model instanceof BaseModel)) {
             throw new InvalidArgumentException();
         }
+
         $queryBuilder = $this->queryBuilderFactory->create();
         $queryBuilder->select('*')
                      ->from($model->getViewName())
@@ -82,6 +84,7 @@ class Repository
             $fieldFilter->addToQuery($queryBuilder, $field);
         }
 
+        $queryBuilder->getConnection()->setFetchMode(PDO::FETCH_ASSOC);
         /** @var \Doctrine\DBAL\Statement $result */
         $result = $queryBuilder->execute();
         foreach ($result as $row) {

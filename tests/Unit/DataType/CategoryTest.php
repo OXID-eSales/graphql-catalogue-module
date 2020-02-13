@@ -6,7 +6,7 @@ namespace OxidEsales\GraphQL\Catalogue\Tests\Unit\DataType;
 
 use PHPUnit\Framework\TestCase;
 use OxidEsales\GraphQL\Catalogue\DataType\Category;
-use OxidEsales\EshopCommunity\Application\Model\Category as CategoryModel;
+use OxidEsales\Eshop\Application\Model\Category as EshopCategoryModel;
 use OxidEsales\Eshop\Core\Field;
 
 /**
@@ -67,7 +67,7 @@ class CategoryTest extends TestCase
 
 // phpcs:disable
 
-class CategoryModelStub extends CategoryModel
+class CategoryModelStub extends EshopCategoryModel
 {
     public function __construct(
         string $active = '1',
