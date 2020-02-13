@@ -12,11 +12,11 @@ namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 use OxidEsales\Eshop\Application\Model\Groups;
 use OxidEsales\Eshop\Core\Model\BaseModel as ShopBaseModel;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
+use OxidEsales\GraphQL\Base\Tests\Integration\EnterpriseTestCase;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 
-final class CategoryEnterpriseAccessRightsTest extends TestCase
+final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
 {
     private const CATEGORY_ID = '30e44ab83fdee7564.23264141'; //Bekleidung
     private const USER_GROUP_ID = '_test_user_group';
@@ -26,11 +26,6 @@ final class CategoryEnterpriseAccessRightsTest extends TestCase
  
     protected function setUp(): void
     {
-        if ($this->getConfig()->getEdition() !== 'EE') {
-            $this->markTestSkipped("Skip EE related tests for CE/PE edition");
-            return;
-        }
-
         parent::setUp();
 
         $this->setGETRequestParameter(
