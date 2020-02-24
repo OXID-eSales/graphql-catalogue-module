@@ -35,7 +35,7 @@ class Vendor extends Base
             throw VendorNotFound::byId($id);
         }
 
-        if ($vendor->getActive()) {
+        if ($vendor->isActive()) {
             return $vendor;
         }
 

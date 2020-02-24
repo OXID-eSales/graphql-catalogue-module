@@ -38,7 +38,7 @@ class Manufacturer extends Base
             throw ManufacturerNotFound::byId($id);
         }
 
-        if ($manufacturer->getActive()) {
+        if ($manufacturer->isActive()) {
             return $manufacturer;
         }
 

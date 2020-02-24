@@ -49,7 +49,7 @@ class Manufacturer implements DataType
     /**
      * @Field()
      */
-    public function getActive(): bool
+    public function isActive(): bool
     {
         return (bool)$this->manufacturer->getFieldData('oxactive');
     }
