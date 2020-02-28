@@ -49,7 +49,7 @@ class Vendor implements DataType
     /**
      * @Field()
      */
-    public function getActive(): bool
+    public function isActive(): bool
     {
         return (bool)$this->vendor->getFieldData('oxactive');
     }
