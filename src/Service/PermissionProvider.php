@@ -20,6 +20,7 @@ class PermissionProvider implements PermissionProviderInterface
                 'VIEW_INACTIVE_MANUFACTURER',
                 'VIEW_INACTIVE_VENDOR',
                 'VIEW_INACTIVE_CATEGORY',
+                'VIEW_INACTIVE_PRODUCT',
             ]
         ];
     }

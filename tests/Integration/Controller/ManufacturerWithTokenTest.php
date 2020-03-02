@@ -24,7 +24,7 @@ final class ManufacturerWithTokenTest extends TokenTestCase
     {
         parent::setUp();
 
-        $this->prepareAdminToken();
+        $this->prepareToken();
     }
 
     public function testGetSingleActiveManufacturer()

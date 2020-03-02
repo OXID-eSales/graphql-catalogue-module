@@ -120,7 +120,7 @@ class Product implements DataType
      */
     public function getVat(): float
     {
-        return $this->product->getArticleVat();
+        return (float)$this->product->getArticleVat();
     }
 
     /**
@@ -140,10 +140,6 @@ class Product implements DataType
     {
         return (bool)$this->product->getFieldData('oxfreeshipping');
     }
-
-
-
-
 
     /**
      * @Field()

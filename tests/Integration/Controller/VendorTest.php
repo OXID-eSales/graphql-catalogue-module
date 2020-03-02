@@ -83,7 +83,7 @@ final class VendorTest extends TokenTestCase
 
     public function testGetSingleInactiveVendorWithToken()
     {
-        $this->prepareAdminToken();
+        $this->prepareToken();
 
         $result = $this->query('query {
             vendor (id: "' . self::INACTIVE_VENDOR . '") {
@@ -142,7 +142,7 @@ final class VendorTest extends TokenTestCase
 
     public function testGetVendorListWithAdminToken()
     {
-        $this->prepareAdminToken();
+        $this->prepareToken();
 
         $result = $this->query('query {
             vendors {

@@ -102,7 +102,7 @@ final class CategoryTest extends TokenTestCase
 
     public function testGetSingleInactiveCategoryWithToken()
     {
-        $this->prepareAdminToken();
+        $this->prepareToken();
 
         $result = $this->query('query {
             category (id: "' . self::INACTIVE_CATEGORY . '") {
