@@ -72,4 +72,18 @@ class CategoryRelationService
             Category::class
         );
     }
+
+    /**
+     * @Field()
+     *
+     * @param Category $category
+     *
+     * @return Seo
+     */
+    public function getSeo(Category $category): Seo
+    {
+        $seo = new Seo($category->getEshopModel());
+
+        return $seo;
+    }
 }

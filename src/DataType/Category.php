@@ -37,6 +37,11 @@ final class Category implements DataType
         return CategoryModel::class;
     }
 
+    public function getEshopModel(): CategoryModel
+    {
+        return $this->category;
+    }
+
     /**
      * @Field()
      */
@@ -257,13 +262,5 @@ final class Category implements DataType
         return new DateTimeImmutable(
             $this->category->getFieldData('oxtimestamp')
         );
-    }
-
-    /**
-     * @Field
-     */
-    public function getUrl(): string
-    {
-        return $this->category->getLink();
     }
 }

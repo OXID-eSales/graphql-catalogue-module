@@ -37,8 +37,13 @@ class ManufacturerTest extends TestCase
                 icon
                 title
                 shortdesc
-                url
                 timestamp
+                seo {
+                  metadescription
+                  metakeywords
+                  standardurl
+                  seourl
+                }
             }
         }');
         $this->assertResponseStatus(
@@ -53,7 +58,13 @@ class ManufacturerTest extends TestCase
         $this->assertRegExp('@https?://.*oreilly_1_mico.png$@', $manufacturer['icon']);
         $this->assertEquals('O&#039;Reilly', $manufacturer['title']);
         $this->assertSame('', $manufacturer['shortdesc']);
-        $this->assertRegExp('@https?://.*Nach-Hersteller/O-Reilly/$@', $manufacturer['url']);
+        $this->assertRegExp('@https?://.*Nach-Hersteller/O-Reilly/$@', $manufacturer['seo']['seourl']);
+        $this->assertRegExp(
+            '@https?://.*\?cl=manufacturerlist&mnid=oiaf6ab7e12e86291e86dd3ff891fe40@',
+            $manufacturer['seo']['standardurl']
+        );
+        $this->assertEquals('german manufacturer seo description', $manufacturer['seo']['metadescription']);
+        $this->assertEquals('german manufacturer seo keywords', $manufacturer['seo']['metakeywords']);
 
         $this->assertEmpty(array_diff(array_keys($manufacturer), [
             'id',
@@ -61,8 +72,8 @@ class ManufacturerTest extends TestCase
             'icon',
             'title',
             'shortdesc',
-            'url',
-            'timestamp'
+            'timestamp',
+            'seo'
         ]));
     }
 
@@ -75,7 +86,6 @@ class ManufacturerTest extends TestCase
                 icon
                 title
                 shortdesc
-                url
                 timestamp
             }
         }');
@@ -94,7 +104,6 @@ class ManufacturerTest extends TestCase
                 icon
                 title
                 shortdesc
-                url
                 timestamp
             }
         }');
@@ -113,7 +122,6 @@ class ManufacturerTest extends TestCase
                 icon
                 title
                 shortdesc
-                url
                 timestamp
             }
         }');

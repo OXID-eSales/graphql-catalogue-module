@@ -41,7 +41,9 @@ class ManufacturerMultilanguageTest extends TestCase
             manufacturer (id: "' . self::ACTIVE_MULTILANGUAGE_MANUFACTURER . '") {
                 id
                 title
-                url
+                seo {
+                    seourl
+                }
             }
         }';
 
@@ -60,7 +62,7 @@ class ManufacturerMultilanguageTest extends TestCase
 
         $this->assertSame(self::ACTIVE_MULTILANGUAGE_MANUFACTURER, $manufacturer['id']);
         $this->assertEquals($title, $manufacturer['title']);
-        $this->assertRegExp('@https?://.*' . $seoUrl . '$@', $manufacturer['url']);
+        $this->assertRegExp('@https?://.*' . $seoUrl . '$@', $manufacturer['seo']['seourl']);
     }
 
     public function providerGetManufacturerListWithFilterMultilanguage()

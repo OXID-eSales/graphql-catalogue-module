@@ -38,6 +38,11 @@ class Manufacturer implements DataType
         return ManufacturerModel::class;
     }
 
+    public function getEshopModel(): ManufacturerModel
+    {
+        return $this->manufacturer;
+    }
+
     /**
      * @Field()
      */
@@ -76,14 +81,6 @@ class Manufacturer implements DataType
     public function getShortdesc(): string
     {
         return $this->manufacturer->getShortDescription();
-    }
-
-    /**
-     * @Field()
-     */
-    public function getUrl(): string
-    {
-        return $this->manufacturer->getLink();
     }
 
     /**

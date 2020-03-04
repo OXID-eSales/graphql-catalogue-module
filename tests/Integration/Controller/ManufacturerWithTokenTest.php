@@ -36,8 +36,10 @@ final class ManufacturerWithTokenTest extends TokenTestCase
                 icon
                 title
                 shortdesc
-                url
                 timestamp
+                seo {
+                  seourl
+                }
             }
         }');
 
@@ -50,7 +52,7 @@ final class ManufacturerWithTokenTest extends TokenTestCase
         $this->assertRegExp('@https?://.*logo3_ico.png$@', $manufacturer['icon']);
         $this->assertSame('Kuyichi', $manufacturer['title']);
         $this->assertSame('Eine stilbewusste Marke', $manufacturer['shortdesc']);
-        $this->assertRegExp('@https?://.*Nach-Hersteller/Kuyichi/$@', $manufacturer['url']);
+        $this->assertRegExp('@https?://.*Nach-Hersteller/Kuyichi/$@', $manufacturer['seo']['seourl']);
 
         $dateTimeType = DateTimeType::getInstance();
         //Fixture timestamp can have few seconds difference
@@ -65,8 +67,8 @@ final class ManufacturerWithTokenTest extends TokenTestCase
             'icon',
             'title',
             'shortdesc',
-            'url',
-            'timestamp'
+            'timestamp',
+            'seo'
         ]));
     }
 

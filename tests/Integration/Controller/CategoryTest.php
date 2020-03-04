@@ -41,8 +41,8 @@ final class CategoryTest extends TokenTestCase
                 vat
                 skipDiscount
                 showSuffix
-                url
                 timestamp
+                seo {seourl}
             }
         }');
 
@@ -75,13 +75,13 @@ final class CategoryTest extends TokenTestCase
         $this->assertNull($category['vat']);
         $this->assertFalse($category['skipDiscount']);
         $this->assertTrue($category['showSuffix']);
-        $this->assertRegExp('@https?://.*/Bekleidung/Sportswear/Neopren/Schuhe/@', $category['url']);
+        $this->assertRegExp('@https?://.*/Bekleidung/Sportswear/Neopren/Schuhe/@', $category['seo']['seourl']);
         $this->assertInstanceOf(
             \DateTimeInterface::class,
             new \DateTimeImmutable($category['timestamp'])
         );
 
-        $this->assertNotFalse(parse_url($result['body']['data']['category']['url']));
+        $this->assertNotFalse(parse_url($result['body']['data']['category']['seo']['seourl']));
         $this->assertNotFalse(parse_url($result['body']['data']['category']['icon']));
     }
 
@@ -238,8 +238,8 @@ final class CategoryTest extends TokenTestCase
                     vat
                     skipDiscount
                     showSuffix
-                    url
                     timestamp
+                    seo {seourl}
                 }
             }
         }');
@@ -273,7 +273,7 @@ final class CategoryTest extends TokenTestCase
         $this->assertNull($child['vat']);
         $this->assertFalse($child['skipDiscount']);
         $this->assertTrue($child['showSuffix']);
-        $this->assertRegExp('@https?://.*/Wakeboarding/Bindungen/@', $child['url']);
+        $this->assertRegExp('@https?://.*/Wakeboarding/Bindungen/@', $child['seo']['seourl']);
         $this->assertInstanceOf(
             \DateTimeInterface::class,
             new \DateTimeImmutable($child['timestamp'])
@@ -303,7 +303,6 @@ final class CategoryTest extends TokenTestCase
                 vat
                 skipDiscount
                 showSuffix
-                url
             }
         }');
 
@@ -389,6 +388,52 @@ final class CategoryTest extends TokenTestCase
         $this->assertEquals(
             0,
             count($result['body']['data']['categories'])
+        );
+    }
+
+    public function testGetSeoData()
+    {
+        $this->setGETRequestParameter(
+            'lang',
+            '0'
+        );
+
+        $result = $this->query('query {
+            category (id: "' . self::CATEGORY_WITH_CHILDREN . '") {
+                id
+                seo{
+                    metadescription
+                    metakeywords
+                    standardurl
+                    seourl
+                }
+            }
+        }');
+
+        $this->assertEquals(
+            200,
+            $result['status']
+        );
+
+        $this->assertEquals(
+            self::CATEGORY_WITH_CHILDREN,
+            $result['body']['data']['category']['id']
+        );
+        $this->assertEquals(
+            'german cat seo description',
+            $result['body']['data']['category']['seo']['metadescription']
+        );
+        $this->assertEquals(
+            'german cat seo keywords',
+            $result['body']['data']['category']['seo']['metakeywords']
+        );
+        $this->assertContains(
+            'cl=alist&cnid=' . self::CATEGORY_WITH_CHILDREN,
+            $result['body']['data']['category']['seo']['standardurl']
+        );
+        $this->assertContains(
+            '/Wakeboarding/',
+            $result['body']['data']['category']['seo']['seourl']
         );
     }
 }

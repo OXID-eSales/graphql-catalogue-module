@@ -38,6 +38,11 @@ class Vendor implements DataType
         return VendorModel::class;
     }
 
+    public function getEshopModel(): VendorModel
+    {
+        return $this->vendor;
+    }
+
     /**
      * @Field()
      */
@@ -76,14 +81,6 @@ class Vendor implements DataType
     public function getShortdesc(): string
     {
         return $this->vendor->getShortDescription();
-    }
-
-    /**
-     * @Field()
-     */
-    public function getUrl(): string
-    {
-        return $this->vendor->getLink();
     }
 
     /**
