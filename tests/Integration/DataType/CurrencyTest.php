@@ -16,26 +16,25 @@ class CurrencyTest extends TestCase
 {
     public function testGetCurrency()
     {
-        $currencyArray = [
-            'id' => 0,
-            'name' => 'EUR',
-            'rate' => '1.00',
-            'dec' => ',',
-            'thousand' => '.',
-            'sign' => '€',
-            'decimal' => '2',
-            'selected' => 0,
-        ];
+        $currencyObject = new \stdClass();
+        $currencyObject->id = 0;
+        $currencyObject->name = 'EUR';
+        $currencyObject->rate = '1.00';
+        $currencyObject->dec = ',';
+        $currencyObject->thousand = '.';
+        $currencyObject->sign = '€';
+        $currencyObject->decimal = '2';
+        $currencyObject->selected = 0;
 
-        $config = $this->createPartialMock(Config::class, ['getCurrencyArray']);
-        $config->method('getCurrencyArray')->willReturn($currencyArray);
+        $config = $this->createPartialMock(Config::class, ['getActShopCurrencyObject']);
+        $config->method('getActShopCurrencyObject')->willReturn($currencyObject);
         Registry::set(Config::class, $config);
 
         $currency = new Currency();
 
-        $this->assertSame($currency->getId(), $currencyArray['id']);
-        $this->assertSame($currency->getRate(), $currencyArray['rate']);
-        $this->assertSame($currency->getName(), $currencyArray['name']);
-        $this->assertSame($currency->getSign(), $currencyArray['sign']);
+        $this->assertSame($currency->getId(), $currencyObject->id);
+        $this->assertSame($currency->getRate(), $currencyObject->rate);
+        $this->assertSame($currency->getName(), $currencyObject->name);
+        $this->assertSame($currency->getSign(), $currencyObject->sign);
     }
 }
