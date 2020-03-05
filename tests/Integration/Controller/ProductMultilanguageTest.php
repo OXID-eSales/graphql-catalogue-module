@@ -41,7 +41,9 @@ class ProductMultilanguageTest extends TestCase
             product (id: "' . self::ACTIVE_MULTILANGUAGE_PRODUCT . '") {
                 id
                 title
-                url
+                seo {
+                   seourl
+                }
             }
         }';
 
@@ -60,7 +62,7 @@ class ProductMultilanguageTest extends TestCase
 
         $this->assertSame(self::ACTIVE_MULTILANGUAGE_PRODUCT, $product['id']);
         $this->assertEquals($title, $product['title']);
-        $this->assertRegExp('@https?://.*' . $seoUrl . '.*@', $product['url']);
+        $this->assertRegExp('@https?://.*' . $seoUrl . '.*@', $product['seo']['seourl']);
     }
 
     public function providerGetProductListWithFilterMultilanguage()

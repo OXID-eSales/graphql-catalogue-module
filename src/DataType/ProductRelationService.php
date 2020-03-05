@@ -192,4 +192,18 @@ class ProductRelationService
             $product->getEshopModel()
         );
     }
+
+    /**
+     * @Field()
+     *
+     * @param Product $product
+     *
+     * @return Seo
+     */
+    public function getSeo(Product $product): Seo
+    {
+        $seo = new Seo($product->getEshopModel());
+
+        return $seo;
+    }
 }

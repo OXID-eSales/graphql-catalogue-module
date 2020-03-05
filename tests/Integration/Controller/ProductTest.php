@@ -72,6 +72,12 @@ final class ProductTest extends TokenTestCase
                     }
                     name
                 }
+                seo {
+                    metadescription
+                    metakeywords
+                    standardurl
+                    seourl
+                }
                 id
                 active
                 sKU
@@ -84,7 +90,6 @@ final class ProductTest extends TokenTestCase
                 vat
                 insert
                 freeShipping
-                url
                 timestamp
             }
         }');
@@ -198,8 +203,14 @@ final class ProductTest extends TokenTestCase
 
         $this->assertRegExp(
             '@https?://.*/Wakeboarding/Bindungen/Bindung-O-BRIEN-DECADE-CT-2010.html@',
-            $product['url']
+            $product['seo']['seourl']
         );
+        $this->assertRegExp(
+            '@https?://.*\?cl=details&anid=058e613db53d782adfc9f2ccb43c45fe.*@',
+            $product['seo']['standardurl']
+        );
+        $this->assertEquals('german product seo description', $product['seo']['metadescription']);
+        $this->assertEquals('german product seo keywords', $product['seo']['metakeywords']);
     }
 
     public function testGetSingleInactiveProductWithoutToken()

@@ -144,14 +144,6 @@ class Product implements DataType
     /**
      * @Field()
      */
-    public function getUrl(): string
-    {
-        return $this->product->getLink();
-    }
-
-    /**
-     * @Field()
-     */
     public function getTimestamp(): DateTimeInterface
     {
         return new DateTimeImmutable(
