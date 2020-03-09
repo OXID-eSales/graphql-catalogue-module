@@ -9,8 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
-use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\GraphQL\Catalogue\Struct\Currency as CurrencyStruct;
+use stdClass;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
@@ -19,12 +18,12 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
  */
 final class Currency
 {
-    /** @var CurrencyStruct */
+    /** @var stdClass */
     private $currency;
 
-    public function __construct()
+    public function __construct(stdClass $currencyObject)
     {
-        $this->currency = new CurrencyStruct(Registry::getConfig()->getCurrencyArray());
+        $this->currency = $currencyObject;
     }
 
     /**

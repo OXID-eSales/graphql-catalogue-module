@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
 final class ProductTest extends TokenTestCase
@@ -31,6 +32,12 @@ final class ProductTest extends TokenTestCase
                     vat
                     vatValue
                     nettoPriceMode
+                    currency {
+                        id
+                        name
+                        rate
+                        sign
+                    }
                 }
                 listPrice {
                     price
@@ -113,6 +120,13 @@ final class ProductTest extends TokenTestCase
         $this->assertSame($price['vat'], 19.0);
         $this->assertSame($price['vatValue'], 57.32);
         $this->assertSame($price['nettoPriceMode'], false);
+
+        $currency = $price['currency'];
+        $expectedCurrency = Registry::getConfig()->getActShopCurrencyObject();
+        $this->assertSame($expectedCurrency->id, $currency['id']);
+        $this->assertSame($expectedCurrency->name, $currency['name']);
+        $this->assertSame($expectedCurrency->rate, $currency['rate']);
+        $this->assertSame($expectedCurrency->sign, $currency['sign']);
 
         $listPrice = $product['listPrice'];
         $this->assertSame($listPrice['price'], 399.0);
