@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\DataType;
 
-use OxidEsales\Eshop\Core\Config;
-use OxidEsales\Eshop\Core\Registry;
 use PHPUnit\Framework\TestCase;
 use OxidEsales\GraphQL\Catalogue\DataType\Currency;
 
@@ -26,11 +24,7 @@ class CurrencyTest extends TestCase
         $currencyObject->decimal = '2';
         $currencyObject->selected = 0;
 
-        $config = $this->createPartialMock(Config::class, ['getActShopCurrencyObject']);
-        $config->method('getActShopCurrencyObject')->willReturn($currencyObject);
-        Registry::set(Config::class, $config);
-
-        $currency = new Currency();
+        $currency = new Currency($currencyObject);
 
         $this->assertSame($currency->getId(), $currencyObject->id);
         $this->assertSame($currency->getRate(), $currencyObject->rate);

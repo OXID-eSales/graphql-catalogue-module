@@ -13,7 +13,7 @@ class CurrencyEnterpriseTest extends MultishopTestCase
 {
     public function testGetSecondShopCurrency()
     {
-        $this->setGETRequestParameter('shp', "2");
+        $this->setGETRequestParameter('shp', '2');
 
         $result = $this->query('
             query {

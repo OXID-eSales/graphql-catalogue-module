@@ -9,9 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
-use Exception;
-use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\GraphQL\Catalogue\Struct\Currency as CurrencyStruct;
 use stdClass;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
@@ -21,26 +18,12 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
  */
 final class Currency
 {
-    /** @var CurrencyStruct */
+    /** @var stdClass */
     private $currency;
 
-    public function __construct()
+    public function __construct(stdClass $currencyObject)
     {
-        $currencyObject = Registry::getConfig()->getActShopCurrencyObject();
-
-        if (!($currencyObject instanceof stdClass)) {
-            throw new Exception();
-        }
-
-        $encodedObject = json_encode($currencyObject);
-
-        if ($encodedObject === false) {
-            throw new Exception();
-        }
-
-        $currencyArray = json_decode($encodedObject, true);
-
-        $this->currency = new CurrencyStruct($currencyArray);
+        $this->currency = $currencyObject;
     }
 
     /**

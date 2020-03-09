@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
+use OxidEsales\Eshop\Core\Registry;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 
@@ -22,6 +23,9 @@ class PriceRelationService
      */
     public function getCurrency(): Currency
     {
-        return new Currency();
+
+        /** @var \stdClass $currencyObject */
+        $currencyObject = Registry::getConfig()->getActShopCurrencyObject();
+        return new Currency($currencyObject);
     }
 }
