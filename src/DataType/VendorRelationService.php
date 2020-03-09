@@ -28,13 +28,9 @@ class VendorRelationService
     ) {
         $this->repository = $repository;
     }
-    
+
     /**
      * @Field()
-     *
-     * @param Vendor $vendor
-     *
-     * @return Seo
      */
     public function getSeo(Vendor $vendor): Seo
     {

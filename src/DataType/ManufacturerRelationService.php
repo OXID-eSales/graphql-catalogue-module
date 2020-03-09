@@ -28,13 +28,9 @@ class ManufacturerRelationService
     ) {
         $this->repository = $repository;
     }
-    
+
     /**
      * @Field()
-     *
-     * @param Manufacturer $manufacturer
-     *
-     * @return Seo
      */
     public function getSeo(Manufacturer $manufacturer): Seo
     {
