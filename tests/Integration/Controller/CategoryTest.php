@@ -42,7 +42,9 @@ final class CategoryTest extends TokenTestCase
                 skipDiscount
                 showSuffix
                 timestamp
-                seo {seourl}
+                seo {
+                    url
+                }
             }
         }');
 
@@ -75,13 +77,13 @@ final class CategoryTest extends TokenTestCase
         $this->assertNull($category['vat']);
         $this->assertFalse($category['skipDiscount']);
         $this->assertTrue($category['showSuffix']);
-        $this->assertRegExp('@https?://.*/Bekleidung/Sportswear/Neopren/Schuhe/@', $category['seo']['seourl']);
+        $this->assertRegExp('@https?://.*/Bekleidung/Sportswear/Neopren/Schuhe/@', $category['seo']['url']);
         $this->assertInstanceOf(
             \DateTimeInterface::class,
             new \DateTimeImmutable($category['timestamp'])
         );
 
-        $this->assertNotFalse(parse_url($result['body']['data']['category']['seo']['seourl']));
+        $this->assertNotFalse(parse_url($result['body']['data']['category']['seo']['url']));
         $this->assertNotFalse(parse_url($result['body']['data']['category']['icon']));
     }
 
@@ -239,7 +241,9 @@ final class CategoryTest extends TokenTestCase
                     skipDiscount
                     showSuffix
                     timestamp
-                    seo {seourl}
+                    seo {
+                        url
+                    }
                 }
             }
         }');
@@ -273,7 +277,7 @@ final class CategoryTest extends TokenTestCase
         $this->assertNull($child['vat']);
         $this->assertFalse($child['skipDiscount']);
         $this->assertTrue($child['showSuffix']);
-        $this->assertRegExp('@https?://.*/Wakeboarding/Bindungen/@', $child['seo']['seourl']);
+        $this->assertRegExp('@https?://.*/Wakeboarding/Bindungen/@', $child['seo']['url']);
         $this->assertInstanceOf(
             \DateTimeInterface::class,
             new \DateTimeImmutable($child['timestamp'])
@@ -402,10 +406,9 @@ final class CategoryTest extends TokenTestCase
             category (id: "' . self::CATEGORY_WITH_CHILDREN . '") {
                 id
                 seo{
-                    metadescription
-                    metakeywords
-                    standardurl
-                    seourl
+                    description
+                    keywords
+                    url
                 }
             }
         }');
@@ -421,19 +424,15 @@ final class CategoryTest extends TokenTestCase
         );
         $this->assertEquals(
             'german cat seo description',
-            $result['body']['data']['category']['seo']['metadescription']
+            $result['body']['data']['category']['seo']['description']
         );
         $this->assertEquals(
             'german cat seo keywords',
-            $result['body']['data']['category']['seo']['metakeywords']
-        );
-        $this->assertContains(
-            'cl=alist&cnid=' . self::CATEGORY_WITH_CHILDREN,
-            $result['body']['data']['category']['seo']['standardurl']
+            $result['body']['data']['category']['seo']['keywords']
         );
         $this->assertContains(
             '/Wakeboarding/',
-            $result['body']['data']['category']['seo']['seourl']
+            $result['body']['data']['category']['seo']['url']
         );
     }
 }

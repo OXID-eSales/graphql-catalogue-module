@@ -28,10 +28,9 @@ final class VendorTest extends TokenTestCase
                 shortdesc
                 timestamp
                 seo {
-                  metadescription
-                  metakeywords
-                  standardurl
-                  seourl
+                  description
+                  keywords
+                  url
                 }
             }
         }');
@@ -47,13 +46,9 @@ final class VendorTest extends TokenTestCase
         $this->assertNull($vendor['icon']);
         $this->assertEquals('https://fashioncity.com/de', $vendor['title']);
         $this->assertSame('Fashion city', $vendor['shortdesc']);
-        $this->assertRegExp('@https?://.*/Nach-Lieferant/https-fashioncity-com-de/$@', $vendor['seo']['seourl']);
-        $this->assertRegExp(
-            '@https?://.*\?cl=vendorlist&cnid=v_fe07958b49de225bd1dbc7594fb9a6b0.*@',
-            $vendor['seo']['standardurl']
-        );
-        $this->assertEquals('german vendor seo description', $vendor['seo']['metadescription']);
-        $this->assertEquals('german vendor seo keywords', $vendor['seo']['metakeywords']);
+        $this->assertRegExp('@https?://.*/Nach-Lieferant/https-fashioncity-com-de/$@', $vendor['seo']['url']);
+        $this->assertEquals('german vendor seo description', $vendor['seo']['description']);
+        $this->assertEquals('german vendor seo keywords', $vendor['seo']['keywords']);
 
         $dateTimeType = DateTimeType::getInstance();
         //Fixture timestamp can have few seconds difference
@@ -83,10 +78,9 @@ final class VendorTest extends TokenTestCase
                 title
                 shortdesc
                 seo {
-                  metadescription
-                  metakeywords
-                  standardurl
-                  seourl
+                  description
+                  keywords
+                  url
                 }
             }
         }');

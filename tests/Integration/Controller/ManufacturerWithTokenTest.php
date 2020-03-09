@@ -38,7 +38,7 @@ final class ManufacturerWithTokenTest extends TokenTestCase
                 shortdesc
                 timestamp
                 seo {
-                  seourl
+                  url
                 }
             }
         }');
@@ -52,7 +52,7 @@ final class ManufacturerWithTokenTest extends TokenTestCase
         $this->assertRegExp('@https?://.*logo3_ico.png$@', $manufacturer['icon']);
         $this->assertSame('Kuyichi', $manufacturer['title']);
         $this->assertSame('Eine stilbewusste Marke', $manufacturer['shortdesc']);
-        $this->assertRegExp('@https?://.*Nach-Hersteller/Kuyichi/$@', $manufacturer['seo']['seourl']);
+        $this->assertRegExp('@https?://.*Nach-Hersteller/Kuyichi/$@', $manufacturer['seo']['url']);
 
         $dateTimeType = DateTimeType::getInstance();
         //Fixture timestamp can have few seconds difference

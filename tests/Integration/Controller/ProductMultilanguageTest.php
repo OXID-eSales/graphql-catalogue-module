@@ -22,12 +22,12 @@ class ProductMultilanguageTest extends TestCase
             'de' => [
                 'languageId' => '0',
                 'title'      => 'Bindung O&#039;BRIEN DECADE CT 2010',
-                'seourl'     => 'Wakeboarding/Bindungen/'
+                'url'        => 'Wakeboarding/Bindungen/'
             ],
             'en' => [
                 'languageId' => '1',
                 'title'      => 'Binding O&#039;BRIEN DECADE CT 2010',
-                'seourl'     => 'en/Wakeboarding/Bindings'
+                'url'        => 'en/Wakeboarding/Bindings'
             ],
         ];
     }
@@ -42,7 +42,7 @@ class ProductMultilanguageTest extends TestCase
                 id
                 title
                 seo {
-                   seourl
+                   url
                 }
             }
         }';
@@ -62,7 +62,7 @@ class ProductMultilanguageTest extends TestCase
 
         $this->assertSame(self::ACTIVE_MULTILANGUAGE_PRODUCT, $product['id']);
         $this->assertEquals($title, $product['title']);
-        $this->assertRegExp('@https?://.*' . $seoUrl . '.*@', $product['seo']['seourl']);
+        $this->assertRegExp('@https?://.*' . $seoUrl . '.*@', $product['seo']['url']);
     }
 
     public function providerGetProductListWithFilterMultilanguage()

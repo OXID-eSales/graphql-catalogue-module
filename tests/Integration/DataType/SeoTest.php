@@ -36,35 +36,15 @@ final class SeoTest extends TestCase
         return [
             'de_seo_active' => [
                 'languageId'  => '0',
-                'seoactive'   => true,
                 'description' => 'german seo description',
                 'keywords'    => 'german seo keywords',
                 'url'         => 'Kiteboarding/Kiteboards/Kiteboard-CABRINHA-CALIBER-2011.html',
-                'standardurl' => '?cl=details&anid=058de8224773a1d5fd54d523f0c823e0'
             ],
             'en_seo_active' => [
                 'languageId'  => '1',
-                'seoactive'   => true,
                 'description' => 'english seo description',
                 'keywords'    => 'english seo keywords',
                 'url'         => 'Kiteboarding/Kiteboards/Kiteboard-CABRINHA-CALIBER-2011.html',
-                'standardurl' => 'cl=details&anid=058de8224773a1d5fd54d523f0c823e0&lang=1'
-            ],
-            'de_seo_inactive' => [
-                'languageId'  => '0',
-                'seoactive'   => false,
-                'description' => 'german seo description',
-                'keywords'    => 'german seo keywords',
-                'url'         => null,
-                'standardurl' => '?cl=details&anid=058de8224773a1d5fd54d523f0c823e0'
-            ],
-            'en_seo_inactive' => [
-                'languageId'  => '1',
-                'seoactive'   => false,
-                'description' => 'english seo description',
-                'keywords'    => 'english seo keywords',
-                'url'         => null,
-                'standardurl' => 'cl=details&anid=058de8224773a1d5fd54d523f0c823e0&lang=1'
             ]
         ];
     }
@@ -72,10 +52,8 @@ final class SeoTest extends TestCase
     /**
      * @dataProvider providerProductSeo
      */
-    public function testProductSeo($languageId, $seoactive, $description, $keywords, $url, $standardUrl)
+    public function testProductSeo($languageId, $description, $keywords, $url)
     {
-        $this->setSeoActive($seoactive);
-
         $this->setGETRequestParameter(
             'lang',
             $languageId
@@ -85,45 +63,8 @@ final class SeoTest extends TestCase
         $product->load(self::PRODUCT_ID);
         $seo = new Seo($product);
 
-        $this->assertEquals($description, $seo->getMetaDescription());
-        $this->assertEquals($keywords, $seo->getMetaKeywords());
-        $this->assertContains($standardUrl, $seo->getStandardUrl());
-
-        if (!is_null($url)) {
-            $this->assertContains($url, $seo->getSeoUrl());
-        } else {
-            $this->assertNull($seo->getSeoUrl());
-        }
-    }
-
-    public function testNonUrlContractObject()
-    {
-        $this->setSeoActive(true);
-
-        $user = oxNew(EshopUser::class);
-        $seo = new Seo($user);
-
-        $this->assertSame('', $seo->getMetaDescription());
-        $this->assertSame('', $seo->getMetaKeywords());
-        $this->assertNull($seo->getStandardUrl());
-        $this->assertNull($seo->getStandardUrl());
-    }
-
-    /**
-     * Test helper
-     *
-     * @param bool $seoactive
-     */
-    private function setSeoActive($seoactive)
-    {
-        $utilsMock = $this->getMockBuilder(EshopUtils::class)
-            ->setMethods(['seoIsActive'])
-            ->getMock();
-
-        $utilsMock->expects($this->any())
-            ->method('seoIsActive')
-            ->willReturn($seoactive);
-
-        EshopRegistry::set(EshopUtils::class, $utilsMock);
+        $this->assertEquals($description, $seo->getDescription());
+        $this->assertEquals($keywords, $seo->getKeywords());
+        $this->assertContains($url, $seo->getURL());
     }
 }

@@ -21,7 +21,6 @@ use TheCodingMachine\GraphQLite\Types\ID;
  */
 final class Seo
 {
-
     /** @var EshopModel */
     private $eshopModel;
 
@@ -34,7 +33,7 @@ final class Seo
     /**
      * @Field()
      */
-    public function getMetadescription(): string
+    public function getDescription(): string
     {
         return (string) EshopRegistry::getSeoEncoder()
             ->getMetaData(
@@ -46,7 +45,7 @@ final class Seo
     /**
      * @Field()
      */
-    public function getMetakeywords(): string
+    public function getKeywords(): string
     {
         return (string) EshopRegistry::getSeoEncoder()
             ->getMetaData(
@@ -58,29 +57,11 @@ final class Seo
     /**
      * @Field()
      */
-    public function getSeourl(): ?string
+    public function getUrl(): ?string
     {
-        $seoUrl = null;
-        if (
-            is_a($this->eshopModel, EshopContractUrl::class)
-            && EshopRegistry::getUtils()->seoIsActive()
-        ) {
-            $seoUrl = $this->eshopModel->getLink();
+        if ($this->eshopModel instanceof EshopContractUrl) {
+            return $this->eshopModel->getLink();
         }
-
-        return $seoUrl;
-    }
-
-    /**
-     * @Field()
-     */
-    public function getStandardurl(): ?string
-    {
-        $seoUrl = null;
-        if (is_a($this->eshopModel, EshopContractUrl::class)) {
-            $seoUrl = html_entity_decode($this->eshopModel->getStdLink());
-        }
-
-        return $seoUrl;
+        return null;
     }
 }

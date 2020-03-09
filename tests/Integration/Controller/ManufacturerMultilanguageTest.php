@@ -22,12 +22,12 @@ class ManufacturerMultilanguageTest extends TestCase
             'de' => [
                 'languageId' => '0',
                 'title'      => 'Liquid Force',
-                'seourl'     => 'Nach-Hersteller/Liquid-Force/'
+                'url'        => 'Nach-Hersteller/Liquid-Force/'
             ],
             'en' => [
                 'languageId' => '1',
                 'title'      => 'Liquid Force Kite',
-                'seourl'     => 'en/By-manufacturer/Liquid-Force-Kite/'
+                'url'        => 'en/By-manufacturer/Liquid-Force-Kite/'
             ],
         ];
     }
@@ -42,7 +42,7 @@ class ManufacturerMultilanguageTest extends TestCase
                 id
                 title
                 seo {
-                    seourl
+                    url
                 }
             }
         }';
@@ -62,7 +62,7 @@ class ManufacturerMultilanguageTest extends TestCase
 
         $this->assertSame(self::ACTIVE_MULTILANGUAGE_MANUFACTURER, $manufacturer['id']);
         $this->assertEquals($title, $manufacturer['title']);
-        $this->assertRegExp('@https?://.*' . $seoUrl . '$@', $manufacturer['seo']['seourl']);
+        $this->assertRegExp('@https?://.*' . $seoUrl . '$@', $manufacturer['seo']['url']);
     }
 
     public function providerGetManufacturerListWithFilterMultilanguage()

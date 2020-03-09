@@ -38,7 +38,7 @@ final class VendorMultiLanguageTest extends TestCase
             }){
                 title
                 seo {
-                   seourl
+                   url
                 }
             }
         }';
@@ -54,7 +54,7 @@ final class VendorMultiLanguageTest extends TestCase
         );
 
         $this->assertNotFalse(
-            parse_url($result['body']['data']['vendors'][0]['seo']['seourl'])
+            parse_url($result['body']['data']['vendors'][0]['seo']['url'])
         );
 
         $this->assertEquals(
@@ -64,7 +64,7 @@ final class VendorMultiLanguageTest extends TestCase
 
         $this->assertEquals(
             $vendor[0]['url'],
-            parse_url($result['body']['data']['vendors'][0]['seo']['seourl'])['path']
+            parse_url($result['body']['data']['vendors'][0]['seo']['url'])['path']
         );
     }
 
