@@ -21,16 +21,40 @@ class Currency extends Base
      *
      * @throws CurrencyNotFound
      */
-    public function currency(): CurrencyDataType
+    public function currency(?string $name): CurrencyDataType
     {
         try {
+            $config = Registry::getConfig();
+
             /** @var \stdClass $currencyObject */
-            $currencyObject = Registry::getConfig()->getActShopCurrencyObject();
-            $currency = new CurrencyDataType($currencyObject);
+            $currencyObject = $name ? $config->getCurrencyObject($name) : $config->getActShopCurrencyObject();
+
+            return new CurrencyDataType($currencyObject);
         } catch (\Exception $e) {
             throw CurrencyNotFound::inShop();
         }
+    }
 
-        return $currency;
+    /**
+     * @Query()
+     *
+     * @return CurrencyDataType[]
+     */
+    public function currencies(): array
+    {
+        try {
+            $currencies = [];
+
+            /** @var \stdClass[] $currencyArray */
+            $currencyArray = Registry::getConfig()->getCurrencyArray();
+
+            foreach ($currencyArray as $currencyObject) {
+                $currencies[] = new CurrencyDataType($currencyObject);
+            }
+
+            return $currencies;
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 }
