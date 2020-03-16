@@ -84,6 +84,9 @@ final class ProductTest extends TokenTestCase
                     keywords
                     url
                 }
+                crossSellingProducts {
+                    id
+                }
                 id
                 active
                 sKU
@@ -138,6 +141,11 @@ final class ProductTest extends TokenTestCase
         $this->assertSame($stock['stock'], 16.0);
         $this->assertSame($stock['stockStatus'], 0);
         $this->assertSame($stock['restockDate'], null);
+
+        $this->assertCount(
+            3,
+            $product['crossSellingProducts']
+        );
 
         $imageGallery = $product['imageGallery'];
         $images = $imageGallery['images'][0];
