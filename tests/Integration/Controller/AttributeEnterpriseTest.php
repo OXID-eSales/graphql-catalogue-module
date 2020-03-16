@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
 declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
@@ -9,6 +14,7 @@ use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
 
 /**
  * Class AttributeEnterpriseTest
+ *
  * @package OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller
  */
 class AttributeEnterpriseTest extends MultishopTestCase
@@ -134,5 +140,92 @@ class AttributeEnterpriseTest extends MultishopTestCase
         $oElement2ShopRelations = oxNew(Element2ShopRelations::class, 'oxattribute');
         $oElement2ShopRelations->setShopIds($shops);
         $oElement2ShopRelations->addToShop(self::ATTRIBUTE_ID);
+    }
+
+    /**
+     * @dataProvider providerGetAttributeMultishop
+     *
+     * @param string $shopId
+     * @param string $languageId
+     * @param array  $attributes
+     */
+    public function testAttributeListMultishop(string $shopId, $languageId, $attributes)
+    {
+        $this->setGETRequestParameter('shp', $shopId);
+        $this->setGETRequestParameter('lang', $languageId);
+        $this->addAttributesToShops([2]);
+
+        $result = $this->query('query {
+            attributes {
+                title
+            }
+        }');
+        $this->assertResponseStatus(200, $result);
+        foreach ($attributes as $key => $attribute) {
+            $this->assertSame($attribute, $result['body']['data']['attributes'][$key]['title']);
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function providerGetAttributeMultishop(): array
+    {
+        return [
+            'shop_1_de' => [
+                'shopId' => '1',
+                'languageId' => '0',
+                'attributes' => [
+                    'EU-Größe',
+                    'Washing',
+                    'Lieferumfang'
+                ]
+            ],
+            'shop_1_en' => [
+                'shopId' => '1',
+                'languageId' => '1',
+                'attributes' => [
+                    'EU-Size',
+                    'Washing',
+                    'Included in delivery'
+                ]
+            ],
+            'shop_2_de' => [
+                'shopId' => '2',
+                'languageId' => '0',
+                'attributes' => [
+                    'EU-Größe',
+                    'Washing',
+                    'Lieferumfang'
+                ]
+            ],
+            'shop_2_en' => [
+                'shopId' => '2',
+                'languageId' => '1',
+                'attributes' => [
+                    'EU-Size',
+                    'Washing',
+                    'Included in delivery'
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * @param int[] $shops
+     */
+    private function addAttributesToShops(array $shops)
+    {
+        $attributes = [
+            '6b6bc9f9ab8b153d9bebc2ad6ca2aa13',
+            '6b6e77de7a04de54f1aa63cfeca2f487',
+            '6cf89d2d73e666457d167cebfc3eb492',
+        ];
+
+        $oElement2ShopRelations = oxNew(Element2ShopRelations::class, 'oxattribute');
+        $oElement2ShopRelations->setShopIds($shops);
+        foreach ($attributes as $attribute) {
+            $oElement2ShopRelations->addToShop($attribute);
+        }
     }
 }

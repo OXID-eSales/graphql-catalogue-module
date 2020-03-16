@@ -11,6 +11,11 @@ namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
 use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
+/**
+ * Class AttributeTest
+ *
+ * @package OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller
+ */
 class AttributeTest extends TestCase
 {
 
@@ -106,5 +111,64 @@ class AttributeTest extends TestCase
             ],
             $result['body']['data']['attribute']
         );
+    }
+
+    public function testAttributeList()
+    {
+        $result = $this->query('query {
+            attributes {
+                title
+            }
+        }');
+
+        $this->assertResponseStatus(200, $result);
+        $this->assertCount(12, $result['body']['data']['attributes']);
+    }
+
+    /**
+     * @dataProvider providerGetAttributesMultilanguage
+     *
+     * @param string $languageId
+     * @param array $attributes
+     */
+    public function testAttributeListMultilanguage($languageId, $attributes)
+    {
+        $this->setGETRequestParameter('lang', $languageId);
+
+        $result = $this->query('query {
+            attributes {
+                title
+            }
+        }');
+
+        $this->assertResponseStatus(200, $result);
+        foreach ($attributes as $key => $attribute) {
+            $this->assertSame($attribute, $result['body']['data']['attributes'][$key]['title']);
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function providerGetAttributesMultilanguage(): array
+    {
+        return [
+            'de' => [
+                'languageId' => '0',
+                'attributes' => [
+                    'EU-Größe',
+                    'Washing',
+                    'Lieferumfang'
+                ]
+            ],
+            'en' => [
+                'languageId' => '1',
+                'attributes' => [
+                    'EU-Size',
+                    'Washing',
+                    'Included in delivery'
+                ]
+            ],
+        ];
     }
 }
