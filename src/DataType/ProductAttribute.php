@@ -34,7 +34,7 @@ final class ProductAttribute implements DataType
     /**
      * @Field()
      */
-    public function title(): string
+    public function getTitle(): string
     {
         return (string) $this->attribute->getFieldData('oxtitle');
     }
@@ -42,7 +42,7 @@ final class ProductAttribute implements DataType
     /**
      * @Field()
      */
-    public function value(): string
+    public function getValue(): string
     {
         return (string) $this->attribute->getFieldData('oxvalue');
     }
