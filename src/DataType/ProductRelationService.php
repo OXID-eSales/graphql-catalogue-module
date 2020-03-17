@@ -14,6 +14,11 @@ use OxidEsales\GraphQL\Catalogue\Service\Repository;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 
+use function array_map;
+use function count;
+use function is_iterable;
+use function strlen;
+
 /**
  * @ExtendType(class=Product::class)
  */
@@ -205,5 +210,23 @@ class ProductRelationService
         $seo = new Seo($product->getEshopModel());
 
         return $seo;
+    }
+
+    /**
+     * @Field()
+     *
+     * @return Product[]
+     */
+    public function getCrossSellingProducts(Product $product): array
+    {
+        $products = $product->getEshopModel()->getCrossSelling();
+        if (!is_iterable($products) || count($products) === 0) {
+            return [];
+        }
+        $crossSellings = [];
+        foreach ($products as $product) {
+            $crossSellings[] = new Product($product);
+        }
+        return $crossSellings;
     }
 }
