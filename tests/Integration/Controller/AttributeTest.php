@@ -16,7 +16,7 @@ use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
  *
  * @package OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller
  */
-class AttributeTest extends TestCase
+final class AttributeTest extends TestCase
 {
 
     private const ATTRIBUTE_ID = "6cf89d2d73e666457d167cebfc3eb492";
