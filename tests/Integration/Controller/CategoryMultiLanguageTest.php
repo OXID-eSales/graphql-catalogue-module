@@ -36,7 +36,11 @@ final class CategoryMultiLanguageTest extends TestCase
         );
 
         $result = $this->query($query);
-        $this->assertResponseStatus(200, $result);
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
 
         $this->assertEquals(
             [
@@ -86,7 +90,11 @@ final class CategoryMultiLanguageTest extends TestCase
         $this->setGETRequestParameter('lang', $languageId);
 
         $result = $this->query($query);
-        $this->assertResponseStatus(200, $result);
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
 
         $this->assertCount(
             $count,

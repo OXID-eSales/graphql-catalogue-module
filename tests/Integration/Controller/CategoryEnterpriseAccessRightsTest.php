@@ -23,7 +23,7 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
     private const USER_TO_GROUP_ID = '_test_user_to_group';
     private const USER_ID = 'e7af1c3b786fd02906ccd75698f4e6b9'; //user@oxid-esales.com
     private const OXOBJECTRIGHTS_ID = '_test_object_rights';
- 
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -61,7 +61,10 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
     {
         $result = $this->query('query { category (id: "' . self::CATEGORY_ID . '"){id, title}}');
 
-        $this->assertResponseStatus(200, $result);
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
 
         $this->assertEquals(
             [
@@ -91,7 +94,11 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
         }';
 
         $result = $this->query($query);
-        $this->assertResponseStatus(200, $result);
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
 
         $this->assertEquals(
             [
@@ -113,7 +120,11 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
         $this->setCategoryRightsExclusivelyVisibleForGroup();
 
         $result = $this->query('query { category (id: "' . self::CATEGORY_ID . '"){id, title}}');
-        $this->assertResponseStatus(404, $result);
+
+        $this->assertResponseStatus(
+            404,
+            $result
+        );
     }
 
     /**
@@ -139,8 +150,13 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
 
         $result = $this->query($query);
 
-        $this->assertResponseStatus(200, $result);
-        $this->assertEmpty($result['body']['categories']);
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+        $this->assertEmpty(
+            $result['body']['categories']
+        );
     }
 
     /*
@@ -158,7 +174,11 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
         $this->setAuthToken($result['body']['data']['token']);
 
         $result = $this->query('query { category (id: "' . self::CATEGORY_ID . '"){id, title}}');
-        $this->assertResponseStatus(200, $result);
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
 
         $this->assertEquals(
             [
@@ -183,7 +203,7 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
         $result = $this->query('query { token (username: "user@oxid-esales.com", password: "useruser") }');
         $this->setAuthToken($result['body']['data']['token']);
 
-        $query = 'query {
+        $result = $this->query('query {
             categories(filter: {
                 title: {
                     equals: "Bekleidung"
@@ -192,10 +212,12 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
                 id,
                 title
             }
-        }';
+        }');
 
-        $result = $this->query($query);
-        $this->assertResponseStatus(200, $result);
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
 
         $this->assertEquals(
             [
@@ -220,9 +242,13 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
         $this->setAuthToken($result['body']['data']['token']);
 
         $result = $this->query('query { category (id: "' . self::CATEGORY_ID . '"){id, title}}');
-        $this->assertResponseStatus(404, $result);
+
+        $this->assertResponseStatus(
+            404,
+            $result
+        );
     }
-    
+
     private function createUserGroup()
     {
         $userGroup = oxNew(Groups::class);

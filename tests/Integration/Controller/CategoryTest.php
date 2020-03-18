@@ -211,9 +211,18 @@ final class CategoryTest extends TokenTestCase
 
         $children = $result['body']['data']['category']['children'];
 
-        $this->assertSame($children[0]['id'], '0f40c6a077b68c21f164767c4a903fd2');
-        $this->assertSame($children[1]['id'], '0f4270b89fbef1481958381410a0dbca');
-        $this->assertSame($children[2]['id'], 'd86d90e4b441aa3f0004dcda5ba5bb38');
+        $this->assertSame(
+            '0f40c6a077b68c21f164767c4a903fd2',
+            $children[0]['id']
+        );
+        $this->assertSame(
+            '0f4270b89fbef1481958381410a0dbca',
+            $children[1]['id']
+        );
+        $this->assertSame(
+            'd86d90e4b441aa3f0004dcda5ba5bb38',
+            $children[2]['id']
+        );
     }
 
     public function testGetAllFieldsOfSingleActiveChildCategory()

@@ -28,11 +28,26 @@ class CurrencyTest extends TestCase
         $configCurrency = Registry::getConfig()->getActShopCurrencyObject();
         $resultCurrency = $result['body']['data']['currency'];
 
-        $this->assertResponseStatus(200, $result);
-        $this->assertSame($resultCurrency['id'], $configCurrency->id);
-        $this->assertSame($resultCurrency['name'], $configCurrency->name);
-        $this->assertSame($resultCurrency['rate'], $configCurrency->rate);
-        $this->assertSame($resultCurrency['sign'], $configCurrency->sign);
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+        $this->assertSame(
+            $configCurrency->id,
+            $resultCurrency['id']
+        );
+        $this->assertSame(
+            $configCurrency->name,
+            $resultCurrency['name']
+        );
+        $this->assertSame(
+            $configCurrency->rate,
+            $resultCurrency['rate']
+        );
+        $this->assertSame(
+            $configCurrency->sign,
+            $resultCurrency['sign']
+        );
     }
 
     /**
@@ -54,11 +69,26 @@ class CurrencyTest extends TestCase
         $configCurrency = Registry::getConfig()->getCurrencyObject($name);
         $resultCurrency = $result['body']['data']['currency'];
 
-        $this->assertResponseStatus(200, $result);
-        $this->assertSame($resultCurrency['id'], $configCurrency->id);
-        $this->assertSame($resultCurrency['name'], $configCurrency->name);
-        $this->assertSame($resultCurrency['rate'], $configCurrency->rate);
-        $this->assertSame($resultCurrency['sign'], $configCurrency->sign);
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+        $this->assertSame(
+            $configCurrency->id,
+            $resultCurrency['id']
+        );
+        $this->assertSame(
+            $configCurrency->name,
+            $resultCurrency['name']
+        );
+        $this->assertSame(
+            $configCurrency->rate,
+            $resultCurrency['rate']
+        );
+        $this->assertSame(
+            $configCurrency->sign,
+            $resultCurrency['sign']
+        );
     }
 
     public function currencyNames(): array
@@ -119,10 +149,22 @@ class CurrencyTest extends TestCase
         $this->assertResponseStatus(200, $result);
 
         foreach ($configCurrencies as $key => $expectedCurrency) {
-            $this->assertSame($expectedCurrency->id, $resultCurrencies[$key]['id']);
-            $this->assertSame($expectedCurrency->name, $resultCurrencies[$key]['name']);
-            $this->assertSame($expectedCurrency->rate, $resultCurrencies[$key]['rate']);
-            $this->assertSame($expectedCurrency->sign, $resultCurrencies[$key]['sign']);
+            $this->assertSame(
+                $expectedCurrency->id,
+                $resultCurrencies[$key]['id']
+            );
+            $this->assertSame(
+                $expectedCurrency->name,
+                $resultCurrencies[$key]['name']
+            );
+            $this->assertSame(
+                $expectedCurrency->rate,
+                $resultCurrencies[$key]['rate']
+            );
+            $this->assertSame(
+                $expectedCurrency->sign,
+                $resultCurrencies[$key]['sign']
+            );
         }
     }
 }

@@ -93,10 +93,10 @@ final class ProductTest extends TokenTestCase
                 }
                 id
                 active
-                sKU
-                eAN
-                manufacturerEAN
-                mPN
+                sku
+                ean
+                manufacturerEan
+                mpn
                 title
                 shortDescription
                 longDescription
@@ -117,16 +117,16 @@ final class ProductTest extends TokenTestCase
         $this->assertSame(self::ACTIVE_PRODUCT, $product['id']);
 
         $dimensions = $product['dimensions'];
-        $this->assertSame($dimensions['length'], 0.0);
-        $this->assertSame($dimensions['width'], 0.0);
-        $this->assertSame($dimensions['height'], 0.0);
-        $this->assertSame($dimensions['weight'], 0.0);
+        $this->assertSame(0.0, $dimensions['length']);
+        $this->assertSame(0.0, $dimensions['width']);
+        $this->assertSame(0.0, $dimensions['height']);
+        $this->assertSame(0.0, $dimensions['weight']);
 
         $price = $product['price'];
-        $this->assertSame($price['price'], 359.0);
-        $this->assertSame($price['vat'], 19.0);
-        $this->assertSame($price['vatValue'], 57.32);
-        $this->assertSame($price['nettoPriceMode'], false);
+        $this->assertSame(359.0, $price['price']);
+        $this->assertSame(19.0, $price['vat']);
+        $this->assertSame(57.32, $price['vatValue']);
+        $this->assertFalse($price['nettoPriceMode']);
 
         $currency = $price['currency'];
         $expectedCurrency = Registry::getConfig()->getActShopCurrencyObject();
@@ -136,15 +136,15 @@ final class ProductTest extends TokenTestCase
         $this->assertSame($expectedCurrency->sign, $currency['sign']);
 
         $listPrice = $product['listPrice'];
-        $this->assertSame($listPrice['price'], 399.0);
-        $this->assertSame($listPrice['vat'], 19.0);
-        $this->assertSame($listPrice['vatValue'], 63.71);
-        $this->assertSame($listPrice['nettoPriceMode'], false);
+        $this->assertSame(399.0, $listPrice['price']);
+        $this->assertSame(19.0, $listPrice['vat']);
+        $this->assertSame(63.71, $listPrice['vatValue']);
+        $this->assertFalse($listPrice['nettoPriceMode']);
 
         $stock = $product['stock'];
-        $this->assertSame($stock['stock'], 16.0);
-        $this->assertSame($stock['stockStatus'], 0);
-        $this->assertSame($stock['restockDate'], null);
+        $this->assertSame(16.0, $stock['stock']);
+        $this->assertSame(0, $stock['stockStatus']);
+        $this->assertNull($stock['restockDate']);
 
         $this->assertCount(
             3,
@@ -175,60 +175,36 @@ final class ProductTest extends TokenTestCase
         );
 
         $rating = $product['rating'];
-        $this->assertSame($rating['rating'], 0.0);
-        $this->assertSame($rating['count'], 0);
+        $this->assertSame(0.0, $rating['rating']);
+        $this->assertSame(0, $rating['count']);
 
-        $scalePrices = $product['scalePrices'];
-        $this->assertSame($scalePrices, []);
-
-        $unit = $product['unit'];
-        $this->assertSame($unit, null);
-
-        $active = $product['active'];
-        $this->assertSame($active, true);
-
-        $sKU = $product['sKU'];
-        $this->assertSame($sKU, '2401');
-
-        $eAN = $product['eAN'];
-        $this->assertSame($eAN, '');
-
-        $manufacturerEAN = $product['manufacturerEAN'];
-        $this->assertSame($manufacturerEAN, '');
-
-        $attributes = $product['attributes'];
-        $this->assertSame($attributes, []);
-
-        $mPN = $product['mPN'];
-        $this->assertSame($mPN, '');
-
-        $title = $product['title'];
-        $this->assertSame($title, 'Bindung O&#039;BRIEN DECADE CT 2010');
-
-        $shortDescription = $product['shortDescription'];
-        $this->assertSame($shortDescription, 'Geringes Gewicht, beste Performance!');
-
-        $longDescription = $product['longDescription'];
         $this->assertSame(
-            $longDescription,
+            [],
+            $product['scalePrices']
+        );
+
+        $this->assertNull($product['unit']);
+        $this->assertTrue($product['active']);
+        $this->assertSame('2401', $product['sku']);
+        $this->assertSame('', $product['ean']);
+        $this->assertSame('', $product['manufacturerEan']);
+        $this->assertSame([], $product['attributes']);
+        $this->assertSame('', $product['mpn']);
+        $this->assertSame('Bindung O&#039;BRIEN DECADE CT 2010', $product['title']);
+        $this->assertSame('Geringes Gewicht, beste Performance!', $product['shortDescription']);
+        $this->assertSame(
             "<p>\r\n<div class=\"product_title_big\">\r\n<h2>O'Brien Decade CT Boot 2010</h2></div>\r\n" .
             "    Die Decade Pro Bindung ist nicht nur\r\n Close-Toe Boots mit hammer Style," .
             " sondern es war das Ziel den Komfort\r\nvon normalen Boots in eine Wakeboard-Bindung einzubringen," .
             " dabei\r\nleichtgewichtig zu bleiben, und damit perfekte Performance auf dem\r\nWasser zu ermöglichen." .
             "<br />\r\n<br />\r\n  Die Wakeboard-Bindung ist in der Größe gleich bleibend, gibt also im\r\n" .
             "Laufe der Zeit nicht nach und sitzt somit wie ein perfekter Schuh. Ein\r\n" .
-            "ergonomisches und stoßabsorbierendes Fussbett sorgt für weiche\r\nLandungen.</p>\r\n<p> </p>"
+            "ergonomisches und stoßabsorbierendes Fussbett sorgt für weiche\r\nLandungen.</p>\r\n<p> </p>",
+            $product['longDescription']
         );
-
-        $vat = $product['vat'];
-        $this->assertSame($vat, 19.0);
-
-        $insert = $product['insert'];
-        $this->assertSame($insert, '2010-12-06T00:00:00+01:00');
-
-        $freeShipping = $product['freeShipping'];
-        $this->assertSame($freeShipping, false);
-
+        $this->assertSame(19.0, $product['vat']);
+        $this->assertSame('2010-12-06T00:00:00+01:00', $product['insert']);
+        $this->assertFalse($product['freeShipping']);
         $this->assertRegExp(
             '@https?://.*/Wakeboarding/Bindungen/Bindung-O-BRIEN-DECADE-CT-2010.html@',
             $product['seo']['url']
