@@ -14,6 +14,7 @@ use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 use OxidEsales\GraphQL\Catalogue\DataType\Product;
 use OxidEsales\GraphQL\Catalogue\DataType\ProductAttribute;
 use OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService;
+use OxidEsales\GraphQL\Catalogue\Service\Repository;
 
 /**
  * @covers \OxidEsales\GraphQL\Catalogue\DataType\ProductAttribute
@@ -25,13 +26,9 @@ class ProductAttributeTest extends TestCase
     {
         $article = oxNew(EshopArticle::class);
         $article->load('096e38032896a847682651d565966c45');
-        $product = new Product(
-            $article
-        );
+        $product = new Product($article);
 
-        $productRelation = new ProductRelationService(
-            $this->createPartialMock(\OxidEsales\GraphQL\Catalogue\Service\Repository::class, [])
-        );
+        $productRelation = new ProductRelationService($this->createPartialMock(Repository::class, []));
         $productAttributes = $productRelation->getAttributes($product);
 
         $this->assertCount(2, $productAttributes);
@@ -41,36 +38,32 @@ class ProductAttributeTest extends TestCase
     }
 
     /**
-     * @param $languageId
-     * @param $key
-     * @param $title
-     * @param $value
+     * @param string $languageId
+     * @param string $key
+     * @param string $title
+     * @param string $value
      *
      * @dataProvider getProductAttributesContentDataProvider
      */
-    public function testGetProductAttributesContent($languageId, $key, $title, $value)
+    public function testGetProductAttributesContent(string $languageId, string $key, string $title, string $value)
     {
-        $this->setGETRequestParameter(
-            'lang',
-            $languageId
-        );
+        $this->setGETRequestParameter('lang', $languageId);
 
         $article = oxNew(EshopArticle::class);
         $article->load('096e38032896a847682651d565966c45');
-        $product = new Product(
-            $article
-        );
+        $product = new Product($article);
 
-        $productRelation = new ProductRelationService(
-            $this->createPartialMock(\OxidEsales\GraphQL\Catalogue\Service\Repository::class, [])
-        );
+        $productRelation = new ProductRelationService($this->createPartialMock(Repository::class, []));
         $productAttributes = $productRelation->getAttributes($product);
 
         $this->assertEquals($title, $productAttributes[$key]->getTitle());
         $this->assertEquals($value, $productAttributes[$key]->getValue());
     }
 
-    public function getProductAttributesContentDataProvider()
+    /**
+     * @return array
+     */
+    public function getProductAttributesContentDataProvider(): array
     {
         return [
             [
