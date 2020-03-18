@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
+use OxidEsales\Eshop\Application\Model\Attribute;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
@@ -228,5 +229,27 @@ class ProductRelationService
             $crossSellings[] = new Product($product);
         }
         return $crossSellings;
+    }
+
+   /**
+    * @Field()
+    *
+    * @return ProductAttribute[]
+    */
+    public function getAttributes(Product $product): array
+    {
+        /** @var \OxidEsales\Eshop\Application\Model\AttributeList $productAttributes */
+        $productAttributes = $product->getEshopModel()->getAttributes();
+        if (!is_iterable($productAttributes) || count($productAttributes) === 0) {
+            return [];
+        }
+        $attributes = [];
+
+        /** @var Attribute $attribute */
+        foreach ($productAttributes as $key => $attribute) {
+            $attributes[$key] = new ProductAttribute($attribute);
+        }
+
+        return $attributes;
     }
 }

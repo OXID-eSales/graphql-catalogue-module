@@ -87,6 +87,10 @@ final class ProductTest extends TokenTestCase
                 crossSellingProducts {
                     id
                 }
+                attributes {
+                    title
+                    value
+                }
                 id
                 active
                 sKU
@@ -191,6 +195,9 @@ final class ProductTest extends TokenTestCase
 
         $manufacturerEAN = $product['manufacturerEAN'];
         $this->assertSame($manufacturerEAN, '');
+
+        $attributes = $product['attributes'];
+        $this->assertSame($attributes, []);
 
         $mPN = $product['mPN'];
         $this->assertSame($mPN, '');
