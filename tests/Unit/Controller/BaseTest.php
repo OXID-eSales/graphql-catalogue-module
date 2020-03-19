@@ -17,7 +17,7 @@ class BaseTest extends TestCase
      *
      * @covers \OxidEsales\GraphQL\Catalogue\Controller\Base
      */
-    public function testIsAuthorized($allowed, $logged, $expectedResult)
+    public function testIsAuthorized(bool $allowed, bool $logged, bool $expected)
     {
         $repository = $this->getMockBuilder(Repository::class)
             ->disableOriginalConstructor()
@@ -28,19 +28,16 @@ class BaseTest extends TestCase
             ->setMethods(['isAllowed'])
             ->getMock();
         $authorizationService
-            ->expects($this->once())
             ->method("isAllowed")
-            ->with("right_key")
-            ->willReturn(true);
+            ->willReturn($allowed);
 
         $authenticationService = $this->getMockBuilder(AuthenticationService::class)
             ->disableOriginalConstructor()
             ->setMethods(['isLogged'])
             ->getMock();
         $authenticationService
-            ->expects($this->once())
             ->method("isLogged")
-            ->willReturn(true);
+            ->willReturn($logged);
 
         $base = new class (
             $repository,
@@ -49,7 +46,10 @@ class BaseTest extends TestCase
         ) extends Base {
         };
 
-        $this->assertSame(true, $base->isAuthorized("right_key"));
+        $this->assertSame(
+            $expected,
+            $base->isAuthorized("right_key")
+        );
     }
 
     public function isAuthorizedDataProvider()

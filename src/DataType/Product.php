@@ -62,7 +62,7 @@ class Product implements DataType
     /**
      * @Field()
      */
-    public function getSKU(): ?string
+    public function getSku(): ?string
     {
         return (string)$this->product->getFieldData('oxartnum');
     }
@@ -70,7 +70,7 @@ class Product implements DataType
     /**
      * @Field()
      */
-    public function getEAN(): string
+    public function getEan(): string
     {
         return (string)$this->product->getFieldData('oxean');
     }
@@ -78,7 +78,7 @@ class Product implements DataType
     /**
      * @Field()
      */
-    public function getManufacturerEAN(): string
+    public function getManufacturerEan(): string
     {
         return (string)$this->product->getFieldData('oxdistean');
     }
@@ -86,7 +86,7 @@ class Product implements DataType
     /**
      * @Field()
      */
-    public function getMPN(): string
+    public function getMpn(): string
     {
         return (string)$this->product->getFieldData('oxmpn');
     }

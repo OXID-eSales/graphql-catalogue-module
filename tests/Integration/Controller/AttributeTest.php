@@ -46,7 +46,10 @@ final class AttributeTest extends TestCase
 
         $attribute = $result['body']['data']['attribute'];
 
-        $this->assertEquals('Lieferumfang', $attribute['title']);
+        $this->assertEquals(
+            'Lieferumfang',
+            $attribute['title']
+        );
     }
 
     public function testGet404ForSingleNonExistingAttribute()
@@ -121,8 +124,14 @@ final class AttributeTest extends TestCase
             }
         }');
 
-        $this->assertResponseStatus(200, $result);
-        $this->assertCount(12, $result['body']['data']['attributes']);
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+        $this->assertCount(
+            12,
+            $result['body']['data']['attributes']
+        );
     }
 
     /**
@@ -141,9 +150,15 @@ final class AttributeTest extends TestCase
             }
         }');
 
-        $this->assertResponseStatus(200, $result);
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
         foreach ($attributes as $key => $attribute) {
-            $this->assertSame($attribute, $result['body']['data']['attributes'][$key]['title']);
+            $this->assertSame(
+                $attribute,
+                $result['body']['data']['attributes'][$key]['title']
+            );
         }
     }
 

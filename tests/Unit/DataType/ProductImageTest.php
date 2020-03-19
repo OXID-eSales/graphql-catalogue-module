@@ -20,8 +20,17 @@ class ProductImageTest extends TestCase
 
         $productImage = new ProductImage($imageValue, $iconValue, $zoomValue);
 
-        $this->assertSame($imageValue, $productImage->getImage());
-        $this->assertSame($iconValue, $productImage->getIcon());
-        $this->assertSame($zoomValue, $productImage->getZoom());
+        $this->assertSame(
+            $imageValue,
+            $productImage->getImage()
+        );
+        $this->assertSame(
+            $iconValue,
+            $productImage->getIcon()
+        );
+        $this->assertSame(
+            $zoomValue,
+            $productImage->getZoom()
+        );
     }
 }

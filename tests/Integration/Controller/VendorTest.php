@@ -42,7 +42,7 @@ final class VendorTest extends TokenTestCase
 
         $vendor = $result['body']['data']['vendor'];
         $this->assertSame(self::ACTIVE_VENDOR, $vendor['id']);
-        $this->assertSame(true, $vendor['active']);
+        $this->assertTrue($vendor['active']);
         $this->assertNull($vendor['icon']);
         $this->assertEquals('https://fashioncity.com/de', $vendor['title']);
         $this->assertSame('Fashion city', $vendor['shortdesc']);

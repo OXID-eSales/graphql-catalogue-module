@@ -160,9 +160,15 @@ class AttributeEnterpriseTest extends MultishopTestCase
                 title
             }
         }');
-        $this->assertResponseStatus(200, $result);
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
         foreach ($attributes as $key => $attribute) {
-            $this->assertSame($attribute, $result['body']['data']['attributes'][$key]['title']);
+            $this->assertSame(
+                $attribute,
+                $result['body']['data']['attributes'][$key]['title']
+            );
         }
     }
 
