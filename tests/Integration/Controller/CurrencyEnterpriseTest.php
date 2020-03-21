@@ -120,7 +120,7 @@ class CurrencyEnterpriseTest extends MultishopTestCase
         ', $name));
 
         $this->assertResponseStatus(
-            400,
+            404,
             $result
         );
     }

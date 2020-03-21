@@ -9,6 +9,7 @@ use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
 /**
  * @covers OxidEsales\GraphQL\Catalogue\DataType\Currency
+ * @covers OxidEsales\GraphQL\Catalogue\Controller\Currency
  */
 class CurrencyTest extends TestCase
 {
@@ -117,7 +118,10 @@ class CurrencyTest extends TestCase
             }
         ', $name));
 
-        $this->assertResponseStatus(400, $result);
+        $this->assertResponseStatus(
+            404,
+            $result
+        );
     }
 
     public function incorrectCurrencyNames(): array
