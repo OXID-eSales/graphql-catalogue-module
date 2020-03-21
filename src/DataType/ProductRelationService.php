@@ -218,7 +218,7 @@ class ProductRelationService
      *
      * @return Product[]
      */
-    public function getCrossSellingProducts(Product $product): array
+    public function getCrossSelling(Product $product): array
     {
         $products = $product->getEshopModel()->getCrossSelling();
         if (!is_iterable($products) || count($products) === 0) {
@@ -251,5 +251,23 @@ class ProductRelationService
         }
 
         return $attributes;
+    }
+
+    /**
+     * @Field()
+     *
+     * @return Product[]
+     */
+    public function getAccessories(Product $product): array
+    {
+        $products = $product->getEshopModel()->getAccessoires();
+        if (!is_iterable($products) || count($products) === 0) {
+            return [];
+        }
+        $accessories = [];
+        foreach ($products as $product) {
+            $accessories[] = new Product($product);
+        }
+        return $accessories;
     }
 }

@@ -14,8 +14,9 @@ use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
 final class ProductTest extends TokenTestCase
 {
-    private const ACTIVE_PRODUCT = "058e613db53d782adfc9f2ccb43c45fe";
-    private const INACTIVE_PRODUCT  = "09602cddb5af0aba745293d08ae6bcf6";
+    private const ACTIVE_PRODUCT = '058e613db53d782adfc9f2ccb43c45fe';
+    private const INACTIVE_PRODUCT  = '09602cddb5af0aba745293d08ae6bcf6';
+    private const ACTIVE_PRODUCT_WITH_ACCESSORIES = '05848170643ab0deb9914566391c0c63';
 
     public function testGetSingleActiveProduct()
     {
@@ -84,7 +85,10 @@ final class ProductTest extends TokenTestCase
                     keywords
                     url
                 }
-                crossSellingProducts {
+                crossSelling {
+                    id
+                }
+                accessories {
                     id
                 }
                 attributes {
@@ -148,7 +152,12 @@ final class ProductTest extends TokenTestCase
 
         $this->assertCount(
             3,
-            $product['crossSellingProducts']
+            $product['crossSelling']
+        );
+
+        $this->assertCount(
+            0,
+            $product['accessories']
         );
 
         $imageGallery = $product['imageGallery'];
@@ -211,6 +220,41 @@ final class ProductTest extends TokenTestCase
         );
         $this->assertEquals('german product seo description', $product['seo']['description']);
         $this->assertEquals('german product seo keywords', $product['seo']['keywords']);
+    }
+
+    public function testGetAccessoriesRelation()
+    {
+        $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT_WITH_ACCESSORIES . '") {
+                id
+                accessories {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $product = $result['body']['data']['product'];
+
+        $this->assertCount(
+            2,
+            $product['accessories']
+        );
+
+        $this->assertSame(
+            [
+                [
+                    'id' => 'adcb9deae73557006a8ac748f45288b4'
+                ], [
+                    'id' => 'd86236918e1533cccb679208628eda32'
+                ]
+            ],
+            $product['accessories']
+        );
     }
 
     public function testGetSingleInactiveProductWithoutToken()
