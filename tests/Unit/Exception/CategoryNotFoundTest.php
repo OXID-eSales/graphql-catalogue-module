@@ -15,7 +15,7 @@ class CategoryNotFoundTest extends TestCase
     public function testExceptionById()
     {
         $this->expectException(CategoryNotFound::class);
-        $this->expectExceptionMessageRegExp('/.*CATID.*/');
+        $this->expectExceptionMessage('CATID');
         throw CategoryNotFound::byId('CATID');
     }
 }

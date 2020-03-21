@@ -15,7 +15,7 @@ class VendorNotFoundTest extends TestCase
     public function testExceptionById()
     {
         $this->expectException(VendorNotFound::class);
-        $this->expectExceptionMessageRegExp('/.*VENDORID.*/');
+        $this->expectExceptionMessage('VENDORID');
         throw VendorNotFound::byId('VENDORID');
     }
 }
