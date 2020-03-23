@@ -15,8 +15,13 @@ use function sprintf;
 
 final class CurrencyNotFound extends NotFound
 {
-    public static function inShop(): self
+    public static function byActiveInShop(): self
     {
-        return new self(sprintf('Currency was not found in shop'));
+        return new self(sprintf('No active currency was found'));
+    }
+
+    public static function byName(string $name): self
+    {
+        return new self(sprintf('Currency "%s" was not found', $name));
     }
 }

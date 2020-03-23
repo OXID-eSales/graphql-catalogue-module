@@ -13,26 +13,29 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\GraphQL\Catalogue\DataType\Currency as CurrencyDataType;
 use OxidEsales\GraphQL\Catalogue\Exception\CurrencyNotFound;
 use TheCodingMachine\GraphQLite\Annotations\Query;
+use OxidEsales\GraphQL\Catalogue\Service\CurrencyRepository;
 
 class Currency extends Base
 {
+    /** @var CurrencyRepository */
+    private $currencyRepository;
+
+    public function __construct(
+        CurrencyRepository $currencyRepository
+    ) {
+        $this->currencyRepository = $currencyRepository;
+    }
+
     /**
+     * If `name` is ommited, gives you the currently active currency
+     *
      * @Query()
      *
      * @throws CurrencyNotFound
      */
-    public function currency(?string $name): CurrencyDataType
+    public function currency(?string $name = null): CurrencyDataType
     {
-        try {
-            $config = Registry::getConfig();
-
-            /** @var \stdClass $currencyObject */
-            $currencyObject = $name ? $config->getCurrencyObject($name) : $config->getActShopCurrencyObject();
-
-            return new CurrencyDataType($currencyObject);
-        } catch (\Exception $e) {
-            throw CurrencyNotFound::inShop();
-        }
+        return $name ? $this->currencyRepository->getByName($name) : $this->currencyRepository->getActiveCurrency();
     }
 
     /**
@@ -42,19 +45,6 @@ class Currency extends Base
      */
     public function currencies(): array
     {
-        try {
-            $currencies = [];
-
-            /** @var \stdClass[] $currencyArray */
-            $currencyArray = Registry::getConfig()->getCurrencyArray();
-
-            foreach ($currencyArray as $currencyObject) {
-                $currencies[] = new CurrencyDataType($currencyObject);
-            }
-
-            return $currencies;
-        } catch (\Exception $e) {
-            return [];
-        }
+        return $this->currencyRepository->getAll();
     }
 }
