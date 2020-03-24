@@ -15,7 +15,7 @@ class ManufacturerNotFoundTest extends TestCase
     public function testExceptionById()
     {
         $this->expectException(ManufacturerNotFound::class);
-        $this->expectExceptionMessageRegExp('/.*MANUID.*/');
+        $this->expectExceptionMessage('MANUID');
         throw ManufacturerNotFound::byId('MANUID');
     }
 }

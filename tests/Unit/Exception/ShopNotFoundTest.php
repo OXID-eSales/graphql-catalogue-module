@@ -15,7 +15,7 @@ class ShopNotFoundTest extends TestCase
     public function testExceptionById()
     {
         $this->expectException(ShopNotFound::class);
-        $this->expectExceptionMessageRegExp('/.*SHOPID.*/');
+        $this->expectExceptionMessage('SHOPID');
         throw ShopNotFound::byId('SHOPID');
     }
 }

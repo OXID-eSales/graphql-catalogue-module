@@ -20,7 +20,7 @@ class AttributeNotFoundTest extends TestCase
     public function testExceptionById()
     {
         $this->expectException(AttributeNotFound::class);
-        $this->expectExceptionMessageRegExp('/.*ATTRID.*/');
+        $this->expectExceptionMessage('ATTRID');
         throw AttributeNotFound::byId('ATTRID');
     }
 }
