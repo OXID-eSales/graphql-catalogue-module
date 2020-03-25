@@ -92,7 +92,9 @@ final class ProductTest extends TokenTestCase
                     id
                 }
                 attributes {
-                    title
+                    attribute {
+                        title
+                    }
                     value
                 }
                 id
@@ -302,5 +304,71 @@ final class ProductTest extends TokenTestCase
         }');
 
         $this->assertEquals(404, $result['status']);
+    }
+
+    /**
+     * @dataProvider productWithATtributesProvider
+     */
+    public function testGetProductAttributesRelation(string $productId, array $expectedAttributes): void
+    {
+        $result = $this->query('
+            query{
+                product(id: "' . $productId . '" ){
+                    attributes {
+                        value
+                        attribute {
+                          title
+                        }
+                    }
+                }
+            }
+        ');
+
+        $this->assertEquals(200, $result['status']);
+
+        $attributes = $result['body']['data']['product']['attributes'];
+
+        $this->assertArraySameNonAssociative($expectedAttributes, $attributes);
+    }
+
+    public function productWithAttributesProvider(): array
+    {
+        return [
+            [
+                'product' => 'b56369b1fc9d7b97f9c5fc343b349ece',
+                'expectedAttributes' => [
+                    [
+                        'value' => 'Kite, Backpack, Reparaturset',
+                        'attribute' => ['title' => 'Lieferumfang'],
+                    ],
+                    [
+                        'value' => 'Allround',
+                        'attribute' => ['title' => 'Einsatzbereich'],
+                    ],
+                ],
+            ],
+            [
+                'product' => 'f4f0cb3606e231c3fdb34fcaee2d6d04',
+                'expectedAttributes' => [
+                    [
+                        'value' => 'Allround',
+                        'attribute' => ['title' => 'Einsatzbereich'],
+                    ],
+                    [
+                        'value' => 'Kite, Tasche, CPR Control System, Pumpe',
+                        'attribute' => ['title' => 'Lieferumfang'],
+                    ],
+                ],
+            ],
+            [
+                'product' => '058de8224773a1d5fd54d523f0c823e0',
+                'expectedAttributes' => [],
+            ],
+        ];
+    }
+
+    private function assertArraySameNonAssociative(array $expected, array $actual): void
+    {
+        $this->assertSame(sort($expected), sort($actual));
     }
 }
