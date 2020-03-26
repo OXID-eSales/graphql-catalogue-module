@@ -34,7 +34,7 @@ final class Attribute implements DataType
     /**
      * @Field()
      */
-    public function title(): string
+    public function getTitle(): string
     {
         return (string) $this->attribute->getFieldData('oxtitle');
     }

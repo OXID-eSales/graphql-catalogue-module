@@ -56,7 +56,7 @@ class ProductAttributeTest extends TestCase
         $productRelation = new ProductRelationService($this->createPartialMock(Repository::class, []));
         $productAttributes = $productRelation->getAttributes($product);
 
-        $this->assertEquals($title, $productAttributes[$key]->getTitle());
+        $this->assertEquals($title, $productAttributes[$key]->getAttribute()->getTitle());
         $this->assertEquals($value, $productAttributes[$key]->getValue());
     }
 
