@@ -270,4 +270,24 @@ class ProductRelationService
         }
         return $accessories;
     }
+
+    /**
+     * @Field()
+     *
+     * @return SelectionList[]
+     */
+    public function getSelectionLists(Product $product): array
+    {
+        $selections = $product->getEshopModel()->getSelections();
+        if (!is_iterable($selections) || count($selections) === 0) {
+            return [];
+        }
+
+        $selectionLists = [];
+        foreach ($selections as $selection) {
+            $selectionLists[] = new SelectionList($selection);
+        }
+
+        return $selectionLists;
+    }
 }
