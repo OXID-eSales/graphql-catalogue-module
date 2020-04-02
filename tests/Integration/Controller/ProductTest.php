@@ -17,6 +17,7 @@ final class ProductTest extends TokenTestCase
     private const ACTIVE_PRODUCT = '058e613db53d782adfc9f2ccb43c45fe';
     private const INACTIVE_PRODUCT  = '09602cddb5af0aba745293d08ae6bcf6';
     private const ACTIVE_PRODUCT_WITH_ACCESSORIES = '05848170643ab0deb9914566391c0c63';
+    private const ACTIVE_PRODUCT_WITH_SELECTION_LISTS = '058de8224773a1d5fd54d523f0c823e0';
 
     public function testGetSingleActiveProduct()
     {
@@ -96,6 +97,15 @@ final class ProductTest extends TokenTestCase
                         title
                     }
                     value
+                }
+                selectionLists {
+                    title
+                    fields {
+                        name
+                        value
+                        active
+                        disabled
+                    }
                 }
                 id
                 active
@@ -200,6 +210,7 @@ final class ProductTest extends TokenTestCase
         $this->assertSame('', $product['ean']);
         $this->assertSame('', $product['manufacturerEan']);
         $this->assertSame([], $product['attributes']);
+        $this->assertSame([], $product['selectionLists']);
         $this->assertSame('', $product['mpn']);
         $this->assertSame('Bindung O&#039;BRIEN DECADE CT 2010', $product['title']);
         $this->assertSame('Geringes Gewicht, beste Performance!', $product['shortDescription']);
@@ -365,6 +376,69 @@ final class ProductTest extends TokenTestCase
                 'expectedAttributes' => [],
             ],
         ];
+    }
+
+    public function testGetSelectionLists()
+    {
+        $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT_WITH_SELECTION_LISTS . '") {
+                id
+                selectionLists {
+                    title
+                    fields {
+                        name
+                        value
+                        active
+                        disabled
+                    }
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $product = $result['body']['data']['product'];
+
+        $this->assertCount(
+            1,
+            $product['selectionLists']
+        );
+
+        $this->assertSame(
+            [
+                'title' => 'test selection list [DE] šÄßüл',
+                'fields' => [
+                    [
+                        'name' => 'selvar1 [DE]',
+                        'value' => 0,
+                        'active' => true,
+                        'disabled' => false
+                    ],
+                    [
+                        'name' => 'selvar2 [DE]',
+                        'value' => 1,
+                        'active' => false,
+                        'disabled' => false
+                    ],
+                    [
+                        'name' => 'selvar3 [DE]',
+                        'value' => 2,
+                        'active' => false,
+                        'disabled' => false
+                    ],
+                    [
+                        'name' => 'selvar4 [DE]',
+                        'value' => 3,
+                        'active' => false,
+                        'disabled' => false
+                    ],
+                ],
+            ],
+            $product['selectionLists'][0]
+        );
     }
 
     private function assertArraySameNonAssociative(array $expected, array $actual): void
