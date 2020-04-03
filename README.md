@@ -22,19 +22,15 @@ $ composer require oxid-esales/graphql-catalogue
 After requiring the module, you need to head over to the OXID eShop admin and
 activate the GraphQL Catalogue module.
 
-### How to use
-
-TBD
-
 ## Testing
 
-### Linting, Syntax and static analysis
+### Linting, syntax check, static analysis and unit tests
 
 ```bash
 $ composer test
 ```
 
-### Unit tests
+### Integration/Acceptance tests
 
 - install this module into a running OXID eShop
 - change the `test_config.yml`
