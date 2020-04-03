@@ -11,7 +11,7 @@ This module provides [GraphQL](https://www.graphql.org) queries and mutations fo
 
 ## Usage
 
-This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v6.5.0` component, which is part of the `6.2.0` compilation) up and running.
+This assumes you have OXID eShop (at least `oxid-esales/oxideshop_ce: v6.5.0` component, which is part of the `v6.2.0` compilation) up and running.
 
 ### Install
 
@@ -19,8 +19,7 @@ This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v6.5.0` co
 $ composer require oxid-esales/graphql-catalogue
 ```
 
-After requiring the module, you need to head over to the OXID eShop admin and
-activate the GraphQL Catalogue module.
+After requiring the module, you need to head over to the OXID eShop admin and activate the GraphQL Catalogue module.
 
 ## Testing
 
@@ -40,6 +39,11 @@ $ composer test
 ```bash
 $ ./vendor/bin/runtests
 ```
+
+## Contributing
+
+You like to contribute? 🙌 AWESOME 🙌\
+Go and check the [contribution guidelines](CONTRIBUTING.md)
 
 ## Build with
 
