@@ -34,6 +34,7 @@ The basic workflow and the only way of contributing code to the project is via G
 - **Make your bug fix or enhancement**
 - **Add tests** for your new code
 - **Send the Pull Request**
+- Make sure **CI is 💚**
 
 We recommend you to create a topic branch to work on, this will come in handy when making multiple contributions or when you need to rebase you pull request onto another branch. Also we would like to encourage you to open up an issue before making your pull request.
 
