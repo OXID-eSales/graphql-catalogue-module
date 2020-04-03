@@ -1,6 +1,6 @@
 # Contributing to the OXID eSales GraphQL Catalogue Module
 
-First off: Thank you for taking the time to contribute! 🥳👍
+First off: Thank you for taking the time to contribute! 👍
 
 ## Contributor License Agreement
 
@@ -16,6 +16,7 @@ So, you stumbled upon a 🐛, those are tracked as [GitHub Issues](https://githu
 - **Describe the exact steps which reproduce the problem** in as many details as possible
 - **Describe the behavior you observed**
 - **Explain which behavior you expected to see instead and why**
+- **Give us information about the shop and module's versions that were used**
 
 ### Suggesting Enhancements
 
@@ -36,7 +37,7 @@ The basic workflow and the only way of contributing code to the project is via G
 - **Send the Pull Request**
 - Make sure **CI is 💚**
 
-We recommend you to create a topic branch to work on, this will come in handy when making multiple contributions or when you need to rebase you pull request onto another branch. Also we would like to encourage you to open up an issue before making your pull request.
+We recommend you to create a topic branch to work on, this will come in handy when making multiple contributions or when you need to rebase your pull request onto another branch. Also we would like to encourage you to open up an issue before making your pull request.
 
 #### What branch to send a Pull Request to?
 
