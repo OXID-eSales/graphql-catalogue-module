@@ -42,7 +42,7 @@ We recommend you to create a topic branch to work on, this will come in handy wh
 
 - Backwards compatibility breaks must go to the `master` branch
 - New Features go to the latest major version branch
-- Bugfixes to the latest minor version branch, `b-6.2.x` as time of this writing
+- Bugfixes to the latest minor version branch
 
 If in doubt, open up an issue before writing code, so we can help you settle this and possible other questions.
 
