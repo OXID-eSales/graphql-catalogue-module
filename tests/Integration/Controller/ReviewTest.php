@@ -16,6 +16,9 @@ final class ReviewTest extends TokenTestCase
 {
     private const ACTIVE_REVIEW = '94415306f824dc1aa2fce0dc4f12783d';
     private const INACTIVE_REVIEW = 'bcb341381858129f7412beb11c827a25';
+    private const WRONG_USER = '_test_wrong_user';
+    private const WRONG_PRODUCT = '_test_wrong_product';
+    private const WRONG_OBJECT_TYPE = '_test_wrong_object_type';
 
     public function testGetSingleActiveReview()
     {
@@ -108,5 +111,64 @@ final class ReviewTest extends TokenTestCase
         }');
 
         $this->assertEquals(404, $result['status']);
+    }
+
+    public function testGetWrongUserCase()
+    {
+        $result = $this->query('query {
+            review(id: "' . self::WRONG_USER . '") {
+                id
+                user {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $product = $result['body']['data']['review'];
+
+        $this->assertSame([
+            'id' => self::WRONG_USER,
+            'user' => null
+        ], $product);
+    }
+
+    /**
+     * @dataProvider nullProductIdsDataProvider
+     */
+    public function testGetWrongProductCase($id)
+    {
+        $result = $this->query('query {
+            review(id: "' . $id . '") {
+                id
+                product {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $product = $result['body']['data']['review'];
+
+        $this->assertSame([
+            'id' => $id,
+            'product' => null
+        ], $product);
+    }
+
+    public function nullProductIdsDataProvider()
+    {
+        return [
+            [self::WRONG_PRODUCT],
+            [self::WRONG_OBJECT_TYPE]
+        ];
     }
 }

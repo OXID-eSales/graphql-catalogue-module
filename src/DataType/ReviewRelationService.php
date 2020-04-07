@@ -33,17 +33,15 @@ class ReviewRelationService
      */
     public function getUser(Review $review): ?User
     {
-        $userId = (string)$review->getEshopModel()->getFieldData('oxuserid');
-
-        if (!strlen($userId)) {
-            return null;
-        }
+        $user = null;
 
         try {
-            $user = $this->repository->getById(
-                $userId,
-                User::class
-            );
+            if ($userId = (string)$review->getEshopModel()->getFieldData('oxuserid')) {
+                $user = $this->repository->getById(
+                    $userId,
+                    User::class
+                );
+            }
         } catch (NotFound $e) {
             return null;
         }
@@ -57,22 +55,19 @@ class ReviewRelationService
     public function getProduct(Review $review): ?Product
     {
         $reviewModel = $review->getEshopModel();
+        $product = null;
 
         if ($reviewModel->getFieldData('oxtype') !== 'oxarticle') {
             return null;
         }
 
-        $objectId = (string)$reviewModel->getFieldData('oxobjectid');
-
-        if (!strlen($objectId)) {
-            return null;
-        }
-
         try {
-            $product = $this->repository->getById(
-                $objectId,
-                Product::class
-            );
+            if ($objectId = (string)$reviewModel->getFieldData('oxobjectid')) {
+                $product = $this->repository->getById(
+                    $objectId,
+                    Product::class
+                );
+            }
         } catch (NotFound $e) {
             return null;
         }
