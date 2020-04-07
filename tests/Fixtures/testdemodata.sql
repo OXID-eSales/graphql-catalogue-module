@@ -44,3 +44,8 @@ REPLACE INTO `oxselectlist` (`OXID`, `OXSHOPID`, `OXTITLE`, `OXIDENT`, `OXVALDES
 
 REPLACE INTO `oxobject2selectlist` (`OXID`, `OXOBJECTID`, `OXSELNID`, `OXSORT`) VALUES
 ('article2testsellis', '058de8224773a1d5fd54d523f0c823e0', 'testsellist', 0);
+
+INSERT INTO `oxratings` (`OXID`, `OXUSERID`, `OXTYPE`, `OXOBJECTID`, `OXRATING`) VALUES
+('_test_wrong_user', 'wronguserid', 'oxarticle', 'b56597806428de2f58b1c6c7d3e0e093', 4),
+('_test_wrong_product', 'e7af1c3b786fd02906ccd75698f4e6b9', 'oxarticle', 'wrongobjectid', 4),
+('_test_wrong_object_type', 'e7af1c3b786fd02906ccd75698f4e6b9', 'oxrecommlist', 'b56597806428de2f58b1c6c7d3e0e093', 4);
