@@ -290,4 +290,22 @@ class ProductRelationService
 
         return $selectionLists;
     }
+
+    /**
+     * @Field()
+     *
+     * @return Review[]
+     */
+    public function getReviews(Product $product): array
+    {
+        $result = [];
+
+        if ($reviews = $product->getEshopModel()->getReviews()) {
+            foreach ($reviews as $oneReview) {
+                $result[] = new Review($oneReview);
+            }
+        }
+
+        return $result;
+    }
 }

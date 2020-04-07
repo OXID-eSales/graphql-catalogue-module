@@ -449,4 +449,59 @@ final class ProductTest extends TokenTestCase
     {
         $this->assertSame(sort($expected), sort($actual));
     }
+
+    public function testGetReviews()
+    {
+        $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT . '") {
+                id
+                reviews {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $product = $result['body']['data']['product'];
+
+        $this->assertCount(
+            3,
+            $product['reviews']
+        );
+
+        $this->assertSame(
+            [
+                ['id' => '_test_real_product_1'],
+                ['id' => '_test_real_product_2'],
+                ['id' => '_test_real_product_inactive']
+            ],
+            $product['reviews']
+        );
+    }
+
+    public function testGetNoReviews()
+    {
+        $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT_WITH_ACCESSORIES . '") {
+                id
+                reviews {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            0,
+            $result['body']['data']['product']['reviews']
+        );
+    }
 }

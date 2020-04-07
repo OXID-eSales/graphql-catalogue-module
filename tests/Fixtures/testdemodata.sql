@@ -57,4 +57,7 @@ UPDATE `oxreviews` SET `OXACTIVE` = 1 WHERE `OXID` = '94415306f824dc1aa2fce0dc4f
 INSERT INTO `oxreviews` (`OXID`, `OXACTIVE`, `OXOBJECTID`, `OXTYPE`, `OXTEXT`, `OXUSERID`, `OXRATING`) VALUES
 ('_test_wrong_user', 1, 'b56597806428de2f58b1c6c7d3e0e093', 'oxarticle', 'example wrong userid text', 'wronguserid', 4),
 ('_test_wrong_product', 1, 'wrongobjectid', 'oxarticle', 'example wrong userid text', 'e7af1c3b786fd02906ccd75698f4e6b9', 4),
-('_test_wrong_object_type', 1, 'wrongobjectid', 'oxrecommlist', 'example wrong userid text', 'e7af1c3b786fd02906ccd75698f4e6b9', 4);
+('_test_wrong_object_type', 1, 'wrongobjectid', 'oxrecommlist', 'example wrong userid text', 'e7af1c3b786fd02906ccd75698f4e6b9', 4),
+('_test_real_product_1', 1, '058e613db53d782adfc9f2ccb43c45fe', 'oxarticle', 'example review for product 1', 'e7af1c3b786fd02906ccd75698f4e6b9', 3),
+('_test_real_product_2', 1, '058e613db53d782adfc9f2ccb43c45fe', 'oxarticle', 'example review for product 2', 'e7af1c3b786fd02906ccd75698f4e6b9', 4),
+('_test_real_product_inactive', 0, '058e613db53d782adfc9f2ccb43c45fe', 'oxarticle', 'example review for product inactive', 'e7af1c3b786fd02906ccd75698f4e6b9', 5);
