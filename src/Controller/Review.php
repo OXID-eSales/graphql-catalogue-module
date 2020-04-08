@@ -35,7 +35,7 @@ class Review extends Base
             return $review;
         }
 
-        if (!$this->isAuthorized('VIEW_INACTIVE_PRODUCT')) {
+        if (!$this->isAuthorized('VIEW_INACTIVE_REVIEW')) {
             throw new InvalidLogin("Unauthorized");
         }
 

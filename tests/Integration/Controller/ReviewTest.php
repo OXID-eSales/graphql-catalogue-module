@@ -46,7 +46,7 @@ final class ReviewTest extends TokenTestCase
             $result
         );
 
-        $product = $result['body']['data']['review'];
+        $review = $result['body']['data']['review'];
 
         $this->assertSame([
             'id' => self::ACTIVE_REVIEW,
@@ -63,7 +63,7 @@ final class ReviewTest extends TokenTestCase
                 'id' => 'b56597806428de2f58b1c6c7d3e0e093',
                 'title' => 'Kite NBK EVO 2010'
             ]
-        ], $product);
+        ], $review);
     }
 
     public function testGetSingleInactiveReviewWithoutToken()
@@ -129,12 +129,12 @@ final class ReviewTest extends TokenTestCase
             $result
         );
 
-        $product = $result['body']['data']['review'];
+        $review = $result['body']['data']['review'];
 
         $this->assertSame([
             'id' => self::WRONG_USER,
             'user' => null
-        ], $product);
+        ], $review);
     }
 
     /**
@@ -156,12 +156,12 @@ final class ReviewTest extends TokenTestCase
             $result
         );
 
-        $product = $result['body']['data']['review'];
+        $review = $result['body']['data']['review'];
 
         $this->assertSame([
             'id' => $id,
             'product' => null
-        ], $product);
+        ], $review);
     }
 
     public function nullProductIdsDataProvider()
