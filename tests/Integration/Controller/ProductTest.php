@@ -450,8 +450,13 @@ final class ProductTest extends TokenTestCase
         $this->assertSame(sort($expected), sort($actual));
     }
 
-    public function testGetReviews()
+    /**
+     * @dataProvider getReviewsConfigDataProvider
+     */
+    public function testGetReviews($configValue, $expectedIds)
     {
+        $this->getConfig()->setConfigParam('blGBModerate', $configValue);
+
         $result = $this->query('query {
             product (id: "' . self::ACTIVE_PRODUCT . '") {
                 id
@@ -468,19 +473,31 @@ final class ProductTest extends TokenTestCase
 
         $product = $result['body']['data']['product'];
 
-        $this->assertCount(
-            3,
-            $product['reviews']
-        );
-
         $this->assertSame(
-            [
-                ['id' => '_test_real_product_1'],
-                ['id' => '_test_real_product_2'],
-                ['id' => '_test_real_product_inactive']
-            ],
+            $expectedIds,
             $product['reviews']
         );
+    }
+
+    public function getReviewsConfigDataProvider()
+    {
+        return [
+            [
+                true,
+                [
+                    ['id' => '_test_real_product_1'],
+                    ['id' => '_test_real_product_2']
+                ]
+            ],
+            [
+                false,
+                [
+                    ['id' => '_test_real_product_1'],
+                    ['id' => '_test_real_product_2'],
+                    ['id' => '_test_real_product_inactive']
+                ]
+            ]
+        ];
     }
 
     public function testGetNoReviews()
