@@ -50,14 +50,6 @@ final class Review implements DataType
     /**
      * @Field()
      */
-    public function isActive(): bool
-    {
-        return (bool) $this->review->getFieldData('oxactive');
-    }
-
-    /**
-     * @Field()
-     */
     public function getText(): string
     {
         return (string) $this->review->getFieldData('oxtext');

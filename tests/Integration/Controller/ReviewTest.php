@@ -66,8 +66,17 @@ final class ReviewTest extends TokenTestCase
         ], $review);
     }
 
-    public function testGetSingleInactiveReviewWithoutToken()
+    /**
+     * @dataProvider getInactiveReviewDataProvider
+     */
+    public function testGetInactiveReview($moderation, $withToken, $code, $active)
     {
+        $this->getConfig()->setConfigParam('blGBModerate', $moderation);
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
         $result = $this->query('query {
             review (id: "' . self::INACTIVE_REVIEW . '") {
                 id
@@ -76,30 +85,49 @@ final class ReviewTest extends TokenTestCase
         }');
 
         $this->assertResponseStatus(
-            401,
+            $code,
             $result
         );
+
+        if ($code === 200) {
+            $this->assertEquals(
+                [
+                    'id' => self::INACTIVE_REVIEW,
+                    'active' => $active
+                ],
+                $result['body']['data']['review']
+            );
+        }
     }
 
-    public function testGetSingleInactiveReviewWithToken()
+    public function getInactiveReviewDataProvider()
     {
-        $this->prepareToken();
-
-        $result = $this->query('query {
-            review (id: "' . self::INACTIVE_REVIEW . '") {
-                id
-                active
-            }
-        }');
-
-        $this->assertEquals(200, $result['status']);
-        $this->assertEquals(
+        return [
             [
-                'id' => self::INACTIVE_REVIEW,
-                'active' => false
+                'moderation' => true,
+                'withToken' => false,
+                'expectedCode' => 401,
+                'expectedActive' => false
             ],
-            $result['body']['data']['review']
-        );
+            [
+                'moderation' => false,
+                'withToken' => false,
+                'expectedCode' => 200,
+                'expectedActive' => true
+            ],
+            [
+                'moderation' => true,
+                'withToken' => true,
+                'expectedCode' => 200,
+                'expectedActive' => false
+            ],
+            [
+                'moderation' => false,
+                'withToken' => true,
+                'expectedCode' => 200,
+                'expectedActive' => true
+            ],
+        ];
     }
 
     public function testGetSingleNonExistingReview()
