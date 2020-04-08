@@ -8,9 +8,9 @@ services:
     resource: 'src/Controller/*'
     public: true
 
-  OxidEsalesGraphQLCatalogueRelationsServices:
+  OxidEsalesGraphQLCatalogueDataTypeServices:
     namespace: OxidEsales\GraphQL\Catalogue\DataType\
-    resource: 'src/DataType/*RelationService.php'
+    resource: 'src/DataType/*Service.php'
     public: true
 
   OxidEsalesGraphQLCatalogueRepositories:
