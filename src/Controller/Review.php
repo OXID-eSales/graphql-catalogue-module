@@ -21,6 +21,7 @@ use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Review extends Base
 {
+    /** @var ReviewActivityService */
     private $reviewActivityService;
 
     public function __construct(

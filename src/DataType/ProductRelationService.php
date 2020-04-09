@@ -300,7 +300,9 @@ class ProductRelationService
     {
         $result = [];
 
-        if ($reviews = $product->getEshopModel()->getReviews()) {
+        $reviews = $product->getEshopModel()->getReviews();
+        if ($reviews !== null) {
+            /** @var \OxidEsales\Eshop\Application\Model\Review $oneReview */
             foreach ($reviews as $oneReview) {
                 $result[] = new Review($oneReview);
             }
