@@ -104,10 +104,7 @@ final class ProductTest extends TokenTestCase
                 selectionLists {
                     title
                     fields {
-                        name
                         value
-                        active
-                        disabled
                     }
                 }
                 id
@@ -390,10 +387,7 @@ final class ProductTest extends TokenTestCase
                 selectionLists {
                     title
                     fields {
-                        name
                         value
-                        active
-                        disabled
                     }
                 }
             }
@@ -416,28 +410,16 @@ final class ProductTest extends TokenTestCase
                 'title' => 'test selection list [DE] šÄßüл',
                 'fields' => [
                     [
-                        'name' => 'selvar1 [DE]',
-                        'value' => 0,
-                        'active' => true,
-                        'disabled' => false
+                        'value' => 'selvar1 [DE]',
                     ],
                     [
-                        'name' => 'selvar2 [DE]',
-                        'value' => 1,
-                        'active' => false,
-                        'disabled' => false
+                        'value' => 'selvar2 [DE]',
                     ],
                     [
-                        'name' => 'selvar3 [DE]',
-                        'value' => 2,
-                        'active' => false,
-                        'disabled' => false
+                        'value' => 'selvar3 [DE]',
                     ],
                     [
-                        'name' => 'selvar4 [DE]',
-                        'value' => 3,
-                        'active' => false,
-                        'disabled' => false
+                        'value' => 'selvar4 [DE]',
                     ],
                 ],
             ],
