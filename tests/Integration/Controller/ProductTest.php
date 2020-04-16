@@ -17,6 +17,7 @@ final class ProductTest extends TokenTestCase
     private const ACTIVE_PRODUCT = '058e613db53d782adfc9f2ccb43c45fe';
     private const INACTIVE_PRODUCT  = '09602cddb5af0aba745293d08ae6bcf6';
     private const ACTIVE_PRODUCT_WITH_ACCESSORIES = '05848170643ab0deb9914566391c0c63';
+    private const ACTIVE_PRODUCT_WITH_UNITNAME = 'f33d5bcc7135908fd36fc736c643aa1c';
     private const ACTIVE_PRODUCT_WITH_SELECTION_LISTS = '058de8224773a1d5fd54d523f0c823e0';
 
     public function testGetSingleActiveProduct()
@@ -519,5 +520,28 @@ final class ProductTest extends TokenTestCase
             0,
             $result['body']['data']['product']['reviews']
         );
+    }
+
+    public function testGetUnitNameAndPrice()
+    {
+         $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT_WITH_UNITNAME. '") {
+                id
+                unit {
+                    name
+                    price {
+                        price
+                    }
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertSame('g', $result['body']['data']['product']['unit']['name']);
+        $this->assertSame(0.42, $result['body']['data']['product']['unit']['price']['price']);
     }
 }
