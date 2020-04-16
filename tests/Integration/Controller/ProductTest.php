@@ -160,7 +160,11 @@ final class ProductTest extends TokenTestCase
         }
         $this->assertGreaterThan(0, $deliveryTime['minDeliveryTime']);
         $this->assertGreaterThan(0, $deliveryTime['maxDeliveryTime']);
-        $this->assertContains($deliveryTime['deliveryTimeUnit'], ['DAY','WEEK'], 'deliveryTimeUnit must be one of DAY, WEEK, but is not');
+        $this->assertContains(
+            $deliveryTime['deliveryTimeUnit'],
+            ['DAY','WEEK'],
+            'deliveryTimeUnit must be one of DAY, WEEK, but is not'
+        );
 
         $price = $product['price'];
         $this->assertSame(359.0, $price['price']);
@@ -534,7 +538,7 @@ final class ProductTest extends TokenTestCase
     public function testGetUnitNameAndPrice()
     {
          $result = $this->query('query {
-            product (id: "' . self::ACTIVE_PRODUCT_WITH_UNITNAME. '") {
+            product (id: "' . self::ACTIVE_PRODUCT_WITH_UNITNAME . '") {
                 id
                 unit {
                     name
