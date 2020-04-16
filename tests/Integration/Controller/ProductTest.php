@@ -118,6 +118,12 @@ final class ProductTest extends TokenTestCase
                 sku
                 ean
                 manufacturerEan
+                manufacturer {
+                    id
+                }
+                vendor {
+                    id
+                }
                 mpn
                 title
                 shortDescription
@@ -161,6 +167,9 @@ final class ProductTest extends TokenTestCase
         $this->assertSame(19.0, $price['vat']);
         $this->assertSame(57.32, $price['vatValue']);
         $this->assertFalse($price['nettoPriceMode']);
+
+        $this->assertNull($product['manufacturer']);
+        $this->assertNull($product['vendor']);
 
         $currency = $price['currency'];
         $expectedCurrency = Registry::getConfig()->getActShopCurrencyObject();
