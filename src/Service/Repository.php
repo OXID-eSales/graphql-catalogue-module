@@ -76,7 +76,10 @@ class Repository
             $filter->getActive() !== null &&
             $filter->getActive()->equals() === true
         ) {
-            $queryBuilder->andWhere($model->getSqlActiveSnippet());
+            $activeSnippet = $model->getSqlActiveSnippet();
+            if (strlen($activeSnippet)) {
+                $queryBuilder->andWhere($activeSnippet);
+            }
         }
 
         $filters = array_filter($filter->getFilters());

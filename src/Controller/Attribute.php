@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
+use OxidEsales\GraphQL\Base\DataType\BoolFilter;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\Attribute as AttributeDataType;
 use OxidEsales\GraphQL\Catalogue\Exception\AttributeNotFound;
@@ -44,10 +45,16 @@ class Attribute extends Base
      *
      * @return AttributeDataType[]
      */
-    public function attributes(): array
+    public function attributes(?AttributeFilterList $filter = null): array
     {
+        $filter = $filter ?? new AttributeFilterList();
+
+        if (!$this->isAuthorized('VIEW_INACTIVE_ATTRIBUTE')) {
+            $filter = $filter->withActiveFilter(new BoolFilter(true));
+        }
+
         return $this->repository->getByFilter(
-            new AttributeFilterList(),
+            $filter,
             AttributeDataType::class
         );
     }
