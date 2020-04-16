@@ -127,6 +127,9 @@ final class ProductTest extends TokenTestCase
                 category {
                     id
                 }
+                bundleProduct {
+                    id
+                }
                 mpn
                 title
                 shortDescription
@@ -177,6 +180,7 @@ final class ProductTest extends TokenTestCase
 
         $this->assertNull($product['manufacturer']);
         $this->assertNull($product['vendor']);
+        $this->assertNull($product['bundle']);
 
         $this->assertSame('0f40c6a077b68c21f164767c4a903fd2', $product['category']['id']);
 
