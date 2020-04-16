@@ -46,17 +46,9 @@ class Attribute extends Base
      */
     public function attributes(): array
     {
-        $filter = new AttributeFilterList();
-
-        try {
-            $attributes = $this->repository->getByFilter(
-                $filter,
-                AttributeDataType::class
-            );
-
-            return $attributes;
-        } catch (\Exception $e) {
-            return [];
-        }
+        return $this->repository->getByFilter(
+            new AttributeFilterList(),
+            AttributeDataType::class
+        );
     }
 }
