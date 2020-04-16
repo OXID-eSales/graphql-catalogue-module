@@ -16,7 +16,7 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 /**
  * @Type()
  */
-final class ProductAttribute implements DataType
+final class ProductAttribute
 {
     /** @var EshopAttributeModel */
     private $attribute;
@@ -24,11 +24,6 @@ final class ProductAttribute implements DataType
     public function __construct(EshopAttributeModel $attribute)
     {
         $this->attribute = $attribute;
-    }
-
-    public static function getModelClass(): string
-    {
-        return EshopAttributeModel::class;
     }
 
     /**
