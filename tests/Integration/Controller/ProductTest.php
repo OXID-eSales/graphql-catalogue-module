@@ -95,6 +95,11 @@ final class ProductTest extends TokenTestCase
                 accessories {
                     id
                 }
+                deliveryTime {
+                    minDeliveryTime
+                    maxDeliveryTime
+                    deliveryTimeUnit
+                }
                 attributes {
                     attribute {
                         title
@@ -137,6 +142,18 @@ final class ProductTest extends TokenTestCase
         $this->assertSame(0.0, $dimensions['width']);
         $this->assertSame(0.0, $dimensions['height']);
         $this->assertSame(0.0, $dimensions['weight']);
+
+        $deliveryTime = $product['deliveryTime'];
+        if (\version_compare(\PHPUnit\Runner\Version::id(), '7.0.0') >= 0) {
+            $this->assertIsInt($deliveryTime['minDeliveryTime']);
+            $this->assertIsInt($deliveryTime['maxDeliveryTime']);
+        } else {
+            $this->assertTrue(is_int($deliveryTime['minDeliveryTime']), 'minDeliveryTime must be of type integer');
+            $this->assertTrue(is_int($deliveryTime['maxDeliveryTime']), 'maxDeliveryTime must be of type integer');
+        }
+        $this->assertGreaterThan(0, $deliveryTime['minDeliveryTime']);
+        $this->assertGreaterThan(0, $deliveryTime['maxDeliveryTime']);
+        $this->assertContains($deliveryTime['deliveryTimeUnit'], ['DAY','WEEK'], 'deliveryTimeUnit must be one of DAY, WEEK, but is not');
 
         $price = $product['price'];
         $this->assertSame(359.0, $price['price']);
