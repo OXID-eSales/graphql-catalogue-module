@@ -16,7 +16,7 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 /**
  * @Type()
  */
-class ProductDeliveryTime implements DataType
+class ProductDeliveryTime
 {
     /** @var EshopProductModel */
     private $product;
@@ -25,14 +25,6 @@ class ProductDeliveryTime implements DataType
         EshopProductModel $product
     ) {
         $this->product = $product;
-    }
-
-    /**
-     * @return class-string
-     */
-    public static function getModelClass(): string
-    {
-        return EshopProductModel::class;
     }
 
     /**
