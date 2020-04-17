@@ -19,6 +19,7 @@ final class ProductTest extends TokenTestCase
     private const ACTIVE_PRODUCT_WITH_ACCESSORIES = '05848170643ab0deb9914566391c0c63';
     private const ACTIVE_PRODUCT_WITH_UNITNAME = 'f33d5bcc7135908fd36fc736c643aa1c';
     private const ACTIVE_PRODUCT_WITH_SELECTION_LISTS = '058de8224773a1d5fd54d523f0c823e0';
+    private const ACTIVE_PRODUCT_WITH_RESTOCK_DATE = 'f4fe754e1692b9f79f2a7b1a01bb8dee';
 
     public function testGetSingleActiveProduct()
     {
@@ -566,4 +567,24 @@ final class ProductTest extends TokenTestCase
         $this->assertSame('g', $result['body']['data']['product']['unit']['name']);
         $this->assertSame(0.42, $result['body']['data']['product']['unit']['price']['price']);
     }
+
+    public function testGetRestockDate()
+    {
+         $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT_WITH_RESTOCK_DATE. '") {
+                id
+                stock {
+                    restockDate
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertSame('2999-12-31T00:00:00+01:00', $result['body']['data']['product']['stock']['restockDate']);
+    }
+
 }
