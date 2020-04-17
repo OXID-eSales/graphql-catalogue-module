@@ -36,12 +36,10 @@ class ProductRatingRelationService
      */
     public function getRatings(ProductRating $rating): array
     {
-        $filter = $filter ?? new ProductRatingFilterList(
-            new StringFilter((string)$rating->getEshopModel()->getId())
-        );
-
         return $this->repository->getByFilter(
-            $filter,
+            new ProductRatingFilterList(
+                new StringFilter((string)$rating->getEshopModel()->getId())
+            ),
             Rating::class
         );
     }
