@@ -20,6 +20,7 @@ final class ProductTest extends TokenTestCase
     private const ACTIVE_PRODUCT_WITH_UNITNAME = 'f33d5bcc7135908fd36fc736c643aa1c';
     private const ACTIVE_PRODUCT_WITH_SELECTION_LISTS = '058de8224773a1d5fd54d523f0c823e0';
     private const ACTIVE_PRODUCT_WITH_RESTOCK_DATE = 'f4fe754e1692b9f79f2a7b1a01bb8dee';
+    private const ACTIVE_PRODUCT_WITH_SCALE_PRICES = 'dc53d3c0ca2ae7c38bf51f3410da0bf8';
 
     public function testGetSingleActiveProduct()
     {
@@ -571,7 +572,7 @@ final class ProductTest extends TokenTestCase
     public function testGetRestockDate()
     {
          $result = $this->query('query {
-            product (id: "' . self::ACTIVE_PRODUCT_WITH_RESTOCK_DATE. '") {
+            product (id: "' . self::ACTIVE_PRODUCT_WITH_RESTOCK_DATE . '") {
                 id
                 stock {
                     restockDate
@@ -587,4 +588,27 @@ final class ProductTest extends TokenTestCase
         $this->assertSame('2999-12-31T00:00:00+01:00', $result['body']['data']['product']['stock']['restockDate']);
     }
 
+    public function testGetScalePrices()
+    {
+         $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT_WITH_SCALE_PRICES . '") {
+                id
+                scalePrices {
+                    absolutePrice
+                    amountFrom
+                    amountTo
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            0,
+            $result['body']['data']['product']['scalePrices']
+        );
+    }
 }
