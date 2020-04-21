@@ -23,6 +23,10 @@ $ composer require oxid-esales/graphql-catalogue
 
 After requiring the module, you need to head over to the OXID eShop admin and activate the GraphQL Catalogue module. If you did not had the `oxid-esales/graphql-base` module already installed, composer will do that for you, but don't forget to also activate this in the OXID eShop admin.
 
+### How to use
+
+A good starting point is to check the [How to use section in the GraphQL Base Module](https://github.com/OXID-eSales/graphql-base-module/#how-to-use)
+
 ## Testing
 
 ### Linting, syntax check, static analysis and unit tests
