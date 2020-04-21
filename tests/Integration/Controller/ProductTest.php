@@ -87,9 +87,6 @@ final class ProductTest extends TokenTestCase
                     keywords
                     url
                 }
-                crossSelling {
-                    id
-                }
                 accessories {
                     id
                 }
@@ -198,11 +195,6 @@ final class ProductTest extends TokenTestCase
         $this->assertSame(16.0, $stock['stock']);
         $this->assertSame(0, $stock['stockStatus']);
         $this->assertNull($stock['restockDate']);
-
-        $this->assertCount(
-            3,
-            $product['crossSelling']
-        );
 
         $this->assertCount(
             0,
