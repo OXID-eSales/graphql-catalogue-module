@@ -18,6 +18,7 @@ final class ProductTest extends TokenTestCase
     private const INACTIVE_PRODUCT  = '09602cddb5af0aba745293d08ae6bcf6';
     private const ACTIVE_PRODUCT_WITH_ACCESSORIES = '05848170643ab0deb9914566391c0c63';
     private const ACTIVE_PRODUCT_WITH_SELECTION_LISTS = '058de8224773a1d5fd54d523f0c823e0';
+    private const ACTIVE_PRODUCT_WITH_VARIANTS = '531b537118f5f4d7a427cdb825440922';
 
     public function testGetSingleActiveProduct()
     {
@@ -106,6 +107,10 @@ final class ProductTest extends TokenTestCase
                     fields {
                         value
                     }
+                }
+                variants {
+                    id
+                    active
                 }
                 id
                 active
@@ -212,6 +217,7 @@ final class ProductTest extends TokenTestCase
         $this->assertSame('', $product['manufacturerEan']);
         $this->assertSame([], $product['attributes']);
         $this->assertSame([], $product['selectionLists']);
+        $this->assertSame([], $product['variants']);
         $this->assertSame('', $product['mpn']);
         $this->assertSame('Bindung O&#039;BRIEN DECADE CT 2010', $product['title']);
         $this->assertSame('Geringes Gewicht, beste Performance!', $product['shortDescription']);
@@ -501,6 +507,102 @@ final class ProductTest extends TokenTestCase
         $this->assertCount(
             0,
             $result['body']['data']['product']['reviews']
+        );
+    }
+
+    public function testGetProductVariants(): void
+    {
+        $result = $this->query('
+            query{
+                product(id: "' . self::ACTIVE_PRODUCT_WITH_VARIANTS . '" ){
+                    variants {
+                        id
+                        active
+                        sku
+                        ean
+                        manufacturerEan
+                        mpn
+                        title
+                        shortDescription
+                        longDescription
+                        vat
+                        insert
+                        freeShipping
+                        timestamp
+                    }
+                }
+            }
+        ');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $actualVariants = $result['body']['data']['product']['variants'];
+
+        $expectedVariants = [
+            [
+              "id" => "6b6efaa522be53c3e86fdb41f0542a8a",
+              "active" => true,
+            ],
+            [
+              "id" => "6b65c82bfe8fa19865d560f8c1a905b4",
+              "active" => true,
+            ],
+            [
+              "id" => "6b6ee4ad0a02a725a136ca139e226dd5",
+              "active" => true,
+            ],
+            [
+              "id" => "6b628e6a8ffa98fea6f2ee9d708b1b23",
+              "active" => true,
+            ],
+            [
+              "id" => "6b6e2c7af07fd2b9d82223ff35f4e08f",
+              "active" => true,
+            ],
+            [
+              "id" => "6b6d187d3f648ab5d7875ce863244095",
+              "active" => true,
+            ],
+            [
+              "id" => "6b65295a7fe5fa6faaa2f0ac3f9b0f80",
+              "active" => true,
+            ],
+            [
+              "id" => "6b6e0bb9f2b8b5f070f91593073b4555",
+              "active" => true,
+            ],
+            [
+              "id" => "6b6cf1ed0c0b3e784b05b1c9c207d352",
+              "active" => true,
+            ],
+        ];
+
+        $this->assertArraySameNonAssociative($expectedVariants, $actualVariants);
+    }
+
+    public function testGetNoProductVariants(): void
+    {
+        $result = $this->query('
+            query{
+                product(id: "' . self::ACTIVE_PRODUCT_WITH_ACCESSORIES . '"){
+                    variants {
+                        id
+                    }
+                }
+            }
+        ');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            0,
+            $result['body']['data']['product']['variants']
         );
     }
 }
