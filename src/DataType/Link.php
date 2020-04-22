@@ -38,11 +38,6 @@ class Link implements DataType
         return LinkModel::class;
     }
 
-    public function getEshopModel(): LinkModel
-    {
-        return $this->link;
-    }
-
     /**
      * @Field()
      */
