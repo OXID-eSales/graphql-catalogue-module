@@ -126,6 +126,11 @@ final class ProductRelationServiceTest extends TokenTestCase
         ];
     }
 
+    /**
+     * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductSelection
+     * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductSelectionList
+     * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService
+     */
     public function testGetSelectionListsRelation()
     {
         $result = $this->query('query {
@@ -246,6 +251,10 @@ final class ProductRelationServiceTest extends TokenTestCase
         );
     }
 
+    /**
+     * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductUnit
+     * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService
+     */
     public function testGetUnitNameAndPriceRelation()
     {
          $result = $this->query('query {
@@ -269,6 +278,10 @@ final class ProductRelationServiceTest extends TokenTestCase
         $this->assertSame(0.42, $result['body']['data']['product']['unit']['price']['price']);
     }
 
+    /**
+     * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductStock
+     * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService
+     */
     public function testGetRestockDateRelation()
     {
          $result = $this->query('query {
@@ -376,6 +389,9 @@ final class ProductRelationServiceTest extends TokenTestCase
         );
     }
 
+    /**
+     * @depends testGetNoNonExistingProductBundleItemRelation
+     */
     public function testGetNoProductBundleItemRelation()
     {
         $config = Registry::getConfig();
@@ -401,6 +417,9 @@ final class ProductRelationServiceTest extends TokenTestCase
         $config->setConfigParam('bl_perfLoadAccessoires', $oldParam);
     }
 
+    /**
+     * @depends testGetNoNonExistingProductBundleItemRelation
+     */
     public function testGetNoNonExistingProductBundleItemRelation()
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
@@ -513,6 +532,10 @@ final class ProductRelationServiceTest extends TokenTestCase
                      ->execute();
     }
 
+    /**
+     * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductScalePrice
+     * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService
+     */
     public function testGetScalePricesRelation()
     {
          $result = $this->query('query {
