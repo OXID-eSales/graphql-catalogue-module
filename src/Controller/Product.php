@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Catalogue\Controller;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\Product as ProductDataType;
+use OxidEsales\GraphQL\Catalogue\DataType\ProductFilterList;
 use OxidEsales\GraphQL\Catalogue\Exception\ProductNotFound;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
@@ -40,5 +41,30 @@ class Product extends Base
         }
 
         return $product;
+    }
+
+    /**
+     * @Query()
+     *
+     * @return ProductDataType[]
+     */
+    public function products(?ProductFilterList $filter = null, int $offset = null, int $limit = null): array
+    {
+        $filter = $filter ?? new ProductFilterList();
+
+        // In case user has VIEW_INACTIVE_PRODUCT permissions
+        // return all products including inactive ones
+        if ($this->isAuthorized('VIEW_INACTIVE_PRODUCT')) {
+            $filter = $filter->withActiveFilter(null);
+        }
+
+        $products = $this->repository->getByFilter(
+            $filter,
+            ProductDataType::class,
+            $offset,
+            $limit
+        );
+
+        return $products;
     }
 }

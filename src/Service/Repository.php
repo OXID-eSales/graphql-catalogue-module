@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Catalogue\Service;
 use InvalidArgumentException;
 use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\GraphQL\Base\DataType\FilterInterface;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\FilterList;
 use OxidEsales\GraphQL\Catalogue\DataType\DataType;
@@ -59,7 +60,7 @@ class Repository
      * @return T[]
      * @throws InvalidArgumentException if $model is not instance of BaseModel
      */
-    public function getByFilter(FilterList $filter, string $type): array
+    public function getByFilter(FilterList $filter, string $type, int $offset = null, int $limit = null): array
     {
         $types = [];
         $model = oxNew($type::getModelClass());
@@ -67,10 +68,11 @@ class Repository
             throw new InvalidArgumentException();
         }
 
+        $alias = $model->getViewName();
         $queryBuilder = $this->queryBuilderFactory->create();
         $queryBuilder->select('*')
-                     ->from($model->getViewName())
-                     ->orderBy('oxid');
+                     ->from($model->getViewName(), $alias)
+                     ->orderBy("$alias.oxid");
 
         if (
             $filter->getActive() !== null &&
@@ -82,9 +84,18 @@ class Repository
             }
         }
 
+        /** @var FilterInterface[] $filters */
         $filters = array_filter($filter->getFilters());
         foreach ($filters as $field => $fieldFilter) {
-            $fieldFilter->addToQuery($queryBuilder, $field);
+            $fieldFilter->addToQuery($queryBuilder, $field, $alias);
+        }
+
+        if ($offset !== null) {
+            $queryBuilder->setFirstResult($offset);
+        }
+
+        if ($limit !== null) {
+            $queryBuilder->setMaxResults($limit);
         }
 
         $queryBuilder->getConnection()->setFetchMode(PDO::FETCH_ASSOC);

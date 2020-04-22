@@ -414,4 +414,212 @@ final class ProductTest extends TokenTestCase
             $result['body']['data']['product']['variants']
         );
     }
+
+    public function testProducts()
+    {
+        $result = $this->query('query {
+            products {
+                id
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            105,
+            $result['body']['data']['products']
+        );
+    }
+
+    /**
+     * @dataProvider productsOffsetAndLimitDataProvider
+     *
+     * @param int $offset
+     * @param int $limit
+     * @param array $expectedProducts
+     */
+    public function testProductsOffsetAndLimit(int $offset, int $limit, array $expectedProducts)
+    {
+        $result = $this->query('query {
+            products(offset: ' . $offset . ', limit: ' . $limit . ') {
+                id
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertEquals($expectedProducts, $result['body']['data']['products']);
+    }
+
+    /**
+     * @return array[]
+     */
+    public function productsOffsetAndLimitDataProvider()
+    {
+        return [
+            [
+                0,
+                1,
+                [
+                    ['id' => '05833e961f65616e55a2208c2ed7c6b8']
+                ]
+            ],
+            [
+                0,
+                4,
+                [
+                    ['id' => '05833e961f65616e55a2208c2ed7c6b8'],
+                    ['id' => '05848170643ab0deb9914566391c0c63'],
+                    ['id' => '0584e8b766a4de2177f9ed11d1587f55'],
+                    ['id' => '058c7b525aad619d8b343c0ffada0247'],
+                ]
+            ],
+            [
+                2,
+                4,
+                [
+                    ['id' => '0584e8b766a4de2177f9ed11d1587f55'],
+                    ['id' => '058c7b525aad619d8b343c0ffada0247'],
+                    ['id' => '058de8224773a1d5fd54d523f0c823e0'],
+                    ['id' => '058e613db53d782adfc9f2ccb43c45fe'],
+
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider productsByManufacturerProvider
+     *
+     * @param string $manufacturerId
+     * @param int $expectedCount
+     */
+    public function testProductsByManufacturer(string $manufacturerId, int $expectedCount)
+    {
+        $result = $this->query('query {
+            products(filter: { manufacturer: { equals: "' . $manufacturerId . '" } }) {
+                manufacturer {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            $expectedCount,
+            $result['body']['data']['products']
+        );
+
+        $filterByManufacturerFunction = function (array $product) use ($manufacturerId) {
+            return $product['manufacturer']['id'] == $manufacturerId;
+        };
+
+        $this->assertEquals(
+            $result['body']['data']['products'],
+            array_filter($result['body']['data']['products'], $filterByManufacturerFunction)
+        );
+    }
+
+    /**
+     * @return array[]
+     */
+    public function productsByManufacturerProvider()
+    {
+        return [
+            ['9434afb379a46d6c141de9c9e5b94fcf', 37],
+            ['adc6df0977329923a6330cc8f3c0a906', 7],
+            ['90a0b84564cde2394491df1c673b6aa0', 3]
+        ];
+    }
+
+    /**
+     * @dataProvider productsByVendorProvider
+     *
+     * @param string $vendorId
+     * @param int $expectedCount
+     */
+    public function testProductsByVendor(string $vendorId, int $expectedCount)
+    {
+        $result = $this->query('query {
+            products(filter: { vendor: { equals: "' . $vendorId . '" } }) {
+                vendor {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            $expectedCount,
+            $result['body']['data']['products']
+        );
+
+        $filterByVendorFunction = function (array $product) use ($vendorId) {
+            return $product['vendor']['id'] == $vendorId;
+        };
+
+        $this->assertEquals(
+            $result['body']['data']['products'],
+            array_filter($result['body']['data']['products'], $filterByVendorFunction)
+        );
+    }
+
+    /**
+     * @return array[]
+     */
+    public function productsByVendorProvider()
+    {
+        return [
+            ['a57c56e3ba710eafb2225e98f058d989', 60],
+            ['fe07958b49de225bd1dbc7594fb9a6b0', 3],
+        ];
+    }
+
+    /**
+     * @dataProvider productsByCategoryDataProvider
+     *
+     * @param string $categoryId
+     * @param int $expectedCount
+     */
+    public function testProductsByCategory(string $categoryId, int $expectedCount)
+    {
+        $result = $this->query('query {
+            products(filter: { category: { equals: "' . $categoryId . '" } }) {
+                id
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            $expectedCount,
+            $result['body']['data']['products']
+        );
+    }
+
+    public function productsByCategoryDataProvider()
+    {
+        return [
+            ['0f41a4463b227c437f6e6bf57b1697c4', 2],
+            ['0f4fb00809cec9aa0910aa9c8fe36751', 12],
+            ['0f4f08358666c54b4fde3d83d2b7ef04', 4],
+        ];
+    }
 }
