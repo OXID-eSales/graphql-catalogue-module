@@ -68,3 +68,14 @@ INSERT INTO `oxlinks` (`OXID`, `OXSHOPID`, `OXACTIVE`, `OXURL`, `OXURLDESC`, `OX
 ('test_active_2', 1, 1, 'http://www.oxid-esales.com', '<p>Aktiv link</p>', '<p>Active link</p>', '', '', '2012-06-04 07:04:54'),
 ('test_inactive', 1, 0, 'http://www.oxid-esales.com', '<p>Deutsche Beschreibung inakitv</p>', '<p>English Description inactive</p>', '', '', '2012-06-04 07:04:54'),
 ('test_inactive_2', 1, 0, 'http://www.oxid-esales-inactive.com', '<p>Inaktiv link</p>', '<p>Incative link</p>', '', '', '2012-06-05 07:04:54');
+
+#banners
+UPDATE `oxactions` SET `OXTITLE_1` = 'Banner 1 en' WHERE `OXID` = 'b5639c6431b26687321f6ce654878fa5';
+UPDATE `oxactions` SET `OXTITLE_1` = 'Banner 4 en' WHERE `OXID` = 'cb34f86f56162d0c95890b5985693710';
+UPDATE `oxactions` SET `OXACTIVE` = 0 WHERE `OXID` = 'b56a097dedf5db44e20ed56ac6defaa8';
+INSERT INTO `oxactions` (`OXID`, `OXSHOPID`, `OXTYPE`, `OXSORT`, `OXACTIVE`, `OXACTIVEFROM`, `OXACTIVETO`) VALUES
+('_test_active_interval', 1, 3, 5, 0, '2020-01-01 00:00:00', '2035-01-01 00:00:00');
+UPDATE `oxactions` SET `OXSORT` = 1 WHERE `OXID` = 'cb34f86f56162d0c95890b5985693710';
+UPDATE `oxactions` SET `OXSORT` = 2 WHERE `OXID` = 'b56efaf6c93664b6dca5b1cee1f87057';
+UPDATE `oxactions` SET `OXSORT` = 3 WHERE `OXID` = 'b56a097dedf5db44e20ed56ac6defaa8';
+UPDATE `oxactions` SET `OXSORT` = 4 WHERE `OXID` = 'b5639c6431b26687321f6ce654878fa5';
