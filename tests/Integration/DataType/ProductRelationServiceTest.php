@@ -11,6 +11,8 @@ namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\DataType;
 
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 
 final class ProductRelationServiceTest extends TokenTestCase
 {
@@ -22,6 +24,7 @@ final class ProductRelationServiceTest extends TokenTestCase
     private const ACTIVE_PRODUCT_WITH_RESTOCK_DATE = 'f4fe754e1692b9f79f2a7b1a01bb8dee';
     private const ACTIVE_PRODUCT_WITH_SCALE_PRICES = 'dc53d3c0ca2ae7c38bf51f3410da0bf8';
     private const ACTIVE_PRODUCT_WITH_BUNDLE_ITEM = 'dc53d3c0ca2ae7c38bf51f3410da0bf8';
+    private const INACTIVE_PRODUCT  = '09602cddb5af0aba745293d08ae6bcf6';
 
     public function testGetAccessoriesRelation()
     {
@@ -393,6 +396,118 @@ final class ProductRelationServiceTest extends TokenTestCase
         $this->assertNull($result['body']['data']['product']['bundleProduct']);
 
         $config->setConfigParam('bl_perfLoadAccessoires', $oldParam);
+    }
+
+    public function testGetNoNonExistingProductBundleItemRelation()
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+
+        $queryBuilder = $queryBuilderFactory->create();
+        $queryBuilder->update('oxarticles')
+                     ->set('oxbundleid', ':BUNDLEID')
+                     ->where('OXID = :OXID')
+                     ->setParameter(':OXID', self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM)
+                     ->setParameter(':BUNDLEID', 'THIS-IS-INVALID')
+                     ->execute();
+
+
+        $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM . '") {
+                id
+                bundleProduct {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertNull($result['body']['data']['product']['bundleProduct']);
+    }
+
+    /**
+     * @depends testGetNoNonExistingProductBundleItemRelation
+     */
+    public function testGetNoInvisibleProductBundleItemRelation()
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+
+        $queryBuilder = $queryBuilderFactory->create();
+        $queryBuilder->update('oxarticles')
+                     ->set('oxbundleid', ':BUNDLEID')
+                     ->where('OXID = :OXID')
+                     ->setParameter(':OXID', self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM)
+                     ->setParameter(':BUNDLEID', self::INACTIVE_PRODUCT)
+                     ->execute();
+
+
+        $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM . '") {
+                id
+                bundleProduct {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertNull($result['body']['data']['product']['bundleProduct']);
+    }
+
+    /**
+     * @depends testGetNoInvisibleProductBundleItemRelation
+     */
+    public function testGetExistingProductBundleItemRelation()
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+
+        $queryBuilder = $queryBuilderFactory->create();
+        $queryBuilder->update('oxarticles')
+                     ->set('oxbundleid', ':BUNDLEID')
+                     ->where('OXID = :OXID')
+                     ->setParameter(':OXID', self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM)
+                     ->setParameter(':BUNDLEID', self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM)
+                     ->execute();
+
+        $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM . '") {
+                id
+                bundleProduct {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertSame(
+            self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM,
+            $result['body']['data']['product']['bundleProduct']['id']
+        );
+
+        $queryBuilder = $queryBuilderFactory->create();
+        $queryBuilder->update('oxarticles')
+                     ->set('oxbundleid', ':BUNDLEID')
+                     ->where('OXID = :OXID')
+                     ->setParameter(':OXID', self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM)
+                     ->setParameter(':BUNDLEID', '')
+                     ->execute();
     }
 
     public function testGetScalePricesRelation()
