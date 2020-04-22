@@ -14,6 +14,9 @@ use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 
+/**
+ * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService
+ */
 final class ProductRelationServiceTest extends TokenTestCase
 {
     private const ACTIVE_PRODUCT = '058e613db53d782adfc9f2ccb43c45fe';
@@ -563,6 +566,28 @@ final class ProductRelationServiceTest extends TokenTestCase
                 'amountTo' => 99,
             ],
             $result['body']['data']['product']['scalePrices'][2]
+        );
+    }
+
+    public function testGetProductCategoryRelation()
+    {
+        $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT . '") {
+                id
+                category {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertSame(
+            '0f40c6a077b68c21f164767c4a903fd2',
+            $result['body']['data']['product']['category']['id']
         );
     }
 }

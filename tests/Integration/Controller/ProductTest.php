@@ -118,9 +118,6 @@ final class ProductTest extends TokenTestCase
                 vendor {
                     id
                 }
-                category {
-                    id
-                }
                 bundleProduct {
                     id
                 }
@@ -175,8 +172,6 @@ final class ProductTest extends TokenTestCase
         $this->assertNull($product['manufacturer']);
         $this->assertNull($product['vendor']);
         $this->assertNull($product['bundle']);
-
-        $this->assertSame('0f40c6a077b68c21f164767c4a903fd2', $product['category']['id']);
 
         $currency = $price['currency'];
         $expectedCurrency = Registry::getConfig()->getActShopCurrencyObject();
