@@ -176,8 +176,12 @@ class ProductRelationService
      */
     public function getCategory(Product $product): ?Category
     {
+        /** @var \OxidEsales\Eshop\Application\Model\Category|null */
         $category = $product->getEshopModel()->getCategory();
-        if ($category->getId() === null) {
+        if (
+            $category === null ||
+            !$category->getId()
+        ) {
             return null;
         }
         return new Category(
