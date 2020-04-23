@@ -16,7 +16,7 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 /**
  * @Type()
  */
-final class Selection implements DataType
+final class Selection
 {
     /** @var EshopSelectionModel */
     private $selection;
@@ -29,14 +29,6 @@ final class Selection implements DataType
     public function __construct(EshopSelectionModel $selection)
     {
         $this->selection = $selection;
-    }
-
-    /**
-     * @return string
-     */
-    public static function getModelClass(): string
-    {
-        return EshopSelectionModel::class;
     }
 
     /**

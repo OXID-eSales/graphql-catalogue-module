@@ -134,6 +134,28 @@ final class AttributeTest extends TestCase
         );
     }
 
+    public function testAttributeListWithFilter()
+    {
+        $result = $this->query('query {
+            attributes(filter: {
+                title: {
+                    beginsWith: "a"
+                }
+            }) {
+                title
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+        $this->assertCount(
+            1,
+            $result['body']['data']['attributes']
+        );
+    }
+
     /**
      * @dataProvider providerGetAttributesMultilanguage
      *

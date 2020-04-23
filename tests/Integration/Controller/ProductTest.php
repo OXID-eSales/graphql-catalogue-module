@@ -17,7 +17,6 @@ final class ProductTest extends TokenTestCase
     private const ACTIVE_PRODUCT = '058e613db53d782adfc9f2ccb43c45fe';
     private const INACTIVE_PRODUCT  = '09602cddb5af0aba745293d08ae6bcf6';
     private const ACTIVE_PRODUCT_WITH_ACCESSORIES = '05848170643ab0deb9914566391c0c63';
-    private const ACTIVE_PRODUCT_WITH_SELECTION_LISTS = '058de8224773a1d5fd54d523f0c823e0';
     private const ACTIVE_PRODUCT_WITH_VARIANTS = '531b537118f5f4d7a427cdb825440922';
 
     public function testGetSingleActiveProduct()
@@ -90,11 +89,13 @@ final class ProductTest extends TokenTestCase
                     keywords
                     url
                 }
-                crossSelling {
-                    id
-                }
                 accessories {
                     id
+                }
+                deliveryTime {
+                    minDeliveryTime
+                    maxDeliveryTime
+                    deliveryTimeUnit
                 }
                 attributes {
                     attribute {
@@ -117,6 +118,15 @@ final class ProductTest extends TokenTestCase
                 sku
                 ean
                 manufacturerEan
+                manufacturer {
+                    id
+                }
+                vendor {
+                    id
+                }
+                bundleProduct {
+                    id
+                }
                 mpn
                 title
                 shortDescription
@@ -143,11 +153,31 @@ final class ProductTest extends TokenTestCase
         $this->assertSame(0.0, $dimensions['height']);
         $this->assertSame(0.0, $dimensions['weight']);
 
+        $deliveryTime = $product['deliveryTime'];
+        if (\version_compare(\PHPUnit\Runner\Version::id(), '7.0.0') >= 0) {
+            $this->assertIsInt($deliveryTime['minDeliveryTime']);
+            $this->assertIsInt($deliveryTime['maxDeliveryTime']);
+        } else {
+            $this->assertTrue(is_int($deliveryTime['minDeliveryTime']), 'minDeliveryTime must be of type integer');
+            $this->assertTrue(is_int($deliveryTime['maxDeliveryTime']), 'maxDeliveryTime must be of type integer');
+        }
+        $this->assertGreaterThan(0, $deliveryTime['minDeliveryTime']);
+        $this->assertGreaterThan(0, $deliveryTime['maxDeliveryTime']);
+        $this->assertContains(
+            $deliveryTime['deliveryTimeUnit'],
+            ['DAY','WEEK'],
+            'deliveryTimeUnit must be one of DAY, WEEK, but is not'
+        );
+
         $price = $product['price'];
         $this->assertSame(359.0, $price['price']);
         $this->assertSame(19.0, $price['vat']);
         $this->assertSame(57.32, $price['vatValue']);
         $this->assertFalse($price['nettoPriceMode']);
+
+        $this->assertNull($product['manufacturer']);
+        $this->assertNull($product['vendor']);
+        $this->assertNull($product['bundle']);
 
         $currency = $price['currency'];
         $expectedCurrency = Registry::getConfig()->getActShopCurrencyObject();
@@ -166,11 +196,6 @@ final class ProductTest extends TokenTestCase
         $this->assertSame(16.0, $stock['stock']);
         $this->assertSame(0, $stock['stockStatus']);
         $this->assertNull($stock['restockDate']);
-
-        $this->assertCount(
-            3,
-            $product['crossSelling']
-        );
 
         $this->assertCount(
             0,
@@ -242,41 +267,6 @@ final class ProductTest extends TokenTestCase
         $this->assertEquals('german product seo keywords', $product['seo']['keywords']);
     }
 
-    public function testGetAccessoriesRelation()
-    {
-        $result = $this->query('query {
-            product (id: "' . self::ACTIVE_PRODUCT_WITH_ACCESSORIES . '") {
-                id
-                accessories {
-                    id
-                }
-            }
-        }');
-
-        $this->assertResponseStatus(
-            200,
-            $result
-        );
-
-        $product = $result['body']['data']['product'];
-
-        $this->assertCount(
-            2,
-            $product['accessories']
-        );
-
-        $this->assertSame(
-            [
-                [
-                    'id' => 'adcb9deae73557006a8ac748f45288b4'
-                ], [
-                    'id' => 'd86236918e1533cccb679208628eda32'
-                ]
-            ],
-            $product['accessories']
-        );
-    }
-
     public function testGetSingleInactiveProductWithoutToken()
     {
         $result = $this->query('query {
@@ -324,190 +314,9 @@ final class ProductTest extends TokenTestCase
         $this->assertEquals(404, $result['status']);
     }
 
-    /**
-     * @dataProvider productWithATtributesProvider
-     */
-    public function testGetProductAttributesRelation(string $productId, array $expectedAttributes): void
-    {
-        $result = $this->query('
-            query{
-                product(id: "' . $productId . '" ){
-                    attributes {
-                        value
-                        attribute {
-                          title
-                        }
-                    }
-                }
-            }
-        ');
-
-        $this->assertEquals(200, $result['status']);
-
-        $attributes = $result['body']['data']['product']['attributes'];
-
-        $this->assertArraySameNonAssociative($expectedAttributes, $attributes);
-    }
-
-    public function productWithAttributesProvider(): array
-    {
-        return [
-            [
-                'product' => 'b56369b1fc9d7b97f9c5fc343b349ece',
-                'expectedAttributes' => [
-                    [
-                        'value' => 'Kite, Backpack, Reparaturset',
-                        'attribute' => ['title' => 'Lieferumfang'],
-                    ],
-                    [
-                        'value' => 'Allround',
-                        'attribute' => ['title' => 'Einsatzbereich'],
-                    ],
-                ],
-            ],
-            [
-                'product' => 'f4f0cb3606e231c3fdb34fcaee2d6d04',
-                'expectedAttributes' => [
-                    [
-                        'value' => 'Allround',
-                        'attribute' => ['title' => 'Einsatzbereich'],
-                    ],
-                    [
-                        'value' => 'Kite, Tasche, CPR Control System, Pumpe',
-                        'attribute' => ['title' => 'Lieferumfang'],
-                    ],
-                ],
-            ],
-            [
-                'product' => '058de8224773a1d5fd54d523f0c823e0',
-                'expectedAttributes' => [],
-            ],
-        ];
-    }
-
-    public function testGetSelectionLists()
-    {
-        $result = $this->query('query {
-            product (id: "' . self::ACTIVE_PRODUCT_WITH_SELECTION_LISTS . '") {
-                id
-                selectionLists {
-                    title
-                    fields {
-                        value
-                    }
-                }
-            }
-        }');
-
-        $this->assertResponseStatus(
-            200,
-            $result
-        );
-
-        $product = $result['body']['data']['product'];
-
-        $this->assertCount(
-            1,
-            $product['selectionLists']
-        );
-
-        $this->assertSame(
-            [
-                'title' => 'test selection list [DE] šÄßüл',
-                'fields' => [
-                    [
-                        'value' => 'selvar1 [DE]',
-                    ],
-                    [
-                        'value' => 'selvar2 [DE]',
-                    ],
-                    [
-                        'value' => 'selvar3 [DE]',
-                    ],
-                    [
-                        'value' => 'selvar4 [DE]',
-                    ],
-                ],
-            ],
-            $product['selectionLists'][0]
-        );
-    }
-
     private function assertArraySameNonAssociative(array $expected, array $actual): void
     {
         $this->assertSame(sort($expected), sort($actual));
-    }
-
-    /**
-     * @dataProvider getReviewsConfigDataProvider
-     */
-    public function testGetReviews($configValue, $expectedIds)
-    {
-        $this->getConfig()->setConfigParam('blGBModerate', $configValue);
-
-        $result = $this->query('query {
-            product (id: "' . self::ACTIVE_PRODUCT . '") {
-                id
-                reviews {
-                    id
-                }
-            }
-        }');
-
-        $this->assertResponseStatus(
-            200,
-            $result
-        );
-
-        $product = $result['body']['data']['product'];
-
-        $this->assertSame(
-            $expectedIds,
-            $product['reviews']
-        );
-    }
-
-    public function getReviewsConfigDataProvider()
-    {
-        return [
-            [
-                true,
-                [
-                    ['id' => '_test_real_product_1'],
-                    ['id' => '_test_real_product_2']
-                ]
-            ],
-            [
-                false,
-                [
-                    ['id' => '_test_real_product_1'],
-                    ['id' => '_test_real_product_2'],
-                    ['id' => '_test_real_product_inactive']
-                ]
-            ]
-        ];
-    }
-
-    public function testGetNoReviews()
-    {
-        $result = $this->query('query {
-            product (id: "' . self::ACTIVE_PRODUCT_WITH_ACCESSORIES . '") {
-                id
-                reviews {
-                    id
-                }
-            }
-        }');
-
-        $this->assertResponseStatus(
-            200,
-            $result
-        );
-
-        $this->assertCount(
-            0,
-            $result['body']['data']['product']['reviews']
-        );
     }
 
     public function testGetProductVariants(): void

@@ -25,17 +25,6 @@ class ProductRatingFilterList extends FilterList
     }
 
     /**
-     * @Factory(name="ProductRatingFilterList")
-     */
-    public static function createProductRatingFilterList(
-        ?StringFilter $productId = null
-    ): self {
-        return new self(
-            $productId
-        );
-    }
-
-    /**
      * @return array{
      *  oxobjectid: null|StringFilter
      * }

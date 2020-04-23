@@ -15,9 +15,8 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 
 /**
  * @Type()
- * @TODO the individual ratings should be named votes then
  */
-class ProductRating implements DataType
+class ProductRating
 {
     /** @var EshopProductModel */
     private $product;
@@ -31,14 +30,6 @@ class ProductRating implements DataType
     public function getEshopModel(): EshopProductModel
     {
         return $this->product;
-    }
-
-    /**
-     * @return class-string
-     */
-    public static function getModelClass(): string
-    {
-        return EshopProductModel::class;
     }
 
     /**

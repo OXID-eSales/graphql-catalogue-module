@@ -18,7 +18,7 @@ use DateTimeInterface;
 /**
  * @Type()
  */
-class ProductStock implements DataType
+class ProductStock
 {
     /** @var EshopProductModel */
     private $product;
@@ -27,14 +27,6 @@ class ProductStock implements DataType
         EshopProductModel $product
     ) {
         $this->product = $product;
-    }
-
-    /**
-     * @return class-string
-     */
-    public static function getModelClass(): string
-    {
-        return EshopProductModel::class;
     }
 
     /**

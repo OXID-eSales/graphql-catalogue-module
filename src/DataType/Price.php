@@ -17,7 +17,7 @@ use TheCodingMachine\GraphQLite\Types\ID;
 /**
  * @Type()
  */
-final class Price implements DataType
+final class Price
 {
     /** @var PriceModel */
     private $price;
@@ -25,11 +25,6 @@ final class Price implements DataType
     public function __construct(PriceModel $price)
     {
         $this->price = $price;
-    }
-
-    public static function getModelClass(): string
-    {
-        return PriceModel::class;
     }
 
     /**

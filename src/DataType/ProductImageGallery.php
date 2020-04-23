@@ -16,7 +16,7 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 /**
  * @Type()
  */
-final class ProductImageGallery implements DataType
+final class ProductImageGallery
 {
     /** @var EshopProductModel */
     private $productModel;
@@ -24,11 +24,6 @@ final class ProductImageGallery implements DataType
     public function __construct(EshopProductModel $productModel)
     {
         $this->productModel = $productModel;
-    }
-
-    public static function getModelClass(): string
-    {
-        return EshopProductModel::class;
     }
 
     /**

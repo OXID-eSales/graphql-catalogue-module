@@ -18,7 +18,7 @@ use DateTimeInterface;
 /**
  * @Type()
  */
-class ProductScalePrice implements DataType
+class ProductScalePrice
 {
     /** @var EshopBaseModel */
     private $scalePrice;
@@ -27,14 +27,6 @@ class ProductScalePrice implements DataType
         EshopBaseModel $scalePrice
     ) {
         $this->scalePrice = $scalePrice;
-    }
-
-    /**
-     * @return class-string
-     */
-    public static function getModelClass(): string
-    {
-        return EshopBaseModel::class;
     }
 
     /**

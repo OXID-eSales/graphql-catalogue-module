@@ -12,7 +12,7 @@ use OxidEsales\Eshop\Core\Field;
 /**
  * @covers OxidEsales\GraphQL\Catalogue\DataType\Category
  */
-class CategoryTest extends TestCase
+final class CategoryTest extends TestCase
 {
     public function testIsActive()
     {

@@ -16,7 +16,7 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 /**
  * @Type()
  */
-class ProductDimensions implements DataType
+class ProductDimensions
 {
     /** @var EshopProductModel */
     private $product;
@@ -25,14 +25,6 @@ class ProductDimensions implements DataType
         EshopProductModel $product
     ) {
         $this->product = $product;
-    }
-
-    /**
-     * @return class-string
-     */
-    public static function getModelClass(): string
-    {
-        return EshopProductModel::class;
     }
 
     /**
