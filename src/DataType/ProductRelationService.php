@@ -310,4 +310,24 @@ class ProductRelationService
 
         return $result;
     }
+
+    /**
+     * @Field()
+     *
+     * @return Product[]
+     */
+    public function getVariants(Product $product): array
+    {
+        $result = [];
+
+        $variants = $product->getEshopModel()->getVariants();
+
+        if (is_iterable($variants)) {
+            foreach ($variants as $variant) {
+                $result[] = new Product($variant);
+            }
+        }
+
+        return $result;
+    }
 }
