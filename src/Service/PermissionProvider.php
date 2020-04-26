@@ -23,6 +23,7 @@ class PermissionProvider implements PermissionProviderInterface
                 'VIEW_INACTIVE_CATEGORY',
                 'VIEW_INACTIVE_PRODUCT',
                 'VIEW_INACTIVE_REVIEW',
+                'VIEW_INACTIVE_ACTION',
             ]
         ];
     }
