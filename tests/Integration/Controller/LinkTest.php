@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
-use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
+use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
-class LinkTest extends TestCase
+class LinkTest extends TokenTestCase
 {
 
     private const ACTIVE_LINK = "test_active";
@@ -67,21 +67,42 @@ class LinkTest extends TestCase
         ]));
     }
 
-    public function testGet401ForSingleInactiveLink()
+    public function testInactiveLink()
     {
         $result = $this->query('query {
             link (id: "' . self::INACTIVE_LINK . '") {
                 id
                 active
-                timestamp
-                description
-                url
-                creationDate
             }
         }');
         $this->assertResponseStatus(
             401,
             $result
+        );
+    }
+
+    public function testInactiveLinkWithToken()
+    {
+        $this->prepareToken();
+
+        $result = $this->query('query {
+            link (id: "' . self::INACTIVE_LINK . '") {
+                id
+                active
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertEquals(
+            [
+                'id' => 'test_inactive',
+                'active' => false
+            ],
+            $result['body']['data']['link']
         );
     }
 
@@ -282,6 +303,49 @@ class LinkTest extends TestCase
         $this->assertEquals(
             $count,
             count($result['body']['data']['links'])
+        );
+    }
+
+    public function testGetLinkListForAdminGroupUser()
+    {
+        $this->prepareToken();
+
+        $result = $this->query('query{
+            links {
+                id
+                active
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertEquals(
+            [
+                [
+                    'id' => 'ce342e8acb69f1748.25672556',
+                    'active' => false
+                ],
+                [
+                    'id' => 'test_active',
+                    'active' => true
+                ],
+                [
+                    'id' => 'test_active_2',
+                    'active' => true
+                ],
+                [
+                    'id' => 'test_inactive',
+                    'active' => false
+                ],
+                [
+                    'id' => 'test_inactive_2',
+                    'active' => false
+                ],
+            ],
+            $result['body']['data']['links']
         );
     }
 }
