@@ -14,6 +14,8 @@ use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
 class ManufacturerEnterpriseTest extends MultishopTestCase
 {
     private const MANUFACTURER_ID = "adc6df0977329923a6330cc8f3c0a906";
+    private const MANUFACTURER_WITH_SINGLE_PRODUCT = "3a9fd0ec4b41d001e770b1d2d7af3e73";
+    private const PRODUCT_RELATED_TO_MANUFACTURER = 'f4f73033cf5045525644042325355732';
 
     /**
      * Check if active manufacturer from shop 1 is not accessible for
@@ -209,10 +211,87 @@ class ManufacturerEnterpriseTest extends MultishopTestCase
         );
     }
 
-    private function addManufacturerToShops($shops)
+    /**
+     * Check if products can be accessed within shop 1
+     */
+    public function testGetActiveProduct()
     {
+        $this->setGETRequestParameter('shp', "1");
+
+        $result = $this->query('query {
+            manufacturer (id: "' . self::MANUFACTURER_ID . '") {
+                 products(offset: null, limit: null)
+                {
+                  id
+                }
+            }
+        }');
+
+        $this->assertEquals(
+            200,
+            $result['status']
+        );
+        //fixtures have 7 active products assigned to manufacturer in shop 1
+        $this->assertEquals(7, sizeof($result['body']['data']['manufacturer']['products']));
+    }
+
+    public function testGetProductFromSecondShop()
+    {
+        $this->setGETRequestParameter('shp', "2");
+
+        $this->addManufacturerToShops([2], self::MANUFACTURER_WITH_SINGLE_PRODUCT);
+        $this->addProductToShops([2]);
+
+        $result = $this->query('query {
+            manufacturer (id: "' . self::MANUFACTURER_WITH_SINGLE_PRODUCT . '") {
+                id
+                 products(offset: null, limit: null)
+                {
+                  id
+                }
+            }
+        }');
+
+        $this->assertEquals(200, $result['status']);
+        $this->assertEquals(
+            self::PRODUCT_RELATED_TO_MANUFACTURER,
+            $result['body']['data']['manufacturer']['products'][0]['id']
+        );
+    }
+
+    public function testProductIsNotFetchedFromFirstShop()
+    {
+        $this->setGETRequestParameter('shp', "2");
+
+        $this->addManufacturerToShops([2], self::MANUFACTURER_ID);
+        $this->addProductToShops([1]);
+
+        $result = $this->query('query {
+            manufacturer (id: "' . self::MANUFACTURER_ID . '") {
+                id
+                 products(offset: null, limit: null)
+                {
+                  id
+                }
+            }
+        }');
+
+        $this->assertEquals(200, $result['status']);
+        $this->assertEquals(0, sizeof($result['body']['data']['manufacturer']['products']));
+    }
+
+    private function addManufacturerToShops($shops, $manufacturer = null)
+    {
+        $manufacturerId = $manufacturer == null ? self::MANUFACTURER_ID : $manufacturer;
         $oElement2ShopRelations = oxNew(Element2ShopRelations::class, 'oxmanufacturers');
         $oElement2ShopRelations->setShopIds($shops);
-        $oElement2ShopRelations->addToShop(self::MANUFACTURER_ID);
+        $oElement2ShopRelations->addToShop($manufacturerId);
+    }
+
+    private function addProductToShops($shops)
+    {
+        $oElement2ShopRelations = oxNew(Element2ShopRelations::class, 'oxarticles');
+        $oElement2ShopRelations->setShopIds($shops);
+        $oElement2ShopRelations->addToShop(self::PRODUCT_RELATED_TO_MANUFACTURER);
     }
 }

@@ -15,8 +15,10 @@ class ManufacturerTest extends TestCase
 {
 
     private const ACTIVE_MANUFACTURER = "oiaf6ab7e12e86291e86dd3ff891fe40";
+    private const ACTIVE_MANUFACTURER_WITHOUT_PRODUCTS = "3a909e7c886063857e86982c7a3c5b84";
     private const INACTIVE_MANUFACTURER  = "dc50589ad69b6ec71721b25bdd403171";
     private const ACTIVE_MULTILANGUAGE_MANUFACTURER = 'adc6df0977329923a6330cc8f3c0a906';
+    private const PRODUCT_RELATED_TO_ACTIVE_MANUFACTURER = '058e613db53d782adfc9f2ccb43c45fe';
 
     protected function setUp(): void
     {
@@ -287,5 +289,93 @@ class ManufacturerTest extends TestCase
             $count,
             count($result['body']['data']['manufacturers'])
         );
+    }
+
+    public function testGetManufacturerWithoutProducts()
+    {
+
+
+        $result = $this->query('query {
+            manufacturer (id: "' . self::ACTIVE_MANUFACTURER_WITHOUT_PRODUCTS . '") {
+                id
+                products(offset: null, limit: null)
+                {
+                  id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(200, $result);
+        $this->assertEquals([], $result['body']['data']['manufacturer']['products']);
+    }
+
+    public function testGetManuacturerWithProducts()
+    {
+        $result = $this->query('query {
+            manufacturer (id: "' . self::ACTIVE_MANUFACTURER . '") {
+                id
+                products(offset: null, limit: 1)
+                {
+                  id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(200, $result);
+        $this->assertEquals(
+            ['id' => self::PRODUCT_RELATED_TO_ACTIVE_MANUFACTURER],
+            $result['body']['data']['manufacturer']['products'][0]
+        );
+    }
+
+    public function providerGetManufacturerProducts()
+    {
+        return [
+            [
+                'offset' => 1,
+                'limit' => null,
+                '$numberOfExpectedProducts' => 6
+            ],
+            [
+                'offset' => 5,
+                'limit' => null,
+                '$numberOfExpectedProducts' => 2
+            ],
+            [
+                'offset' => null,
+                'limit' => 1,
+                '$numberOfExpectedProducts' => 6
+            ],
+            [
+                'offset' => 1,
+                'limit' => 2,
+                '$numberOfExpectedProducts' => 2
+            ],
+            [
+                'offset' => 9,
+                'limit' => 9,
+                '$numberOfExpectedProducts' => 0
+            ]
+
+        ];
+    }
+
+    /**
+     * @dataProvider providerGetManufacturerProducts
+     */
+    public function testGetManufacturerProducts(?int $offset, ?int $limit, ?int $numberOfExpectedProducts)
+    {
+        $result = $this->query('query {
+            manufacturer (id: "' . self::ACTIVE_MULTILANGUAGE_MANUFACTURER . '") {
+                id
+                products(offset: null, limit: null)
+                {
+                  id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(200, $result);
+        $this->assertEquals(7, sizeof($result['body']['data']['manufacturer']['products']));
     }
 }

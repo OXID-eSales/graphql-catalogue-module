@@ -18,6 +18,7 @@ final class ProductTest extends TokenTestCase
     private const INACTIVE_PRODUCT  = '09602cddb5af0aba745293d08ae6bcf6';
     private const ACTIVE_PRODUCT_WITH_ACCESSORIES = '05848170643ab0deb9914566391c0c63';
     private const ACTIVE_PRODUCT_WITH_VARIANTS = '531b537118f5f4d7a427cdb825440922';
+    private const ACTIVE_PRODUCT_MANUFACTURER = 'oiaf6ab7e12e86291e86dd3ff891fe40';
 
     public function testGetSingleActiveProduct()
     {
@@ -175,7 +176,7 @@ final class ProductTest extends TokenTestCase
         $this->assertSame(57.32, $price['vatValue']);
         $this->assertFalse($price['nettoPriceMode']);
 
-        $this->assertNull($product['manufacturer']);
+        $this->assertSame(['id' => self::ACTIVE_PRODUCT_MANUFACTURER], $product['manufacturer']);
         $this->assertNull($product['vendor']);
         $this->assertNull($product['bundle']);
 
