@@ -40,13 +40,13 @@ class ActionFilterList extends FilterList
 
     /**
      * @return array{
-     *  oxactionid: null|StringFilter
+     *  oxid: null|StringFilter
      * }
      */
     public function getFilters(): array
     {
         return [
-            'oxactionid' => $this->actionId,
+            'oxid' => $this->actionId,
             'oxtype' => new IntegerFilter(null, 2)
         ];
     }

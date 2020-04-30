@@ -127,6 +127,30 @@ final class ActionTest extends TokenTestCase
         );
     }
 
+    public function testGetSingleInactiveActionForAdminGroupUser()
+    {
+        $this->prepareToken();
+
+        $result = $this->query('query {
+            action (id: "' . self::INACTIVE_ACTION . '") {
+                id
+                title
+                active
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertEquals([
+            'id' => self::INACTIVE_ACTION,
+            'title' => 'Startseite unten',
+            'active' => false
+        ], $result['body']['data']['action']);
+    }
+
     public function testGetActionsList()
     {
         $result = $this->query('query {
@@ -219,5 +243,85 @@ final class ActionTest extends TokenTestCase
                 'title' => 'Topangebot Startseite'
             ],
         ], $result['body']['data']['actions']);
+    }
+
+    /**
+     * @dataProvider actionsListFilterProvider
+     */
+    public function testGetActionsListWithFilter(string $contains, array $expected): void
+    {
+        $result = $this->query('query {
+            actions(filter: {actionId: {contains: "' . $contains . '"}}) {
+                id
+                products{
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(200, $result);
+
+        $this->assertEquals($expected, $result['body']['data']['actions']);
+    }
+
+    public function actionsListFilterProvider(): array
+    {
+        return [
+            [
+                'new',
+                [
+                    [
+                        'id' => 'oxnewest',
+                        'products' => [
+                            [
+                                'id' => 'f4f73033cf5045525644042325355732',
+                            ],
+                            [
+                                'id' => 'f4f2d8eee51b0fd5eb60a46dff1166d8',
+                            ],
+                            [
+                                'id' => 'dc581d8a115035cbfb0223c9c736f513',
+                            ],
+                            [
+                                'id' => 'b56369b1fc9d7b97f9c5fc343b349ece',
+                            ],
+                            [
+                                'id' => 'ed6573c0259d6a6fb641d106dcb2faec',
+                            ],
+                            [
+                                'id' => '531b537118f5f4d7a427cdb825440922',
+                            ],
+                            [
+                                'id' => 'b56597806428de2f58b1c6c7d3e0e093',
+                            ],
+                            [
+                                'id' => 'b563ab240dc19b89fc0349866b2be9c0',
+                            ]
+                        ],
+                    ],
+                    [
+                        'id' => 'oxnewsletter',
+                        'products' => [],
+                    ],
+                ],
+            ],
+            [
+                'bar',
+                [
+                    [
+                        'id' => 'oxbargain',
+                        'products' => [
+                            [
+                                'id' => 'dc5ffdf380e15674b56dd562a7cb6aec',
+                            ]
+                        ],
+                    ]
+                ],
+            ],
+            [
+                'somethingThatDoesNotExist',
+                [],
+            ],
+        ];
     }
 }
