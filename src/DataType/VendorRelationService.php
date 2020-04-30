@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
-use OxidEsales\GraphQL\Base\DataType\StringFilter;
-use OxidEsales\GraphQL\Base\Exception\NotFound;
+use OxidEsales\GraphQL\Base\DataType\IDFilter;
+use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
@@ -37,5 +37,19 @@ class VendorRelationService
         $seo = new Seo($vendor->getEshopModel());
 
         return $seo;
+    }
+
+    /**
+     * @Field()
+     *
+     * @param Vendor $vendor
+     *
+     * @return Product[]
+     */
+    public function getProducts(Vendor $vendor, ?PaginationFilter $paginationFilter = null): array
+    {
+        $filter = new ProductFilterList(null, null, null, new IDFilter($vendor->getId()));
+
+        return $this->repository->getByFilter($filter, Product::class, $paginationFilter);
     }
 }

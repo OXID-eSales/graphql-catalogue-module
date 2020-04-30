@@ -32,6 +32,9 @@ final class VendorTest extends TokenTestCase
                   keywords
                   url
                 }
+                products {
+                    id
+                }
             }
         }');
 
@@ -57,6 +60,15 @@ final class VendorTest extends TokenTestCase
             $vendor['timestamp']
         );
 
+        $this->assertEquals(
+            [
+                ['id' => '10049f9322cf8852f8d567e9662cb12c'],
+                ['id' => '10067ab25bf275b7e68bc0431b204d24'],
+                ['id' => '1008b12cef0476f5e941da460ba621e6']
+            ],
+            $vendor['products']
+        );
+
         $this->assertEmpty(array_diff(array_keys($vendor), [
             'id',
             'active',
@@ -64,7 +76,8 @@ final class VendorTest extends TokenTestCase
             'title',
             'shortdesc',
             'timestamp',
-            'seo'
+            'seo',
+            'products'
         ]));
     }
 
@@ -240,5 +253,22 @@ final class VendorTest extends TokenTestCase
             0,
             count($result['body']['data']['vendors'])
         );
+    }
+
+    public function testVendorProductsWithOffsetAndLimit()
+    {
+        $result = $this->query('query {
+            vendor (id: "' . self::ACTIVE_VENDOR . '") {
+                products(paginationFilter: {limit: 1, offset: 1}) {
+                    title
+                }
+            }
+        }');
+
+        $this->assertEquals(200, $result['status']);
+
+        $products = $result['body']['data']['vendor']['products'];
+
+        $this->assertEquals([['title' => 'Kuyichi T-Shirt TIGER']], $products);
     }
 }

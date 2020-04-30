@@ -22,13 +22,13 @@ final class VendorMultiLanguageTest extends TestCase
      * @param string $languageId
      * @param string $contains
      * @param int    $count
-     * @param array  $vendor
+     * @param array  $expectedVendors
      */
     public function testGetVendorListWithFilterMultiLanguage(
         string $languageId,
         string $contains,
         int $count,
-        array $vendor
+        array $expectedVendors
     ) {
         $query = 'query{
             vendors(filter: {
@@ -40,6 +40,9 @@ final class VendorMultiLanguageTest extends TestCase
                 seo {
                    url
                 }
+                products(paginationFilter: {limit: 1}) {
+                    shortDescription
+                }
             }
         }';
 
@@ -48,23 +51,33 @@ final class VendorMultiLanguageTest extends TestCase
         $result = $this->query($query);
         $this->assertResponseStatus(200, $result);
 
+        $vendors = $result['body']['data']['vendors'];
+
         $this->assertCount(
             $count,
-            $result['body']['data']['vendors']
+            $vendors
         );
+
+        $expectedVendor = $expectedVendors[0];
+        $vendor = $vendors[0];
 
         $this->assertNotFalse(
-            parse_url($result['body']['data']['vendors'][0]['seo']['url'])
+            parse_url($vendor['seo']['url'])
         );
 
         $this->assertEquals(
-            $vendor[0]['title'],
-            $result['body']['data']['vendors'][0]['title']
+            $expectedVendor['title'],
+            $vendor['title']
         );
 
         $this->assertEquals(
-            $vendor[0]['url'],
-            parse_url($result['body']['data']['vendors'][0]['seo']['url'])['path']
+            $expectedVendor['url'],
+            parse_url($vendor['seo']['url'])['path']
+        );
+
+        $this->assertEquals(
+            $expectedVendor['productShortDescription'],
+            $vendor['products'][0]['shortDescription']
         );
     }
 
@@ -78,7 +91,8 @@ final class VendorMultiLanguageTest extends TestCase
                 'result' => [
                     [
                         'title' => 'https://fashioncity.com/de',
-                        'url' => '/Nach-Lieferant/https-fashioncity-com-de/'
+                        'url' => '/Nach-Lieferant/https-fashioncity-com-de/',
+                        'productShortDescription' => 'Lässiges Herrenshirt mit Aufdruck'
                     ]
                 ]
             ],
@@ -89,7 +103,8 @@ final class VendorMultiLanguageTest extends TestCase
                 'result' => [
                     [
                         'title' => 'https://fashioncity.com/en',
-                        'url' => '/en/By-distributor/https-fashioncity-com-en/'
+                        'url' => '/en/By-distributor/https-fashioncity-com-en/',
+                        'productShortDescription' => 'Short sleeve shirt for men'
                     ]
                 ]
             ]
@@ -101,13 +116,17 @@ final class VendorMultiLanguageTest extends TestCase
      *
      * @param string $languageId
      * @param string $title
+     * @param string $productShortDescription
      */
-    public function testGetVendorMultiLanguage(string $languageId, string $title)
+    public function testGetVendorMultiLanguage(string $languageId, string $title, string $productShortDescription)
     {
         $query = 'query {
             vendor (id: "' . self::ACTIVE_VENDOR . '") {
                 id
                 title
+                products(paginationFilter: {limit: 1}) {
+                    shortDescription
+                }
             }
         }';
 
@@ -122,7 +141,10 @@ final class VendorMultiLanguageTest extends TestCase
         $this->assertEquals(
             [
                 'id' => self::ACTIVE_VENDOR,
-                'title' => $title
+                'title' => $title,
+                'products' => [
+                    ['shortDescription' => $productShortDescription]
+                ]
             ],
             $result['body']['data']['vendor']
         );
@@ -133,11 +155,13 @@ final class VendorMultiLanguageTest extends TestCase
         return [
             'de' => [
                 'languageId' => '0',
-                'title'      => 'https://fashioncity.com/de'
+                'title'      => 'https://fashioncity.com/de',
+                'productShortDescription' => 'Lässiges Herrenshirt mit Aufdruck'
             ],
             'en' => [
                 'languageId' => '1',
-                'title'      => 'https://fashioncity.com/en'
+                'title'      => 'https://fashioncity.com/en',
+                'productShortDescription' => 'Short sleeve shirt for men'
             ],
         ];
     }
