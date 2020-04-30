@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
+use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
 use OxidEsales\GraphQL\Base\DataType\StringFilter;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;
@@ -85,5 +86,29 @@ class CategoryRelationService
         $seo = new Seo($category->getEshopModel());
 
         return $seo;
+    }
+
+    /**
+     * @Field()
+     *
+     * @param Category         $category
+     * @param PaginationFilter $pagination
+     *
+     * @return Product[]
+     */
+    public function getProducts(
+        Category $category,
+        ?PaginationFilter $pagination
+    ): array {
+        $filters = new ProductFilterList(
+            null,
+            new CategoryIDFilter($category->getId())
+        );
+
+        return $this->repository->getByFilter(
+            $filters,
+            Product::class,
+            $pagination
+        );
     }
 }

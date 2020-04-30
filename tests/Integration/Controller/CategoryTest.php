@@ -17,6 +17,7 @@ final class CategoryTest extends TokenTestCase
     private const INACTIVE_CATEGORY  = "d8665fef35f4d528e92c3d664f4a00c0";
     private const CATEGORY_WITHOUT_CHILDREN  = "0f4270b89fbef1481958381410a0dbca";
     private const CATEGORY_WITH_CHILDREN  = "943173edecf6d6870a0f357b8ac84d32";
+    private const CATEGORY_WITH_PRODUCTS  = "0f4fb00809cec9aa0910aa9c8fe36751";
 
     public function testGetSingleActiveCategory()
     {
@@ -443,5 +444,98 @@ final class CategoryTest extends TokenTestCase
             '/Wakeboarding/',
             $result['body']['data']['category']['seo']['url']
         );
+    }
+
+    public function testCategoryProductList()
+    {
+        $result = $this->query('query {
+            category (id: "' . self::CATEGORY_WITH_PRODUCTS . '") {
+                title
+                products {
+                    id
+                    title
+                }
+            }
+        }');
+
+        $products = $result['body']['data']['category']['products'];
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            12,
+            $products
+        );
+    }
+
+    /**
+     * @dataProvider productsOffsetAndLimitDataProvider
+     *
+     * @param int $offset
+     * @param int $limit
+     * @param array $expectedProducts
+     */
+    public function testCategoryProductListOffsetAndLimit(int $offset, int $limit, array $expectedProducts)
+    {
+        $result = $this->query('query {
+            category (id: "' . self::CATEGORY_WITH_PRODUCTS . '") {
+                title
+                products(pagination: {
+                    offset: ' . $offset . '
+                    limit: ' . $limit . '
+                }) {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertEquals(
+            $expectedProducts,
+            $result['body']['data']['category']['products']
+        );
+    }
+
+    /**
+     * @return array[]
+     */
+    public function productsOffsetAndLimitDataProvider()
+    {
+        return [
+            [
+                0,
+                2,
+                [
+                    ['id' => 'b56a5554a328d329aa2b2e65b6e870e0'],
+                    ['id' => 'b56f4183fd33d95797c0e8cadc0c4a70'],
+                ]
+            ],
+            [
+                4,
+                3,
+                [
+                    ['id' => 'b569a858511324d95c25cf017ba18261'],
+                    ['id' => 'dc53a316f2db4c7a2cde9c340f547c8d'],
+                    ['id' => 'dc5244863bbf3cd3f5e2c1d08f28cbd1'],
+                ]
+            ],
+            [
+                8,
+                20,
+                [
+                    ['id' => 'f4fad7471d8d4dc99962e0821b7243c7'],
+                    ['id' => 'f4f816efdcf5f5e0c6abaa2c5462b738'],
+                    ['id' => 'fad2b5808154dd3e10de1608752b7c6f'],
+                    ['id' => 'fad40f529705b93bd38acbfa65a9abb1'],
+                ]
+            ],
+        ];
     }
 }

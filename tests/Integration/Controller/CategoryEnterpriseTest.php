@@ -25,6 +25,8 @@ class CategoryEnterpriseTest extends MultishopTestCase
         'jeans-inactive' => 'd8665fef35f4d528e92c3d664f4a00c0',
         'supplies-active' => 'fc7e7bd8403448f00a363f60f44da8f2',
     ];
+    private const PRODUCT_ID = 'd86236918e1533cccb679208628eda32';
+    private const CATEGORY_PRODUCT_RELATION = 'd8677dff861fb6b83f29f3558e7394c4';
 
     /**
      * Check if active category from shop 1 is not accessible for
@@ -246,6 +248,85 @@ class CategoryEnterpriseTest extends MultishopTestCase
         );
     }
 
+    public function testSingleCategoryProductsInSecondShop()
+    {
+        $this->setGETRequestParameter('shp', '2');
+        $this->setGETRequestParameter('lang', '0');
+
+        $this->addCategoryToShops(self::CATEGORY_IDS['supplies-active'], [2]);
+        $this->addProductToShops(self::PRODUCT_ID, [2]);
+        $this->addProductToCategory(self::CATEGORY_PRODUCT_RELATION, [2]);
+
+        $result = $this->query('query {
+            category (id: "' . self::CATEGORY_IDS['supplies-active'] . '") {
+                title
+                products {
+                    title
+                }
+            }
+        }');
+
+        $this->assertEquals(
+            200,
+            $result['status']
+        );
+
+        $this->assertEquals(
+            [
+                [
+                    'title' => 'Smart Loop NAISH'
+                ]
+            ],
+            $result['body']['data']['category']['products']
+        );
+    }
+
+    public function testCategoryListProductsInSecondShop()
+    {
+        $this->addCategoryToShops(self::CATEGORY_IDS['shoes-active'], [2]);
+        $this->addCategoryToShops(self::CATEGORY_IDS['jeans-active'], [2]);
+
+        $this->addCategoryToShops(self::CATEGORY_IDS['supplies-active'], [2]);
+        $this->addProductToShops(self::PRODUCT_ID, [2]);
+        $this->addProductToCategory(self::CATEGORY_PRODUCT_RELATION, [2]);
+
+        $this->setGETRequestParameter('shp', '2');
+        $this->setGETRequestParameter('lang', '0');
+
+        $result = $this->query('query {
+            categories {
+                title
+                products {
+                    title
+                }
+            }
+        }');
+
+        $this->assertEquals(
+            200,
+            $result['status']
+        );
+
+        $this->assertCount(
+            3,
+            $result['body']['data']['categories']
+        );
+
+        $this->assertCount(
+            0,
+            $result['body']['data']['categories'][1]['products']
+        );
+
+        $this->assertEquals(
+            [
+                [
+                    'title' => 'Smart Loop NAISH'
+                ]
+            ],
+            $result['body']['data']['categories'][2]['products']
+        );
+    }
+
     /**
      * @param string $categoryId
      * @param array $shops
@@ -255,5 +336,23 @@ class CategoryEnterpriseTest extends MultishopTestCase
         $oElement2ShopRelations = oxNew(Element2ShopRelations::class, 'oxcategories');
         $oElement2ShopRelations->setShopIds($shops);
         $oElement2ShopRelations->addToShop($categoryId);
+    }
+
+    /**
+     * @param string $productId
+     * @param array  $shops
+     */
+    private function addProductToShops(string $productId, array $shops)
+    {
+        $oElement2ShopRelations = oxNew(Element2ShopRelations::class, 'oxarticles');
+        $oElement2ShopRelations->setShopIds($shops);
+        $oElement2ShopRelations->addToShop($productId);
+    }
+
+    private function addProductToCategory(string $relationId, array $shops)
+    {
+        $element2ShopRelations = oxNew(Element2ShopRelations::class, 'oxobject2category');
+        $element2ShopRelations->setShopIds($shops);
+        $element2ShopRelations->addToShop($relationId);
     }
 }
