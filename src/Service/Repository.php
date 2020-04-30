@@ -13,6 +13,7 @@ use InvalidArgumentException;
 use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\DataType\FilterInterface;
+use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\FilterList;
 use OxidEsales\GraphQL\Catalogue\DataType\DataType;
@@ -60,7 +61,7 @@ class Repository
      * @return T[]
      * @throws InvalidArgumentException if $model is not instance of BaseModel
      */
-    public function getByFilter(FilterList $filter, string $type, int $offset = null, int $limit = null): array
+    public function getByFilter(FilterList $filter, string $type, ?PaginationFilter $pagination = null): array
     {
         $types = [];
         $model = oxNew($type::getModelClass());
@@ -90,12 +91,8 @@ class Repository
             $fieldFilter->addToQuery($queryBuilder, $field, $alias);
         }
 
-        if ($offset !== null) {
-            $queryBuilder->setFirstResult($offset);
-        }
-
-        if ($limit !== null) {
-            $queryBuilder->setMaxResults($limit);
+        if ($pagination !== null) {
+            $pagination->addPaginationToQuery($queryBuilder);
         }
 
         $queryBuilder->getConnection()->setFetchMode(PDO::FETCH_ASSOC);

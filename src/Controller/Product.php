@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Catalogue\Controller;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
+use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
 use OxidEsales\GraphQL\Catalogue\DataType\Product as ProductDataType;
 use OxidEsales\GraphQL\Catalogue\DataType\ProductFilterList;
 use OxidEsales\GraphQL\Catalogue\Exception\ProductNotFound;
@@ -48,9 +49,10 @@ class Product extends Base
      *
      * @return ProductDataType[]
      */
-    public function products(?ProductFilterList $filter = null, int $offset = null, int $limit = null): array
+    public function products(?ProductFilterList $filter = null, ?PaginationFilter $pagination = null): array
     {
         $filter = $filter ?? new ProductFilterList();
+        $pagination = $pagination ?? new PaginationFilter();
 
         // In case user has VIEW_INACTIVE_PRODUCT permissions
         // return all products including inactive ones
@@ -61,8 +63,7 @@ class Product extends Base
         $products = $this->repository->getByFilter(
             $filter,
             ProductDataType::class,
-            $offset,
-            $limit
+            $pagination
         );
 
         return $products;

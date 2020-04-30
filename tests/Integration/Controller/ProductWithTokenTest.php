@@ -84,4 +84,20 @@ final class ProductWithTokenTest extends TokenTestCase
 
         $this->assertEquals(404, $result['status']);
     }
+
+    public function testGetAllProducts()
+    {
+        $result = $this->query('query {
+            products {
+                id
+            }
+        }');
+
+        $this->assertEquals(200, $result['status']);
+
+        $this->assertCount(
+            217,
+            $result['body']['data']['products']
+        );
+    }
 }
