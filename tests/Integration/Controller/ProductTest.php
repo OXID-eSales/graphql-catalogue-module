@@ -444,7 +444,7 @@ final class ProductTest extends TokenTestCase
     public function testProductsOffsetAndLimit(int $offset, int $limit, array $expectedProducts)
     {
         $result = $this->query('query {
-            products(offset: ' . $offset . ', limit: ' . $limit . ') {
+            products(pagination: {offset: ' . $offset . ', limit: ' . $limit . '}) {
                 id
             }
         }');
