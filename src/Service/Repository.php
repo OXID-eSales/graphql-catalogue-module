@@ -69,11 +69,10 @@ class Repository
             throw new InvalidArgumentException();
         }
 
-        $alias = $model->getViewName();
         $queryBuilder = $this->queryBuilderFactory->create();
         $queryBuilder->select('*')
-                     ->from($model->getViewName(), $alias)
-                     ->orderBy("$alias.oxid");
+                     ->from($model->getViewName())
+                     ->orderBy($model->getViewName() . '.oxid');
 
         if (
             $filter->getActive() !== null &&
@@ -88,7 +87,7 @@ class Repository
         /** @var FilterInterface[] $filters */
         $filters = array_filter($filter->getFilters());
         foreach ($filters as $field => $fieldFilter) {
-            $fieldFilter->addToQuery($queryBuilder, $field, $alias);
+            $fieldFilter->addToQuery($queryBuilder, $field);
         }
 
         if ($pagination !== null) {
