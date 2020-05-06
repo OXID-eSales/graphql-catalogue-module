@@ -6,32 +6,30 @@ namespace OxidEsales\GraphQL\Catalogue\Tests\Unit\DataType;
 
 use PHPUnit\Framework\TestCase;
 use OxidEsales\GraphQL\Catalogue\DataType\Category;
-use OxidEsales\Eshop\Application\Model\Category as EshopCategoryModel;
-use OxidEsales\Eshop\Core\Field;
 
 /**
  * @covers OxidEsales\GraphQL\Catalogue\DataType\Category
  */
 final class CategoryTest extends TestCase
 {
-    public function testIsActive()
+    public function testIsActive(): void
     {
         $category = new Category(
-            new CategoryModelStub()
+            new CategoryStub()
         );
         $this->assertTrue(
             $category->isActive()
         );
 
         $category = new Category(
-            new CategoryModelStub('0')
+            new CategoryStub('0')
         );
         $this->assertFalse(
             $category->isActive()
         );
 
         $category = new Category(
-            new CategoryModelStub(
+            new CategoryStub(
                 '1',
                 '2018-01-01 12:00:00',
                 '2018-01-01 19:00:00'
@@ -42,7 +40,7 @@ final class CategoryTest extends TestCase
         );
 
         $category = new Category(
-            new CategoryModelStub(
+            new CategoryStub(
                 '0',
                 '2018-01-01 12:00:00',
                 '2018-01-01 19:00:00'
@@ -53,7 +51,7 @@ final class CategoryTest extends TestCase
         );
 
         $category = new Category(
-            new CategoryModelStub(
+            new CategoryStub(
                 '0',
                 '2018-01-01 12:00:00',
                 '2018-01-01 19:00:00'
@@ -61,31 +59,6 @@ final class CategoryTest extends TestCase
         );
         $this->assertTrue(
             $category->isActive(new \DateTimeImmutable('2018-01-01 16:00:00'))
-        );
-    }
-}
-
-// phpcs:disable
-
-class CategoryModelStub extends EshopCategoryModel
-{
-    public function __construct(
-        string $active = '1',
-        string $activefrom = '0000-00-00 00:00:00',
-        string $activeto = '0000-00-00 00:00:00'
-    ) {
-        $this->_sCoreTable = 'oxcategories';
-        $this->oxcategories__oxactive = new Field(
-            $active,
-            Field::T_RAW
-        );
-        $this->oxcategories__oxactivefrom = new Field(
-            $activefrom,
-            Field::T_RAW
-        );
-        $this->oxcategories__oxactiveto = new Field(
-            $activeto,
-            Field::T_RAW
         );
     }
 }

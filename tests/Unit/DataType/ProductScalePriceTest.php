@@ -5,20 +5,17 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Tests\Unit\DataType;
 
 use PHPUnit\Framework\TestCase;
-use OxidEsales\GraphQL\Catalogue\DataType\Product;
-use OxidEsales\Eshop\Core\Model\BaseModel as EshopBaseModel;
 use OxidEsales\GraphQL\Catalogue\DataType\ProductScalePrice;
-use OxidEsales\Eshop\Core\Field;
 
 /**
  * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductScalePrice
  */
 final class ProductScalePriceTest extends TestCase
 {
-    public function testAbsoluteScalePrice()
+    public function testAbsoluteScalePrice(): void
     {
         $productScalePrice = new ProductScalePrice(
-            new ScalePriceEshopModelStub(
+            new ProductScalePriceModelStub(
                 "10.5",
                 "",
                 "10",
@@ -46,10 +43,10 @@ final class ProductScalePriceTest extends TestCase
         );
     }
 
-    public function testDiscountedScalePrice()
+    public function testDiscountedScalePrice(): void
     {
         $productScalePrice = new ProductScalePrice(
-            new ScalePriceEshopModelStub(
+            new ProductScalePriceModelStub(
                 "",
                 "10.5",
                 "10",
@@ -74,37 +71,6 @@ final class ProductScalePriceTest extends TestCase
         $this->assertSame(
             19,
             $productScalePrice->getAmountTo()
-        );
-    }
-}
-
-// phpcs:disable
-
-class ScalePriceEshopModelStub extends EshopBaseModel
-{
-    public function __construct(
-        string $addAbsolute,
-        string $addPercentage,
-        string $amountFrom,
-        string $amountTo
-    ) {
-        $this->_sCoreTable = 'oxprice2article';
-
-        $this->oxprice2article__oxaddabs = new Field(
-            $addAbsolute,
-            Field::T_RAW
-        );
-        $this->oxprice2article__oxaddperc = new Field(
-            $addPercentage,
-            Field::T_RAW
-        );
-        $this->oxprice2article__oxamount = new Field(
-            $amountFrom,
-            Field::T_RAW
-        );
-        $this->oxprice2article__oxamountto = new Field(
-            $amountTo,
-            Field::T_RAW
         );
     }
 }
