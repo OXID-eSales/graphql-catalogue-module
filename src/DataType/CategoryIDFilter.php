@@ -43,7 +43,6 @@ class CategoryIDFilter implements FilterInterface
     /**
      * @param QueryBuilder $builder
      * @param string $field
-     * @param string $fromAlias
      */
     public function addToQuery(QueryBuilder $builder, string $field): void
     {

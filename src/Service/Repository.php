@@ -57,7 +57,9 @@ class Repository
 
     /**
      * @template T
+     * @param FilterList $filter
      * @param class-string<T> $type
+     * @param PaginationFilter|null $pagination
      * @return T[]
      * @throws InvalidArgumentException if $model is not instance of BaseModel
      */
