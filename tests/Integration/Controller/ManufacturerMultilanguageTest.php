@@ -20,14 +20,16 @@ class ManufacturerMultilanguageTest extends TestCase
     {
         return [
             'de' => [
-                'languageId' => '0',
-                'title'      => 'Liquid Force',
-                'url'        => 'Nach-Hersteller/Liquid-Force/'
+                'languageId'         => '0',
+                'title'              => 'Liquid Force',
+                'url'                => 'Nach-Hersteller/Liquid-Force/',
+                'productDescription' => 'Bewährte Qualität in neuem Design'
             ],
             'en' => [
-                'languageId' => '1',
-                'title'      => 'Liquid Force Kite',
-                'url'        => 'en/By-manufacturer/Liquid-Force-Kite/'
+                'languageId'         => '1',
+                'title'              => 'Liquid Force Kite',
+                'url'                => 'en/By-manufacturer/Liquid-Force-Kite/',
+                'productDescription' => 'Proven quality in a new design'
             ],
         ];
     }
@@ -35,14 +37,22 @@ class ManufacturerMultilanguageTest extends TestCase
     /**
      * @dataProvider providerGetManufacturerMultilanguage
      */
-    public function testGetManufacturerMultilanguage(string $languageId, string $title, string $seoUrl)
-    {
+    public function testGetManufacturerMultilanguage(
+        string $languageId,
+        string $title,
+        string $seoUrl,
+        string $productDescription
+    ) {
         $query = 'query {
             manufacturer (id: "' . self::ACTIVE_MULTILANGUAGE_MANUFACTURER . '") {
                 id
                 title
                 seo {
                     url
+                },
+                 products(offset: null, limit: 1)
+                {
+                  shortDescription
                 }
             }
         }';
@@ -63,6 +73,7 @@ class ManufacturerMultilanguageTest extends TestCase
         $this->assertSame(self::ACTIVE_MULTILANGUAGE_MANUFACTURER, $manufacturer['id']);
         $this->assertEquals($title, $manufacturer['title']);
         $this->assertRegExp('@https?://.*' . $seoUrl . '$@', $manufacturer['seo']['url']);
+        $this->assertSame($productDescription, $manufacturer['products'][0]['shortDescription']);
     }
 
     public function providerGetManufacturerListWithFilterMultilanguage()

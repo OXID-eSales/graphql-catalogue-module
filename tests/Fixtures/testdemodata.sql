@@ -93,3 +93,5 @@ UPDATE `oxarticles` SET `OXVENDORID` = 'fe07958b49de225bd1dbc7594fb9a6b0' where 
 UPDATE `oxarticles` SET `OXVENDORID` = 'fe07958b49de225bd1dbc7594fb9a6b0' where `OXID` = '10067ab25bf275b7e68bc0431b204d24';
 UPDATE `oxarticles` SET `OXVENDORID` = 'fe07958b49de225bd1dbc7594fb9a6b0' where `OXID` = '1008b12cef0476f5e941da460ba621e6';
 
+#product_to_manufacturer
+UPDATE `oxarticles` SET `OXMANUFACTURERID` = 'oiaf6ab7e12e86291e86dd3ff891fe40' where `OXID` = '058e613db53d782adfc9f2ccb43c45fe';
