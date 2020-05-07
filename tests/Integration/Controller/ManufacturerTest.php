@@ -347,7 +347,7 @@ class ManufacturerTest extends TestCase
             [
                 'offset' => null,
                 'limit' => 1,
-                '$numberOfExpectedProducts' => 6
+                '$numberOfExpectedProducts' => 1
             ],
             [
                 'offset' => 1,
@@ -367,17 +367,23 @@ class ManufacturerTest extends TestCase
      */
     public function testGetManufacturerProducts(?int $offset, ?int $limit, ?int $numberOfExpectedProducts)
     {
-        $result = $this->query('query {
+        $result = $this->query('query ($offset: Int, $limit: Int) {
             manufacturer (id: "' . self::ACTIVE_MULTILANGUAGE_MANUFACTURER . '") {
                 id
-                products(offset: null, limit: null)
+                products(offset: $offset, limit: $limit)
                 {
                   id
                 }
             }
-        }');
+        }', [
+            'offset' => $offset,
+            'limit' => $limit,
+        ]);
 
         $this->assertResponseStatus(200, $result);
-        $this->assertEquals(7, sizeof($result['body']['data']['manufacturer']['products']));
+        $this->assertEquals(
+            $numberOfExpectedProducts,
+            sizeof($result['body']['data']['manufacturer']['products'])
+        );
     }
 }
