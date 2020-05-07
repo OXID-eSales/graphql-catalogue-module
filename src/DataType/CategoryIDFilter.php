@@ -23,27 +23,16 @@ class CategoryIDFilter implements FilterInterface
     /** @var ID */
     private $equals;
 
-    /**
-     * CategoryIDFilter constructor.
-     * @param ID $equals
-     */
     public function __construct(ID $equals)
     {
         $this->equals = $equals;
     }
 
-    /**
-     * @return ID
-     */
     public function equals(): ID
     {
         return $this->equals;
     }
 
-    /**
-     * @param QueryBuilder $builder
-     * @param string $field
-     */
     public function addToQuery(QueryBuilder $builder, string $field): void
     {
         $from = $builder->getQueryPart('from');
@@ -69,10 +58,6 @@ class CategoryIDFilter implements FilterInterface
 
     /**
      * @Factory(name="CategoryIDFilterInput")
-     *
-     * @param ID $equals
-     *
-     * @return CategoryIDFilter
      */
     public static function fromUserInput(ID $equals): self
     {

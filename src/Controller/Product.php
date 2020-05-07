@@ -47,9 +47,6 @@ class Product extends Base
     /**
      * @Query()
      *
-     * @param ProductFilterList|null $filter
-     * @param PaginationFilter|null $pagination
-     *
      * @return ProductDataType[]
      */
     public function products(?ProductFilterList $filter = null, ?PaginationFilter $pagination = null): array
