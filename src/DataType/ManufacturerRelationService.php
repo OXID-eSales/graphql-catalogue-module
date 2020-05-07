@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
 use OxidEsales\GraphQL\Base\DataType\IDFilter;
+use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
 use OxidEsales\GraphQL\Base\DataType\StringFilter;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;
@@ -49,8 +50,7 @@ class ManufacturerRelationService
      */
     public function getProducts(
         Manufacturer $manufacturer,
-        int $offset = null,
-        int $limit = null
+        ?PaginationFilter $pagination = null
     ): array {
         return $this->repository->getByFilter(
             new ProductFilterList(
@@ -63,8 +63,7 @@ class ManufacturerRelationService
                 new BoolFilter(true)
             ),
             ProductDataType::class,
-            $offset,
-            $limit
+            $pagination
         );
     }
 }
