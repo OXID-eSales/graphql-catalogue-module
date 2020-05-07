@@ -52,7 +52,6 @@ class Product extends Base
     public function products(?ProductFilterList $filter = null, ?PaginationFilter $pagination = null): array
     {
         $filter = $filter ?? new ProductFilterList();
-        $pagination = $pagination ?? new PaginationFilter();
 
         // In case user has VIEW_INACTIVE_PRODUCT permissions
         // return all products including inactive ones
