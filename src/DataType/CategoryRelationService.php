@@ -100,13 +100,11 @@ class CategoryRelationService
         Category $category,
         ?PaginationFilter $pagination
     ): array {
-        $filters = new ProductFilterList(
-            null,
-            new CategoryIDFilter($category->getId())
-        );
-
         return $this->repository->getByFilter(
-            $filters,
+            new ProductFilterList(
+                null,
+                new CategoryIDFilter($category->getId())
+            ),
             Product::class,
             $pagination
         );
