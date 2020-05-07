@@ -76,10 +76,6 @@ class CategoryRelationService
 
     /**
      * @Field()
-     *
-     * @param Category $category
-     *
-     * @return Seo
      */
     public function getSeo(Category $category): Seo
     {
@@ -90,9 +86,6 @@ class CategoryRelationService
 
     /**
      * @Field()
-     *
-     * @param Category         $category
-     * @param PaginationFilter $pagination
      *
      * @return Product[]
      */

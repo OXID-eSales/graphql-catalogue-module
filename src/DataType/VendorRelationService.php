@@ -42,8 +42,6 @@ class VendorRelationService
     /**
      * @Field()
      *
-     * @param Vendor $vendor
-     *
      * @return Product[]
      */
     public function getProducts(Vendor $vendor, ?PaginationFilter $paginationFilter = null): array
