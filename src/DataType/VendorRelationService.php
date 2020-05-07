@@ -44,10 +44,19 @@ class VendorRelationService
      *
      * @return Product[]
      */
-    public function getProducts(Vendor $vendor, ?PaginationFilter $paginationFilter = null): array
-    {
-        $filter = new ProductFilterList(null, null, null, new IDFilter($vendor->getId()));
-
-        return $this->repository->getByFilter($filter, Product::class, $paginationFilter);
+    public function getProducts(
+        Vendor $vendor,
+        ?PaginationFilter $pagination = null
+    ): array {
+        return $this->repository->getByFilter(
+            new ProductFilterList(
+                null,
+                null,
+                null,
+                new IDFilter($vendor->getId())
+            ),
+            Product::class,
+            $pagination
+        );
     }
 }
