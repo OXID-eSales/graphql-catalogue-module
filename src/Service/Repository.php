@@ -59,7 +59,7 @@ class Repository
      * @template T
      * @param class-string<T> $type
      * @return T[]
-     * @throws InvalidArgumentException if $model is not instance of BaseModel
+     * @throws InvalidArgumentException if model in $type is not instance of BaseModel
      */
     public function getByFilter(FilterList $filter, string $type, ?PaginationFilter $pagination = null): array
     {
