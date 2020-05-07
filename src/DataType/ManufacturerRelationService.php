@@ -47,17 +47,24 @@ class ManufacturerRelationService
      *
      * @return ProductDataType[]
      */
-    public function getProducts(Manufacturer $manufacturer, int $offset = null, int $limit = null): array
-    {
-        $filter = new ProductFilterList(null, null, new IDFilter($manufacturer->getId()), null, new BoolFilter(true));
-
-        $products = $this->repository->getByFilter(
-            $filter,
+    public function getProducts(
+        Manufacturer $manufacturer,
+        int $offset = null,
+        int $limit = null
+    ): array {
+        return $this->repository->getByFilter(
+            new ProductFilterList(
+                null,
+                null,
+                new IDFilter(
+                    $manufacturer->getId()
+                ),
+                null,
+                new BoolFilter(true)
+            ),
             ProductDataType::class,
             $offset,
             $limit
         );
-
-        return $products;
     }
 }

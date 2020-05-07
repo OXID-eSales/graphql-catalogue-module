@@ -293,28 +293,10 @@ class ManufacturerTest extends TestCase
 
     public function testGetManufacturerWithoutProducts()
     {
-
-
         $result = $this->query('query {
             manufacturer (id: "' . self::ACTIVE_MANUFACTURER_WITHOUT_PRODUCTS . '") {
                 id
-                products(offset: null, limit: null)
-                {
-                  id
-                }
-            }
-        }');
-
-        $this->assertResponseStatus(200, $result);
-        $this->assertEquals([], $result['body']['data']['manufacturer']['products']);
-    }
-
-    public function testGetManuacturerWithProducts()
-    {
-        $result = $this->query('query {
-            manufacturer (id: "' . self::ACTIVE_MANUFACTURER . '") {
-                id
-                products(offset: null, limit: 1)
+                products
                 {
                   id
                 }
@@ -323,7 +305,28 @@ class ManufacturerTest extends TestCase
 
         $this->assertResponseStatus(200, $result);
         $this->assertEquals(
-            ['id' => self::PRODUCT_RELATED_TO_ACTIVE_MANUFACTURER],
+            [],
+            $result['body']['data']['manufacturer']['products']
+        );
+    }
+
+    public function testGetManuacturerWithProducts()
+    {
+        $result = $this->query('query {
+            manufacturer (id: "' . self::ACTIVE_MANUFACTURER . '") {
+                id
+                products(limit: 1)
+                {
+                  id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(200, $result);
+        $this->assertEquals(
+            [
+                'id' => self::PRODUCT_RELATED_TO_ACTIVE_MANUFACTURER
+            ],
             $result['body']['data']['manufacturer']['products'][0]
         );
     }
@@ -356,7 +359,6 @@ class ManufacturerTest extends TestCase
                 'limit' => 9,
                 '$numberOfExpectedProducts' => 0
             ]
-
         ];
     }
 
