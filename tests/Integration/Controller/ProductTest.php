@@ -325,20 +325,11 @@ final class ProductTest extends TokenTestCase
         $result = $this->query('
             query{
                 product(id: "' . self::ACTIVE_PRODUCT_WITH_VARIANTS . '" ){
+                    variantLabels
                     variants {
                         id
                         active
-                        sku
-                        ean
-                        manufacturerEan
-                        mpn
-                        title
-                        shortDescription
-                        longDescription
-                        vat
-                        insert
-                        freeShipping
-                        timestamp
+                        variantValues
                     }
                 }
             }
@@ -349,44 +340,88 @@ final class ProductTest extends TokenTestCase
             $result
         );
 
+        $this->assertSame(
+            $result['body']['data']['product']['variantLabels'],
+            [
+                'Größe',
+                'Farbe'
+            ]
+        );
+
         $actualVariants = $result['body']['data']['product']['variants'];
 
         $expectedVariants = [
             [
               "id" => "6b6efaa522be53c3e86fdb41f0542a8a",
               "active" => true,
+              "variantValues" => [
+                  "W 30/L 30",
+                  "Blau",
+              ],
             ],
             [
               "id" => "6b65c82bfe8fa19865d560f8c1a905b4",
               "active" => true,
+              "variantValues" => [
+                  "W 30/L 30",
+                  "Smoke Gray",
+              ],
             ],
             [
               "id" => "6b6ee4ad0a02a725a136ca139e226dd5",
               "active" => true,
+              "variantValues" => [
+                  "W 30/L 30",
+                  "Super Blue",
+              ],
             ],
             [
               "id" => "6b628e6a8ffa98fea6f2ee9d708b1b23",
               "active" => true,
+              "variantValues" => [
+                  "W 31/L 34",
+                  "Blau",
+              ],
             ],
             [
               "id" => "6b6e2c7af07fd2b9d82223ff35f4e08f",
               "active" => true,
+              "variantValues" => [
+                  "W 31/L 34",
+                  "Smoke Gray",
+              ],
             ],
             [
               "id" => "6b6d187d3f648ab5d7875ce863244095",
               "active" => true,
+              "variantValues" => [
+                  "W 31/L 34",
+                  "Super Blue",
+              ],
             ],
             [
               "id" => "6b65295a7fe5fa6faaa2f0ac3f9b0f80",
               "active" => true,
+              "variantValues" => [
+                  "W 34/L 34",
+                  "Blau",
+              ],
             ],
             [
               "id" => "6b6e0bb9f2b8b5f070f91593073b4555",
               "active" => true,
+              "variantValues" => [
+                  "W 34/L 34",
+                  "Smoke Gray",
+              ],
             ],
             [
               "id" => "6b6cf1ed0c0b3e784b05b1c9c207d352",
               "active" => true,
+              "variantValues" => [
+                  "W 34/L 34",
+                  "Super Blue",
+              ],
             ],
         ];
 

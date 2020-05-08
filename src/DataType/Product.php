@@ -16,6 +16,9 @@ use TheCodingMachine\GraphQLite\Types\ID;
 use DateTimeImmutable;
 use DateTimeInterface;
 
+use function array_filter;
+use function explode;
+
 /**
  * @Type()
  */
@@ -148,6 +151,34 @@ class Product implements DataType
     {
         return new DateTimeImmutable(
             (string)$this->product->getFieldData('oxtimestamp')
+        );
+    }
+
+    /**
+     * @Field()
+     * @return String[]
+     */
+    public function getVariantLabels(): array
+    {
+        return array_filter(
+            explode(
+                ' | ',
+                (string)$this->product->getFieldData('oxvarname')
+            )
+        );
+    }
+
+    /**
+     * @Field()
+     * @return String[]
+     */
+    public function getVariantValues(): array
+    {
+        return array_filter(
+            explode(
+                ' | ',
+                (string)$this->product->getFieldData('oxvarselect')
+            )
         );
     }
 }
