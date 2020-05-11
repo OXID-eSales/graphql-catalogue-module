@@ -259,7 +259,7 @@ final class VendorTest extends TokenTestCase
     {
         $result = $this->query('query {
             vendor (id: "' . self::ACTIVE_VENDOR . '") {
-                products(paginationFilter: {limit: 1, offset: 1}) {
+                products(pagination: {limit: 1, offset: 1}) {
                     title
                 }
             }

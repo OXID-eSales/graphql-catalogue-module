@@ -220,7 +220,7 @@ class ManufacturerEnterpriseTest extends MultishopTestCase
 
         $result = $this->query('query {
             manufacturer (id: "' . self::MANUFACTURER_ID . '") {
-                 products(offset: null, limit: null)
+                products
                 {
                   id
                 }
@@ -245,7 +245,7 @@ class ManufacturerEnterpriseTest extends MultishopTestCase
         $result = $this->query('query {
             manufacturer (id: "' . self::MANUFACTURER_WITH_SINGLE_PRODUCT . '") {
                 id
-                 products(offset: null, limit: null)
+                products
                 {
                   id
                 }
@@ -269,7 +269,7 @@ class ManufacturerEnterpriseTest extends MultishopTestCase
         $result = $this->query('query {
             manufacturer (id: "' . self::MANUFACTURER_ID . '") {
                 id
-                 products(offset: null, limit: null)
+                products
                 {
                   id
                 }

@@ -196,8 +196,6 @@ final class BannerTest extends TokenTestCase
             $result
         );
 
-        $this->assertCount(4, $result['body']['data']['banners']);
-
         $this->assertSame([
             [
                 'id' => 'cb34f86f56162d0c95890b5985693710',
@@ -258,8 +256,6 @@ final class BannerTest extends TokenTestCase
             200,
             $result
         );
-
-        $this->assertCount(5, $result['body']['data']['banners']);
 
         $this->assertSame([
             [
