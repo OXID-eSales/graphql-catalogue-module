@@ -30,7 +30,6 @@
         "oxid-esales/oxideshop-unified-namespace-generator": "^2.0"
     },
     "prefer-stable": true,
-    "prefer-dist": true,
     "autoload": {
         "psr-4": {
             "OxidEsales\\GraphQL\\Catalogue\\": "src",
