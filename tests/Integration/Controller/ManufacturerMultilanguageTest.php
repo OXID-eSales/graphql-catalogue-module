@@ -50,7 +50,7 @@ class ManufacturerMultilanguageTest extends TestCase
                 seo {
                     url
                 },
-                 products(offset: null, limit: 1)
+                 products(pagination: {limit: 1})
                 {
                   shortDescription
                 }

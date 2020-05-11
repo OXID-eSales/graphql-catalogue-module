@@ -40,7 +40,7 @@ final class VendorMultiLanguageTest extends TestCase
                 seo {
                    url
                 }
-                products(paginationFilter: {limit: 1}) {
+                products(pagination: {limit: 1}) {
                     shortDescription
                 }
             }
@@ -124,7 +124,7 @@ final class VendorMultiLanguageTest extends TestCase
             vendor (id: "' . self::ACTIVE_VENDOR . '") {
                 id
                 title
-                products(paginationFilter: {limit: 1}) {
+                products(pagination: {limit: 1}) {
                     shortDescription
                 }
             }

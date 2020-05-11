@@ -315,7 +315,7 @@ class ManufacturerTest extends TestCase
         $result = $this->query('query {
             manufacturer (id: "' . self::ACTIVE_MANUFACTURER . '") {
                 id
-                products(limit: 1)
+                products(pagination: {limit: 1})
                 {
                   id
                 }
@@ -370,7 +370,7 @@ class ManufacturerTest extends TestCase
         $result = $this->query('query ($offset: Int, $limit: Int) {
             manufacturer (id: "' . self::ACTIVE_MULTILANGUAGE_MANUFACTURER . '") {
                 id
-                products(offset: $offset, limit: $limit)
+                products(pagination: {offset: $offset, limit: $limit})
                 {
                   id
                 }
