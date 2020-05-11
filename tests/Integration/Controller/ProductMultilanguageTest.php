@@ -13,8 +13,8 @@ use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
 class ProductMultilanguageTest extends TestCase
 {
-
     private const ACTIVE_MULTILANGUAGE_PRODUCT = '058e613db53d782adfc9f2ccb43c45fe';
+    private const ACTIVE_PRODUCT_WITH_VARIANTS = '531b537118f5f4d7a427cdb825440922';
 
     public function providerGetProductMultilanguage()
     {
@@ -75,6 +75,86 @@ class ProductMultilanguageTest extends TestCase
             'en' => [
                 'languageId' => '1',
                 'count'      => 1
+            ]
+        ];
+    }
+
+    /**
+     *  @dataProvider providerGetProductVariantsMultilanguage
+     *
+     * @param string $languageId
+     * @param array  $expectedLabels
+     * @param array  $expectedVariants
+     */
+    public function testGetProductVariantsMultilanguage(
+        string $languageId,
+        array $expectedLabels,
+        array $expectedVariants
+    ): void {
+        $this->setGETRequestParameter(
+            'lang',
+            $languageId
+        );
+
+        $query = 'query {
+            product (id: "' . self::ACTIVE_PRODUCT_WITH_VARIANTS . '") {
+                variantLabels
+                variants {
+                    id
+                    variantValues
+                }
+            }
+        }';
+
+        $result = $this->query($query);
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $actualVariants = $result['body']['data']['product']['variants'][0];
+
+        $this->assertSame(
+            $result['body']['data']['product']['variantLabels'],
+            $expectedLabels
+        );
+
+        $this->assertSame(
+            $actualVariants,
+            $expectedVariants
+        );
+    }
+
+    public function providerGetProductVariantsMultilanguage()
+    {
+        return [
+            'de' => [
+                'languageId' => '0',
+                'labels'        => [
+                    'Größe',
+                    'Farbe'
+                ],
+                'variants' => [
+                    'id' => '6b6efaa522be53c3e86fdb41f0542a8a',
+                    'variantValues' => [
+                        'W 30/L 30',
+                        'Blau',
+                    ]
+                ],
+            ],
+            'en' => [
+                'languageId' => '1',
+                'labels'     => [
+                    'Size',
+                    'Color'
+                ],
+                'values' => [
+                    'id' => '6b6efaa522be53c3e86fdb41f0542a8a',
+                    'variantValues' => [
+                        'W 30/L 30',
+                        'Blue ',
+                    ]
+                ],
             ]
         ];
     }

@@ -13,7 +13,8 @@ use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
  */
 class ProductEnterpriseTest extends MultishopTestCase
 {
-    private const PRODUCT_ID = "058e613db53d782adfc9f2ccb43c45fe";
+    private const PRODUCT_ID = '058e613db53d782adfc9f2ccb43c45fe';
+    private const ACTIVE_PRODUCT_WITH_VARIANTS = '531b537118f5f4d7a427cdb825440922';
 
     /**
      * Check if active product from shop 1 is not accessible for
@@ -43,7 +44,7 @@ class ProductEnterpriseTest extends MultishopTestCase
     {
         $this->setGETRequestParameter('shp', "2");
         $this->setGETRequestParameter('lang', '0');
-        $this->addProductToShops([2]);
+        $this->addProductToShops([2], self::PRODUCT_ID);
 
         $result = $this->query('query {
             product (id: "' . self::PRODUCT_ID . '") {
@@ -104,7 +105,7 @@ class ProductEnterpriseTest extends MultishopTestCase
     {
         $this->setGETRequestParameter('shp', $shopId);
         $this->setGETRequestParameter('lang', $languageId);
-        $this->addProductToShops([2]);
+        $this->addProductToShops([2], self::PRODUCT_ID);
 
         $result = $this->query('query {
             product (id: "' . self::PRODUCT_ID . '") {
@@ -128,12 +129,111 @@ class ProductEnterpriseTest extends MultishopTestCase
     }
 
     /**
-     * @param int|array $shops
+     * @dataProvider providerGetProductVariantsSubshop
+     *
+     * @param string $shopId
+     * @param string $languageId
+     * @param array  $expectedLabels
+     * @param array  $expectedVariants
      */
-    private function addProductToShops($shops)
+    public function testGetProductVariantsSubshop(
+        string $shopId,
+        string $languageId,
+        array $expectedLabels,
+        array $expectedVariants
+    ): void {
+        $this->setGETRequestParameter('shp', $shopId);
+        $this->setGETRequestParameter('lang', $languageId);
+        $this->addProductToShops([2], self::ACTIVE_PRODUCT_WITH_VARIANTS);
+
+        $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT_WITH_VARIANTS . '") {
+                variantLabels
+                variants {
+                    id
+                    variantValues
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertSame(
+            $result['body']['data']['product']['variantLabels'],
+            $expectedLabels
+        );
+
+        $this->assertSame(
+            $result['body']['data']['product']['variants'][0] ?? $result['body']['data']['product']['variants'],
+            $expectedVariants
+        );
+    }
+
+    public function providerGetProductVariantsSubshop()
+    {
+        return [
+            'shop_1_de' => [
+                'shopId'     => '1',
+                'languageId' => '0',
+                'labels'     => [
+                    'Größe',
+                    'Farbe'
+                ],
+                'variants'   => [
+                    'id'            => '6b6efaa522be53c3e86fdb41f0542a8a',
+                    'variantValues' => [
+                        'W 30/L 30',
+                        'Blau',
+                    ]
+                ],
+            ],
+            'shop_1_en' => [
+                'shopId'     => '1',
+                'languageId' => '1',
+                'labels'     => [
+                    'Size',
+                    'Color'
+                ],
+                'values'     => [
+                    'id'            => '6b6efaa522be53c3e86fdb41f0542a8a',
+                    'variantValues' => [
+                        'W 30/L 30',
+                        'Blue ',
+                    ]
+                ],
+            ],
+            'shop_2_de' => [
+                'shopId'     => '2',
+                'languageId' => '0',
+                'labels'     => [
+                    'Größe',
+                    'Farbe'
+                ],
+                'variants'   => [],
+            ],
+            'shop_2_en' => [
+                'shopId'     => '2',
+                'languageId' => '1',
+                'labels'     => [
+                    'Size',
+                    'Color'
+                ],
+                'variants'   => [],
+            ]
+        ];
+    }
+
+    /**
+     * @param array  $shops
+     * @param string $productId
+     */
+    private function addProductToShops(array $shops, string $productId)
     {
         $oElement2ShopRelations = oxNew(Element2ShopRelations::class, 'oxarticles');
         $oElement2ShopRelations->setShopIds($shops);
-        $oElement2ShopRelations->addToShop(self::PRODUCT_ID);
+        $oElement2ShopRelations->addToShop($productId);
     }
 }
