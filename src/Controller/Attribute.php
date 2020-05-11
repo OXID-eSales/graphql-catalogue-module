@@ -13,8 +13,8 @@ use OxidEsales\GraphQL\Base\DataType\BoolFilter;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\Attribute as AttributeDataType;
 use OxidEsales\GraphQL\Catalogue\Exception\AttributeNotFound;
-use TheCodingMachine\GraphQLite\Annotations\Query;
 use OxidEsales\GraphQL\Catalogue\DataType\AttributeFilterList;
+use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Attribute extends Base
 {
