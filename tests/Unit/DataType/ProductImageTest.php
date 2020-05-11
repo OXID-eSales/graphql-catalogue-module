@@ -10,9 +10,9 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers \OxidEsales\GraphQL\Catalogue\DataType\ProductImage
  */
-class ProductImageTest extends TestCase
+final class ProductImageTest extends TestCase
 {
-    public function testProductImage()
+    public function testProductImage(): void
     {
         $imageValue = "image value";
         $iconValue = "icon value";
