@@ -13,6 +13,7 @@ use OxidEsales\GraphQL\Base\DataType\BoolFilter;
 use OxidEsales\GraphQL\Base\DataType\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\StringFilter;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
+use TheCodingMachine\GraphQLite\Types\ID;
 
 class ProductFilterList extends FilterList
 {
@@ -28,14 +29,9 @@ class ProductFilterList extends FilterList
     /** @var ?IDFilter */
     private $vendor = null;
 
-    /**
-     * ProductFilterList constructor.
-     *
-     * @param StringFilter|null $title
-     * @param IDFilter|null $manufacturer
-     * @param IDFilter|null $vendor
-     * @param BoolFilter|null $active
-     */
+    /** @var ?IDFilter */
+    private $parent = null;
+
     public function __construct(
         ?StringFilter $title = null,
         ?CategoryIDFilter $category = null,
@@ -48,6 +44,7 @@ class ProductFilterList extends FilterList
         $this->manufacturer = $manufacturer;
         $this->vendor = $vendor;
         $this->active = $active;
+        $this->parent = new IDFilter(new ID(''));
         parent::__construct();
     }
 
@@ -66,8 +63,10 @@ class ProductFilterList extends FilterList
     /**
      * @return array{
      *  oxtitle: ?StringFilter,
+     *  oxcatnid : ?CategoryIDFilter,
      *  oxmanufacturerid: ?IDFilter,
-     *  oxvendorid: ?IDFilter
+     *  oxvendorid: ?IDFilter,
+     *  oxparentid: ?IDFilter
      * }
      */
     public function getFilters(): array
@@ -76,7 +75,8 @@ class ProductFilterList extends FilterList
             'oxtitle' => $this->title,
             'oxcatnid' => $this->category,
             'oxmanufacturerid' => $this->manufacturer,
-            'oxvendorid' => $this->vendor
+            'oxvendorid' => $this->vendor,
+            'oxparentid' => $this->parent
         ];
     }
 }

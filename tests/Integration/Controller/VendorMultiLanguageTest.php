@@ -14,7 +14,7 @@ use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
 final class VendorMultiLanguageTest extends TestCase
 {
-    private const ACTIVE_VENDOR = 'fe07958b49de225bd1dbc7594fb9a6b0';
+    private const ACTIVE_VENDOR = "a57c56e3ba710eafb2225e98f058d989";
 
     /**
      * @dataProvider providerGetVendorListWithFilterMultiLanguage
@@ -39,9 +39,6 @@ final class VendorMultiLanguageTest extends TestCase
                 title
                 seo {
                    url
-                }
-                products(pagination: {limit: 1}) {
-                    shortDescription
                 }
             }
         }';
@@ -74,11 +71,6 @@ final class VendorMultiLanguageTest extends TestCase
             $expectedVendor['url'],
             parse_url($vendor['seo']['url'])['path']
         );
-
-        $this->assertEquals(
-            $expectedVendor['productShortDescription'],
-            $vendor['products'][0]['shortDescription']
-        );
     }
 
     public function providerGetVendorListWithFilterMultiLanguage(): array
@@ -92,7 +84,6 @@ final class VendorMultiLanguageTest extends TestCase
                     [
                         'title' => 'https://fashioncity.com/de',
                         'url' => '/Nach-Lieferant/https-fashioncity-com-de/',
-                        'productShortDescription' => 'Lässiges Herrenshirt mit Aufdruck'
                     ]
                 ]
             ],
@@ -104,7 +95,6 @@ final class VendorMultiLanguageTest extends TestCase
                     [
                         'title' => 'https://fashioncity.com/en',
                         'url' => '/en/By-distributor/https-fashioncity-com-en/',
-                        'productShortDescription' => 'Short sleeve shirt for men'
                     ]
                 ]
             ]
@@ -155,13 +145,13 @@ final class VendorMultiLanguageTest extends TestCase
         return [
             'de' => [
                 'languageId' => '0',
-                'title'      => 'https://fashioncity.com/de',
-                'productShortDescription' => 'Lässiges Herrenshirt mit Aufdruck'
+                'title'      => 'www.true-fashion.com',
+                'productShortDescription' => 'Lässige Damenjeans von Kuyichi'
             ],
             'en' => [
                 'languageId' => '1',
-                'title'      => 'https://fashioncity.com/en',
-                'productShortDescription' => 'Short sleeve shirt for men'
+                'title'      => 'www.true-fashion.com',
+                'productShortDescription' => 'Cool lady jeans by Kuyichi'
             ],
         ];
     }

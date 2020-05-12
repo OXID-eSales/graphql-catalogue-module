@@ -465,7 +465,7 @@ final class ProductTest extends TokenTestCase
         );
 
         $this->assertCount(
-            105,
+            52,
             $result['body']['data']['products']
         );
     }
@@ -503,28 +503,27 @@ final class ProductTest extends TokenTestCase
                 0,
                 1,
                 [
-                    ['id' => '05833e961f65616e55a2208c2ed7c6b8']
+                    ['id' => '05848170643ab0deb9914566391c0c63']
                 ]
             ],
             [
                 0,
                 4,
                 [
-                    ['id' => '05833e961f65616e55a2208c2ed7c6b8'],
                     ['id' => '05848170643ab0deb9914566391c0c63'],
                     ['id' => '0584e8b766a4de2177f9ed11d1587f55'],
-                    ['id' => '058c7b525aad619d8b343c0ffada0247'],
+                    ['id' => '058de8224773a1d5fd54d523f0c823e0'],
+                    ['id' => '058e613db53d782adfc9f2ccb43c45fe'],
                 ]
             ],
             [
                 2,
                 4,
                 [
-                    ['id' => '0584e8b766a4de2177f9ed11d1587f55'],
-                    ['id' => '058c7b525aad619d8b343c0ffada0247'],
                     ['id' => '058de8224773a1d5fd54d523f0c823e0'],
                     ['id' => '058e613db53d782adfc9f2ccb43c45fe'],
-
+                    ['id' => '531b537118f5f4d7a427cdb825440922'],
+                    ['id' => '531f91d4ab8bfb24c4d04e473d246d0b'],
                 ]
             ],
         ];
@@ -572,7 +571,7 @@ final class ProductTest extends TokenTestCase
     public function productsByManufacturerProvider()
     {
         return [
-            ['9434afb379a46d6c141de9c9e5b94fcf', 37],
+            ['9434afb379a46d6c141de9c9e5b94fcf', 10],
             ['adc6df0977329923a6330cc8f3c0a906', 7],
             ['90a0b84564cde2394491df1c673b6aa0', 3]
         ];
@@ -620,8 +619,8 @@ final class ProductTest extends TokenTestCase
     public function productsByVendorProvider()
     {
         return [
-            ['a57c56e3ba710eafb2225e98f058d989', 60],
-            ['fe07958b49de225bd1dbc7594fb9a6b0', 3],
+            ['a57c56e3ba710eafb2225e98f058d989', 13],
+            ['fe07958b49de225bd1dbc7594fb9a6b0', 0],
         ];
     }
 

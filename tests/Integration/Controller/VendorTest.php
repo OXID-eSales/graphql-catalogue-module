@@ -14,7 +14,7 @@ use TheCodingMachine\GraphQLite\Types\DateTimeType;
 
 final class VendorTest extends TokenTestCase
 {
-    private const ACTIVE_VENDOR = "fe07958b49de225bd1dbc7594fb9a6b0";
+    private const ACTIVE_VENDOR = "a57c56e3ba710eafb2225e98f058d989";
     private const INACTIVE_VENDOR  = "05833e961f65616e55a2208c2ed7c6b8";
 
     public function testGetSingleActiveVendor()
@@ -47,11 +47,11 @@ final class VendorTest extends TokenTestCase
         $this->assertSame(self::ACTIVE_VENDOR, $vendor['id']);
         $this->assertTrue($vendor['active']);
         $this->assertNull($vendor['icon']);
-        $this->assertEquals('https://fashioncity.com/de', $vendor['title']);
-        $this->assertSame('Fashion city', $vendor['shortdesc']);
-        $this->assertRegExp('@https?://.*/Nach-Lieferant/https-fashioncity-com-de/$@', $vendor['seo']['url']);
-        $this->assertEquals('german vendor seo description', $vendor['seo']['description']);
-        $this->assertEquals('german vendor seo keywords', $vendor['seo']['keywords']);
+        $this->assertEquals('www.true-fashion.com', $vendor['title']);
+        $this->assertSame('Ethical style outlet', $vendor['shortdesc']);
+        $this->assertRegExp('@https?://.*/Nach-Lieferant/www-true-fashion-com/$@', $vendor['seo']['url']);
+        $this->assertEquals('', $vendor['seo']['description']);
+        $this->assertEquals('', $vendor['seo']['keywords']);
 
         $dateTimeType = DateTimeType::getInstance();
         //Fixture timestamp can have few seconds difference
@@ -60,12 +60,8 @@ final class VendorTest extends TokenTestCase
             $vendor['timestamp']
         );
 
-        $this->assertEquals(
-            [
-                ['id' => '10049f9322cf8852f8d567e9662cb12c'],
-                ['id' => '10067ab25bf275b7e68bc0431b204d24'],
-                ['id' => '1008b12cef0476f5e941da460ba621e6']
-            ],
+        $this->assertCount(
+            13,
             $vendor['products']
         );
 
@@ -269,6 +265,11 @@ final class VendorTest extends TokenTestCase
 
         $products = $result['body']['data']['vendor']['products'];
 
-        $this->assertEquals([['title' => 'Kuyichi T-Shirt TIGER']], $products);
+        $this->assertEquals(
+            [
+                ['title' => 'Kuyichi Jeans KYLE']
+            ],
+            $products
+        );
     }
 }
