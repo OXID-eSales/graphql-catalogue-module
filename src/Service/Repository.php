@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Catalogue\Service;
 use InvalidArgumentException;
 use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\EshopEnterprise\Core\Model\BaseModel as EnterpriseBaseModel;
 use OxidEsales\GraphQL\Base\DataType\FilterInterface;
 use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
@@ -39,12 +40,17 @@ class Repository
      */
     public function getById(
         string $id,
-        string $type
+        string $type,
+        bool $disableSubShop = true
     ) {
         $model = oxNew($type::getModelClass());
         if (!($model instanceof BaseModel)) {
             throw new InvalidArgumentException();
         }
+        if ($model instanceof EnterpriseBaseModel) {
+            $model->setDisableShopCheck($disableSubShop);
+        }
+
         if (!$model->load($id) || (method_exists($model, 'canView') && !$model->canView())) {
             throw new NotFound($id);
         }

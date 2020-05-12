@@ -20,6 +20,7 @@ use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
 class ContentEnterpriseTest extends MultishopTestCase
 {
     private const CONTENT_ID = '1074279e67a85f5b1.96907412';
+    private const CONTENT_ID_FOR_SHOP_2 = '_subshop_2';
 
     /**
      * Active content from shop 1 is not accessible for shop 2
@@ -29,21 +30,18 @@ class ContentEnterpriseTest extends MultishopTestCase
         $this->setGETRequestParameter('shp', '2');
 
         $result = $this->query('query {
-            content (id: "' . self::CONTENT_ID . '") {
+            content (id: "' . self::CONTENT_ID_FOR_SHOP_2 . '") {
                 id
             }
         }');
 
-        $this->assertEquals(
-            404,
-            $result['status']
-        );
+        $this->assertResponseStatus(404, $result);
     }
 
     /**
      * Check if no contents available while they are not related to the shop 2
      */
-    public function _testGetEmptyContentListOfNotMainShop()
+    public function testGetEmptyContentListOfNotMainShop()
     {
         $this->setGETRequestParameter('shp', '2');
 
@@ -52,10 +50,8 @@ class ContentEnterpriseTest extends MultishopTestCase
                 id
             }
         }');
-        $this->assertResponseStatus(
-            200,
-            $result
-        );
+
+        $this->assertResponseStatus(200, $result);
         $this->assertCount(
             0,
             $result['body']['data']['contents']
@@ -66,34 +62,24 @@ class ContentEnterpriseTest extends MultishopTestCase
      * Check if active content from shop 1 is accessible for
      * shop 2 if its related to shop 2
      */
-    public function _testGetSingleInShopActiveContentWillWork()
+    public function testGetSingleInShopActiveContentWillWork()
     {
         $this->setGETRequestParameter('shp', '2');
         $this->setGETRequestParameter('lang', '0');
         $this->addContentToShops([2]);
 
         $result = $this->query('query {
-            content (id: "' . self::CONTENT_ID . '") {
+            content (id: "' . self::CONTENT_ID_FOR_SHOP_2 . '") {
                 id,
                 title
-                products {
-                    id
-                }
             }
         }');
 
-        $this->assertEquals(
-            200,
-            $result['status']
-        );
-
+        $this->assertResponseStatus(200, $result);
         $this->assertEquals(
             [
-                'id' => self::CONTENT_ID,
-                'title' => 'https://fashioncity.com/de',
-                'products' => [
-                    ['id' => '10067ab25bf275b7e68bc0431b204d24']
-                ]
+                'id' => self::CONTENT_ID_FOR_SHOP_2,
+                'title' => 'Wie bestellen?',
             ],
             $result['body']['data']['content']
         );
@@ -102,7 +88,7 @@ class ContentEnterpriseTest extends MultishopTestCase
     /**
      * Check if only one, related to the shop 2 content is available in list
      */
-    public function _testGetOneContentInListOfNotMainShop()
+    public function testGetOneContentInListOfNotMainShop()
     {
         $this->setGETRequestParameter('shp', '2');
         $this->addContentToShops([2]);
@@ -112,11 +98,8 @@ class ContentEnterpriseTest extends MultishopTestCase
                 id
             }
         }');
-        $this->assertResponseStatus(
-            200,
-            $result
-        );
-        // fixtures have 2 active contents
+
+        $this->assertResponseStatus(200, $result);
         $this->assertCount(
             1,
             $result['body']['data']['contents']
@@ -132,22 +115,26 @@ class ContentEnterpriseTest extends MultishopTestCase
             'shop_1_de' => [
                 'shopId' => '1',
                 'languageId' => '0',
-                'title' => 'https://fashioncity.com/de'
+                'title' => 'Wie bestellen?',
+                'id' => self::CONTENT_ID,
             ],
             'shop_1_en' => [
                 'shopId' => '1',
                 'languageId' => '1',
-                'title' => 'https://fashioncity.com/en'
+                'title' => 'How to order?',
+                'id' => self::CONTENT_ID,
             ],
             'shop_2_de' => [
                 'shopId' => '2',
                 'languageId' => '0',
-                'title' => 'https://fashioncity.com/de'
+                'title' => 'Wie bestellen?',
+                'id' => self::CONTENT_ID_FOR_SHOP_2,
             ],
             'shop_2_en' => [
                 'shopId' => '2',
                 'languageId' => '1',
-                'title' => 'https://fashioncity.com/en'
+                'title' => 'How to order?',
+                'id' => self::CONTENT_ID_FOR_SHOP_2,
             ],
         ];
     }
@@ -157,27 +144,24 @@ class ContentEnterpriseTest extends MultishopTestCase
      *
      * @dataProvider providerGetContentMultilanguage
      */
-    public function _testGetSingleTranslatedSecondShopContent($shopId, $languageId, $title)
+    public function testGetSingleTranslatedSecondShopContent($shopId, $languageId, $title, $id)
     {
         $this->setGETRequestParameter('shp', $shopId);
         $this->setGETRequestParameter('lang', $languageId);
         $this->addContentToShops([2]);
 
         $result = $this->query('query {
-            content (id: "' . self::CONTENT_ID . '") {
+            content (id: "' . $id . '") {
                 id
                 title
             }
         }');
 
-        $this->assertEquals(
-            200,
-            $result['status']
-        );
+        $this->assertResponseStatus(200, $result);
 
         $this->assertEquals(
             [
-                'id' => self::CONTENT_ID,
+                'id' => $id,
                 'title' => $title
             ],
             $result['body']['data']['content']
@@ -189,7 +173,7 @@ class ContentEnterpriseTest extends MultishopTestCase
      *
      * @dataProvider providerGetContentMultilanguage
      */
-    public function _testGetListTranslatedSecondShopContents($shopId, $languageId, $title)
+    public function testGetListTranslatedSecondShopContents($shopId, $languageId, $title, $id)
     {
         $this->setGETRequestParameter('shp', $shopId);
         $this->setGETRequestParameter('lang', $languageId);
@@ -197,8 +181,8 @@ class ContentEnterpriseTest extends MultishopTestCase
 
         $result = $this->query('query {
             contents(filter: {
-                title: {
-                    equals: "' . $title . '"
+                folder: {
+                    equals: "CMSFOLDER_USERINFO"
                 }
             }) {
                 id,
@@ -206,14 +190,11 @@ class ContentEnterpriseTest extends MultishopTestCase
             }
         }');
 
-        $this->assertEquals(
-            200,
-            $result['status']
-        );
+        $this->assertResponseStatus(200, $result);
 
         $this->assertEquals(
             [
-                'id' => self::CONTENT_ID,
+                'id' => $id,
                 'title' => $title
             ],
             $result['body']['data']['contents'][0]
@@ -225,8 +206,11 @@ class ContentEnterpriseTest extends MultishopTestCase
         $content = oxNew(EshopContent::class);
         $content->load(self::CONTENT_ID);
         foreach ($shops as $shopId) {
-            $content->setId('_subshop_' . $shopId);
-            $content->assign(['oxshopid' => $shopId]);
+            $content->setId(self::CONTENT_ID_FOR_SHOP_2);
+            $content->assign([
+                'oxshopid' => $shopId,
+                'oxactive' => 1,
+            ]);
             $content->save();
         }
     }

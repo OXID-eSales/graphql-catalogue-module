@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
-use OxidEsales\GraphQL\Base\DataType\BoolFilter;
 use OxidEsales\GraphQL\Base\DataType\StringFilter;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
@@ -19,11 +18,9 @@ class ContentFilterList extends FilterList
     private $folder = null;
 
     public function __construct(
-        ?StringFilter $folder = null,
-        ?BoolFilter $active = null
+        ?StringFilter $folder = null
     ) {
         $this->folder = $folder;
-        $this->active = $active;
         parent::__construct();
     }
 

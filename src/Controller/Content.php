@@ -29,7 +29,8 @@ class Content extends Base
         try {
             $content = $this->repository->getById(
                 $id,
-                ContentDataType::class
+                ContentDataType::class,
+                false
             );
         } catch (NotFound $e) {
             throw ContentNotFound::byId($id);

@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
-use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
 final class ContentMultiLanguageTest extends TestCase

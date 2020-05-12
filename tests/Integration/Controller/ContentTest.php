@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
-use TheCodingMachine\GraphQLite\Types\DateTimeType;
 
 final class ContentTest extends TokenTestCase
 {
