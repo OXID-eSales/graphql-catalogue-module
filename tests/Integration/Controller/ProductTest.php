@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
 final class ProductTest extends TokenTestCase
@@ -656,5 +658,69 @@ final class ProductTest extends TokenTestCase
             ['0f4fb00809cec9aa0910aa9c8fe36751', 12],
             ['0f4f08358666c54b4fde3d83d2b7ef04', 4],
         ];
+    }
+
+    public function testDeliveryStatusHandling()
+    {
+        $noStockProduct = 'fadc492a5807c56eb80b0507accd756b';
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        // set stock flag to: offline if out of stock
+        $query = $queryBuilder
+            ->update('oxarticles')
+            ->set('oxstockflag', ':STOCKFLAG')
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', $noStockProduct)
+            ->setParameter(':STOCKFLAG', '2');
+        $query->execute();
+
+        $result = $this->query('query {
+            products (filter: {
+                title: {
+                    contains: "SPLEENE"
+                }
+            }) {
+                id
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertSame(
+            [],
+            $result['body']['data']['products']
+        );
+
+        // reset stock flag to: default
+        $query->setParameter(':STOCKFLAG', '1')
+              ->execute();
+
+        $result = $this->query('query {
+            products (filter: {
+                title: {
+                    contains: "SPLEENE"
+                }
+            }) {
+                id
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertSame(
+            [
+                ['id' => $noStockProduct]
+            ],
+            $result['body']['data']['products']
+        );
     }
 }
