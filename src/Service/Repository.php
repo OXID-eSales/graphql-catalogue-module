@@ -12,7 +12,6 @@ namespace OxidEsales\GraphQL\Catalogue\Service;
 use InvalidArgumentException;
 use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
-use OxidEsales\EshopEnterprise\Core\Model\BaseModel as EnterpriseBaseModel;
 use OxidEsales\GraphQL\Base\DataType\FilterInterface;
 use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
@@ -43,13 +42,7 @@ class Repository
         string $type,
         bool $disableSubShop = true
     ) {
-        $model = oxNew($type::getModelClass());
-        if (!($model instanceof BaseModel)) {
-            throw new InvalidArgumentException();
-        }
-        if ($model instanceof EnterpriseBaseModel) {
-            $model->setDisableShopCheck($disableSubShop);
-        }
+        $model = $this->getModel($type::getModelClass(), $disableSubShop);
 
         if (!$model->load($id) || (method_exists($model, 'canView') && !$model->canView())) {
             throw new NotFound($id);
@@ -70,13 +63,11 @@ class Repository
     public function getByFilter(
         FilterList $filter,
         string $type,
-        ?PaginationFilter $pagination = null
+        ?PaginationFilter $pagination = null,
+        bool $disableSubShop = true
     ): array {
         $types = [];
-        $model = oxNew($type::getModelClass());
-        if (!($model instanceof BaseModel)) {
-            throw new InvalidArgumentException();
-        }
+        $model = $this->getModel($type::getModelClass(), $disableSubShop);
 
         $queryBuilder = $this->queryBuilderFactory->create();
         $queryBuilder->select('*')
@@ -113,5 +104,21 @@ class Repository
         }
 
         return $types;
+    }
+
+    /**
+     * @throws InvalidArgumentException if model in $type is not instance of BaseModel
+     */
+    private function getModel(string $modelClass, bool $disableSubShop): BaseModel
+    {
+        $model = oxNew($modelClass);
+
+        if (!($model instanceof BaseModel)) {
+            throw new InvalidArgumentException();
+        }
+        if (method_exists($model, 'setDisableShopCheck')) {
+            $model->setDisableShopCheck($disableSubShop);
+        }
+        return $model;
     }
 }

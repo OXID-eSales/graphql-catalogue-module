@@ -43,8 +43,7 @@ class ContentRelationService
      */
     public function getCategory(Content $content): ?Category
     {
-        /** @var \OxidEsales\Eshop\Application\Model\Category|null */
-        $id = $content->getEshopModel()->getCategoryId();
+        $id = (string) $content->getEshopModel()->getCategoryId();
 
         if (!$id) {
             return null;
