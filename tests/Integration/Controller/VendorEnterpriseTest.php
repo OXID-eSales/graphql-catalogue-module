@@ -93,9 +93,7 @@ class VendorEnterpriseTest extends MultishopTestCase
             [
                 'id' => self::VENDOR_ID,
                 'title' => 'https://fashioncity.com/de',
-                'products' => [
-                    ['id' => '10067ab25bf275b7e68bc0431b204d24']
-                ]
+                'products' => []
             ],
             $result['body']['data']['vendor']
         );
