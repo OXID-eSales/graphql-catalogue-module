@@ -27,12 +27,18 @@ env:
 
 before_install:
     - phpenv config-rm xdebug.ini
+    - "npm install -g npm@^2"
 
 install:
     - composer update $DEFAULT_COMPOSER_FLAGS $DEPENDENCIES
+    - npm install -g @2fd/graphdoc
 
 script:
     - composer test:syntax
     - composer test:lint
     - composer test:static
     - composer test:unit
+
+after_success:
+    - graphdoc -e http://localhost/widget.php?cl=graphql -o ./doc/schema
+    - test -e ~/doc/schema/ && echo file exists || echo file not found
