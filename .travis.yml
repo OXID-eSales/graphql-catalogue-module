@@ -40,5 +40,9 @@ script:
     - composer test:unit
 
 after_success:
-    - graphdoc -e http://localhost/widget.php?cl=graphql -o ./doc/schema
+    - sudo sed -e 's|utf8_unicode_ci|latin1_general_ci|g; s|utf8|latin1|g' --in-place /etc/mysql/my.cnf
+    - cp source/config.inc.php.dist source/config.inc.php
+    - sed -i 's|<dbHost>|localhost|; s|<dbName>|oxideshop|; s|<dbUser>|root|; s|<dbPwd>||; s|<sShopURL>|http://localhost|; s|<sShopDir>|'$TRAVIS_BUILD_DIR'/source|; s|<sCompileDir>|'$TRAVIS_BUILD_DIR'/source/tmp|; s|$this->iDebug = 0|$this->iDebug = 1|' source/config.inc.php
+    - sed -i "s|\$this->edition = ''|\$this->edition = 'CE'|" source/config.inc.php
+    - graphdoc -e http://localhost/modules/oe/graphql-catalogue/graphdocs.php -o ./doc/schema
     - test -e ~/doc/schema/ && echo file exists || echo file not found
