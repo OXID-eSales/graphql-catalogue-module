@@ -44,12 +44,6 @@ class Product extends Base
     {
         $filter = $filter ?? new ProductFilterList();
 
-        // In case user has VIEW_INACTIVE_PRODUCT permissions
-        // return all products including inactive ones
-        if ($this->isAuthorized('VIEW_INACTIVE_PRODUCT')) {
-            $filter = $filter->withActiveFilter(null);
-        }
-
         $products = $this->repository->getByFilter(
             $filter,
             ProductDataType::class,

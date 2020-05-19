@@ -35,14 +35,6 @@ class Vendor extends Base
             throw VendorNotFound::byId($id);
         }
 
-        if ($vendor->isActive()) {
-            return $vendor;
-        }
-
-        if (!$this->isAuthorized('VIEW_INACTIVE_VENDOR')) {
-            throw new InvalidLogin("Unauthorized");
-        }
-
         return $vendor;
     }
 
@@ -53,12 +45,6 @@ class Vendor extends Base
     public function vendors(?VendorFilterList $filter = null): array
     {
         $filter = $filter ?? new VendorFilterList();
-
-        // In case user has VIEW_INACTIVE_VENDOR permissions
-        // return all vendors including inactive
-        if ($this->isAuthorized('VIEW_INACTIVE_VENDOR')) {
-            $filter = $filter->withActiveFilter(null);
-        }
 
         $vendors = $this->repository->getByFilter(
             $filter,
