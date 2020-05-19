@@ -33,14 +33,6 @@ class Category extends Base
             throw CategoryNotFound::byId($id);
         }
 
-        if ($category->isActive()) {
-            return $category;
-        }
-
-        if (!$this->isAuthorized('VIEW_INACTIVE_CATEGORY')) {
-            throw new InvalidLogin("Unauthorized");
-        }
-
         return $category;
     }
 
@@ -52,10 +44,6 @@ class Category extends Base
     public function categories(?CategoryFilterList $filter = null): array
     {
         $filter = $filter ?? new CategoryFilterList();
-
-        if (!$this->isAuthorized('VIEW_INACTIVE_CATEGORY')) {
-            $filter = $filter->withActiveFilter(new BoolFilter(true));
-        }
 
         return $this->repository->getByFilter($filter, CategoryDataType::class);
     }

@@ -90,7 +90,7 @@ class BaseResolver
     {
         return [
             new ProductResolver(),
-            //todo: add more resolvers
+            new CategoryResolver(),
         ];
     }
 }
