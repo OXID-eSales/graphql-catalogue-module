@@ -11,6 +11,8 @@ php:
     - "7.3"
     - "7.4"
 
+services: mysql
+
 cache:
     directories:
         - $HOME/.composer/cache/files
@@ -36,30 +38,36 @@ install:
 script:
     - composer test:syntax
     - composer test:lint
-    - composer test:static
-    - composer test:unit
 
 after_success:
-    - cd vendor
-    - pwd
-    - ls
-    - cd ..
-    - cd ..
-    - pwd
-    - ls
     - sudo sed -e 's|utf8_unicode_ci|latin1_general_ci|g; s|utf8|latin1|g' --in-place /etc/mysql/my.cnf
+    - sudo service mysql restart
+    - pwd
+    - mkdir source && cd source && mkdir tmp && cd ..
+    - cd vendor/oxid-esales/oxideshop-ce
     - cp source/config.inc.php.dist source/config.inc.php
     - sed -i 's|<dbHost>|localhost|; s|<dbName>|oxideshop|; s|<dbUser>|root|; s|<dbPwd>||; s|<sShopURL>|http://localhost|; s|<sShopDir>|'$TRAVIS_BUILD_DIR'/source|; s|<sCompileDir>|'$TRAVIS_BUILD_DIR'/source/tmp|; s|$this->iDebug = 0|$this->iDebug = 1|' source/config.inc.php
     - sed -i "s|\$this->edition = ''|\$this->edition = 'CE'|" source/config.inc.php
-    - graphdoc -e http://localhost/modules/oe/graphql-catalogue/graphdocs.php -o /doc/schema
-    - test -e ~/doc/schema/ && echo file exists || echo file not found
+    - sed -i "s|\$this->sCompileDir = ''|\$this->sCompileDir = '$TRAVIS_BUILD_DIR/source/tmp'|" source/config.inc.php
+    - sed -i "s|\INSTALLATION_ROOT_PATH . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR|\AUTOLOAD_PATH|" source/bootstrap.php
+    - cd $TRAVIS_BUILD_DIR && pwd
+    - sed -i "s|\SET_PATH_HERE_A|\'$TRAVIS_BUILD_DIR/services.yaml'|" var/configuration/configurable_services.yaml
+    - sed -i "s|\SET_PATH_HERE_B|\'$TRAVIS_BUILD_DIR/vendor/oxid-esales/graphql-base/services.yaml'|" var/configuration/configurable_services.yaml
+    - php graphdocs.php
+    - php -S localhost:8080 &
+    - curl http://localhost:8080
+    - curl http://localhost:8080/graphdocs.php
+    - mkdir deploy
+    - graphdoc -e http://localhost:8080/graphdocs.php -o ./deploy/schema
+    - test -e ./deploy/schema && echo file exists || echo file not found
 
 deploy:
     provider: pages
     skip_cleanup: true
     github_token: $jsPrivGithubPage
     keep_history: true
-    local_dir: deploy
+    local_dir: ./deploy/schema
     repo: j-skoczek/j-skoczek.github.io
+    target_branch: master
     on:
         branch: OXDEV-3367-schema-docs-generator-spike

@@ -1,0 +1,3 @@
+imports:
+    - { resource: SET_PATH_HERE_A }
+    - { resource: SET_PATH_HERE_B }
