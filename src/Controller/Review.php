@@ -11,8 +11,8 @@ namespace OxidEsales\GraphQL\Catalogue\Controller;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
-use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
-use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
+use OxidEsales\GraphQL\Base\Service\Authentication;
+use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Catalogue\DataType\Review as ReviewDataType;
 use OxidEsales\GraphQL\Catalogue\DataType\ReviewActivityService;
 use OxidEsales\GraphQL\Catalogue\Exception\ReviewNotFound;
@@ -26,8 +26,8 @@ class Review extends Base
 
     public function __construct(
         Repository $repository,
-        AuthenticationServiceInterface $authenticationService,
-        AuthorizationServiceInterface $authorizationService,
+        Authentication $authenticationService,
+        Authorization $authorizationService,
         ReviewActivityService $reviewActivityService
     ) {
         parent::__construct($repository, $authenticationService, $authorizationService);

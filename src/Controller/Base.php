@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
-use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
-use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
+use OxidEsales\GraphQL\Base\Service\Authentication;
+use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;
 
 abstract class Base
@@ -18,16 +18,16 @@ abstract class Base
     /** @var Repository */
     protected $repository;
 
-    /** @var AuthenticationServiceInterface */
+    /** @var Authentication */
     protected $authenticationService;
 
-    /** @var AuthorizationServiceInterface */
+    /** @var Authorization */
     protected $authorizationService;
 
     public function __construct(
         Repository $repository,
-        AuthenticationServiceInterface $authenticationService,
-        AuthorizationServiceInterface $authorizationService
+        Authentication $authenticationService,
+        Authorization $authorizationService
     ) {
         $this->repository = $repository;
         $this->authenticationService = $authenticationService;

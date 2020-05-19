@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Unit\Controller;
 
-use OxidEsales\GraphQL\Base\Service\AuthenticationService;
-use OxidEsales\GraphQL\Base\Service\AuthorizationService;
+use OxidEsales\GraphQL\Base\Service\Authentication;
+use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Catalogue\Controller\Base;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +23,7 @@ class BaseTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $authorizationService = $this->getMockBuilder(AuthorizationService::class)
+        $authorizationService = $this->getMockBuilder(Authorization::class)
             ->disableOriginalConstructor()
             ->setMethods(['isAllowed'])
             ->getMock();
@@ -31,7 +31,7 @@ class BaseTest extends TestCase
             ->method("isAllowed")
             ->willReturn($allowed);
 
-        $authenticationService = $this->getMockBuilder(AuthenticationService::class)
+        $authenticationService = $this->getMockBuilder(Authentication::class)
             ->disableOriginalConstructor()
             ->setMethods(['isLogged'])
             ->getMock();
