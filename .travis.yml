@@ -44,22 +44,26 @@ script:
 after_success:
     - sudo sed -e 's|utf8_unicode_ci|latin1_general_ci|g; s|utf8|latin1|g' --in-place /etc/mysql/my.cnf
     - sudo service mysql restart
-    - pwd
-    - mkdir source && cd source && mkdir tmp && cd ..
-    - cd vendor/oxid-esales/oxideshop-ce
+    - mkdir $TRAVIS_BUILD_DIR/deploy && mkdir $TRAVIS_BUILD_DIR/source && mkdir $TRAVIS_BUILD_DIR/source/tmp
+    - mkdir $TRAVIS_BUILD_DIR/var && mkdir $TRAVIS_BUILD_DIR/var/configuration
+    - mkdir $TRAVIS_BUILD_DIR/var/configuration/shops && touch $TRAVIS_BUILD_DIR/var/configuration/shops/1.yaml
+    - echo -e "imports:" > $TRAVIS_BUILD_DIR/var/configuration/configurable_services.yaml
+    - echo -n "    - { resource:" >> $TRAVIS_BUILD_DIR/var/configuration/configurable_services.yaml
+    - echo  " SET_PATH_HERE_A }" >> $TRAVIS_BUILD_DIR/var/configuration/configurable_services.yaml
+    - echo -n "    - { resource:" >> $TRAVIS_BUILD_DIR/var/configuration/configurable_services.yaml
+    - echo  " SET_PATH_HERE_B }" >> $TRAVIS_BUILD_DIR/var/configuration/configurable_services.yaml
+    - sed -i "s|\SET_PATH_HERE_A|\'$TRAVIS_BUILD_DIR/services.yaml'|" $TRAVIS_BUILD_DIR/var/configuration/configurable_services.yaml
+    - sed -i "s|\SET_PATH_HERE_B|\'$TRAVIS_BUILD_DIR/vendor/oxid-esales/graphql-base/services.yaml'|" $TRAVIS_BUILD_DIR/var/configuration/configurable_services.yaml
+    - less $TRAVIS_BUILD_DIR/var/configuration/configurable_services.yaml
+    - cd $TRAVIS_BUILD_DIR/vendor/oxid-esales/oxideshop-ce
     - cp source/config.inc.php.dist source/config.inc.php
     - sed -i 's|<dbHost>|localhost|; s|<dbName>|oxideshop|; s|<dbUser>|root|; s|<dbPwd>||; s|<sShopURL>|http://localhost|; s|<sShopDir>|'$TRAVIS_BUILD_DIR'/source|; s|<sCompileDir>|'$TRAVIS_BUILD_DIR'/source/tmp|; s|$this->iDebug = 0|$this->iDebug = 1|' source/config.inc.php
     - sed -i "s|\$this->edition = ''|\$this->edition = 'CE'|" source/config.inc.php
     - sed -i "s|\$this->sCompileDir = ''|\$this->sCompileDir = '$TRAVIS_BUILD_DIR/source/tmp'|" source/config.inc.php
     - sed -i "s|\INSTALLATION_ROOT_PATH . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR|\AUTOLOAD_PATH|" source/bootstrap.php
     - cd $TRAVIS_BUILD_DIR && pwd
-    - sed -i "s|\SET_PATH_HERE_A|\'$TRAVIS_BUILD_DIR/services.yaml'|" var/configuration/configurable_services.yaml
-    - sed -i "s|\SET_PATH_HERE_B|\'$TRAVIS_BUILD_DIR/vendor/oxid-esales/graphql-base/services.yaml'|" var/configuration/configurable_services.yaml
-    - php graphdocs.php
     - php -S localhost:8080 &
-    - curl http://localhost:8080
-    - curl http://localhost:8080/graphdocs.php
-    - mkdir deploy
+    - php graphdocs.php
     - graphdoc -e http://localhost:8080/graphdocs.php -o ./deploy/schema
     - test -e ./deploy/schema && echo file exists || echo file not found
 
