@@ -45,7 +45,7 @@ class ContentRelationService
     {
         $id = (string) $content->getEshopModel()->getCategoryId();
 
-        if (!$id) {
+        if (!$id || $content->getEshopModel()->getType() !== Content::TYPE_CATEGORY) {
             return null;
         }
 

@@ -21,6 +21,8 @@ use DateTimeInterface;
  */
 class Content implements DataType
 {
+    public const TYPE_CATEGORY = 2;
+
     /** @var EshopContentModel */
     private $content;
 

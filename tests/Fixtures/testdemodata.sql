@@ -23,7 +23,13 @@ INSERT INTO oxseo (OXOBJECTID,OXIDENT,OXSHOPID,OXLANG,OXSTDURL,OXSEOURL,OXTYPE,O
 ('a57c56e3ba710eafb2225e98f058d989',	'8cddec2c98b7186e94fea7e0dbfc66ed',	1,	0,	'index.php?cl=vendorlist&amp;cnid=v_a57c56e3ba710eafb2225e98f058d989',	'Nach-Lieferant/www-true-fashion-com/',	'oxvendor',	0,	0,	'',	'2020-01-21 13:04:45'),
 ('a57c56e3ba710eafb2225e98f058d989',	'9c4de227950cb0b7e15e03acc60c704a',	1,	1,	'index.php?cl=vendorlist&amp;cnid=v_a57c56e3ba710eafb2225e98f058d989',	'en/By-distributor/www-true-fashion-com/',	'oxvendor',	0,	0,	'',	'2020-01-21 13:04:43'),
 ('fe07958b49de225bd1dbc7594fb9a6b0',	'6a1bd3d7c1981181b02ef99f5b914cae',	1,	0,	'index.php?cl=vendorlist&amp;cnid=v_fe07958b49de225bd1dbc7594fb9a6b0',	'Nach-Lieferant/https-fashioncity-com-de/',	'oxvendor',	0,	0,	'',	'2020-01-21 13:04:39'),
-('fe07958b49de225bd1dbc7594fb9a6b0',	'b3b9076081cefb087149f241f708e0ae',	1,	1,	'index.php?cl=vendorlist&amp;cnid=v_fe07958b49de225bd1dbc7594fb9a6b0',	'en/By-distributor/https-fashioncity-com-en/',	'oxvendor',	0,	0,	'',	'2020-01-21 13:04:42');
+('fe07958b49de225bd1dbc7594fb9a6b0',	'b3b9076081cefb087149f241f708e0ae',	1,	1,	'index.php?cl=vendorlist&amp;cnid=v_fe07958b49de225bd1dbc7594fb9a6b0',	'en/By-distributor/https-fashioncity-com-en/',	'oxvendor',	0,	0,	'',	'2020-01-21 13:04:42'),
+('2e0f674a78622c5796f9bb36f13078e2',	'ac8213d45bfe3b74cbee755efccd99c6',	1,	1,	'index.php?cl=content&amp;oxloadid=graphqlcontent&amp;oxcid=2e0f674a78622c5796f9bb36f13078e2',	'en/GraphQL-content-EN/',	'oxcontent',	0,	0,	'',	'2020-05-20 11:07:26'),
+('2e0f674a78622c5796f9bb36f13078e2',	'c949ba5cf8caff4f17c9dd0cf8f66762',	1,	0,	'index.php?cl=content&amp;oxloadid=graphqlcontent&amp;oxcid=2e0f674a78622c5796f9bb36f13078e2',	'GraphQL-content-DE/',	'oxcontent',	0,	0,	'',	'2020-05-20 11:07:23'),
+('e6fc3fe89d5da58da9bfcfba451fd365',	'0dc67fa9df7a7c02899ed6e1946f0cf7',	1,	0,	'index.php?cl=content&amp;oxloadid=graphqlcontentwithcategory&amp;oxcid=e6fc3fe89d5da58da9bfcfba451fd365&amp;cnid=943a9ba3050e78b443c16e043ae60ef3',	'Kiteboarding/GraphQL-content-with-category-DE/',	'oxcontent',	0,	0,	'',	'2020-05-20 11:13:42'),
+('e6fc3fe89d5da58da9bfcfba451fd365',	'ab4dfeb43f892c3113b7a342f7b9bb37',	1,	1,	'index.php?cl=content&amp;oxloadid=graphqlcontentwithcategory&amp;oxcid=e6fc3fe89d5da58da9bfcfba451fd365&amp;cnid=943a9ba3050e78b443c16e043ae60ef3',	'en/Kiteboarding/GraphQL-content-with-category-EN/',	'oxcontent',	0,	0,	'',	'2020-05-20 11:13:33'),
+('e3ab0a5f8598f24dbb3a56b30c472844',	'24fc72d20dba2355f4b48ce90d05ce3f',	1,	1,	'index.php?cl=content&amp;oxloadid=graphqlcontentwithoutcategory&amp;oxcid=e3ab0a5f8598f24dbb3a56b30c472844',	'en/GraphQL-content-without-category-EN/',	'oxcontent',	0,	0,	'',	'2020-05-20 11:18:20'),
+('e3ab0a5f8598f24dbb3a56b30c472844',	'60e2b80f57c6f4a1c7e5e1301b027388',	1,	0,	'index.php?cl=content&amp;oxloadid=graphqlcontentwithoutcategory&amp;oxcid=e3ab0a5f8598f24dbb3a56b30c472844',	'GraphQL-content-without-category-DE/',	'oxcontent',	0,	0,	'',	'2020-05-20 11:18:23');
 
 UPDATE `oxcategories` SET `OXACTIVE` = 0, `OXACTIVE_1` = 0, `OXACTIVE_2` = 0, `OXACTIVE_3` = 0 WHERE `OXID` = 'd8665fef35f4d528e92c3d664f4a00c0';
 
@@ -101,3 +107,9 @@ INSERT INTO `oxactions` (`OXID`, `OXSHOPID`, `OXTYPE`, `OXSORT`, `OXACTIVE`) VAL
 ('_test_group_banner', 1, 3, 6, 1);
 INSERT INTO `oxobject2action` (`OXACTIONID`, `OXOBJECTID`, `OXCLASS`) VALUES
 ('_test_group_banner','oxidadmin', 'oxgroups');
+
+# Contents with different category values
+INSERT INTO `oxcontents` (`OXID`, `OXLOADID`, `OXSHOPID`, `OXSNIPPET`, `OXTYPE`, `OXACTIVE`, `OXACTIVE_1`, `OXPOSITION`, `OXTITLE`, `OXCONTENT`, `OXTITLE_1`, `OXCONTENT_1`, `OXACTIVE_2`, `OXTITLE_2`, `OXCONTENT_2`, `OXACTIVE_3`, `OXTITLE_3`, `OXCONTENT_3`, `OXCATID`, `OXFOLDER`, `OXTERMVERSION`, `OXTIMESTAMP`) VALUES
+('2e0f674a78622c5796f9bb36f13078e2',	'graphqlcontent',	1,	1,	0,	1,	1,	'',	'GraphQL content DE',	'',	'GraphQL content EN',	'',	0,	'',	'',	0,	'',	'',	NULL,	'CMSFOLDER_USERINFO',	'',	'2020-05-20 11:08:32'),
+('e6fc3fe89d5da58da9bfcfba451fd365',	'graphqlcontentwithcategory',	1,	0,	2,	1,	1,	'',	'GraphQL content with category DE',	'Content DE',	'GraphQL content with category EN',	'',	0,	'',	'',	0,	'',	'',	'0f4fb00809cec9aa0910aa9c8fe36751',	'CMSFOLDER_USERINFO',	'',	'2020-05-20 11:13:29'),
+('e3ab0a5f8598f24dbb3a56b30c472844',	'graphqlcontentwithoutcategory',	1,	1,	0,	1,	1,	'',	'GraphQL content without category DE',	'',	'GraphQL content without category EN',	'',	0,	'',	'',	0,	'',	'',	'943a9ba3050e78b443c16e043ae60ef3',	'CMSFOLDER_USERINFO',	'',	'2020-05-20 11:18:01');

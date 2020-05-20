@@ -13,7 +13,7 @@ use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
 final class ContentTest extends TokenTestCase
 {
-    private const ACTIVE_CONTENT = "1074279e67a85f5b1.96907412"; // how to order
+    private const ACTIVE_CONTENT = "e6fc3fe89d5da58da9bfcfba451fd365";
     private const INACTIVE_CONTENT  = "67c5bcf75ee346bd9566bce6c8"; // credits
     private const ACTIVE_CONTENT_AGB = "2eb4676806a3d2e87.06076523"; //agb
 
@@ -45,13 +45,13 @@ final class ContentTest extends TokenTestCase
         $content = $result['body']['data']['content'];
         $this->assertSame(self::ACTIVE_CONTENT, $content['id']);
         $this->assertTrue($content['active']);
-        $this->assertEquals('Wie bestellen?', $content['title']);
+        $this->assertEquals('GraphQL content with category DE', $content['title']);
         $this->assertEquals('CMSFOLDER_USERINFO', $content['folder']);
         $this->assertEmpty($content['version']);
-        $this->assertEquals($content['category']['id'], '30e44ab83fdee7564.23264141');
-        $this->assertEquals($content['category']['title'], 'Bekleidung');
-        $this->assertRegExp('@https?://.*/Wie-bestellen/$@', $content['seo']['url']);
-        $this->assertContains('Wenn Sie eine Bestellung aufgeben', $content['content']);
+        $this->assertEquals($content['category']['id'], '0f4fb00809cec9aa0910aa9c8fe36751');
+        $this->assertEquals($content['category']['title'], 'Kites');
+        $this->assertRegExp('@https?://.*/GraphQL-content-with-category-DE/$@', $content['seo']['url']);
+        $this->assertContains('Content DE', $content['content']);
 
         $this->assertEmpty(array_diff(array_keys($content), [
             'id',
@@ -158,7 +158,7 @@ final class ContentTest extends TokenTestCase
             $result['status']
         );
         $this->assertCount(
-            46,
+            49,
             $result['body']['data']['contents']
         );
     }
@@ -175,7 +175,7 @@ final class ContentTest extends TokenTestCase
 
         $this->assertEquals(200, $result['status']);
         $this->assertCount(
-            47,
+            50,
             $result['body']['data']['contents']
         ); //for admin token we get the inactive one as well
     }
@@ -213,7 +213,7 @@ final class ContentTest extends TokenTestCase
 
         $this->assertEquals(200, $result['status']);
         $this->assertCount(
-            40,
+            43,
             $result['body']['data']['contents']
         );
     }

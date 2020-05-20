@@ -13,7 +13,7 @@ use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
 final class ContentMultiLanguageTest extends TestCase
 {
-    private const ACTIVE_CONTENT = '1074279e67a85f5b1.96907412';
+    private const ACTIVE_CONTENT = 'e6fc3fe89d5da58da9bfcfba451fd365';
 
     /**
      * @dataProvider providerGetContentMultiLanguage
@@ -58,15 +58,15 @@ final class ContentMultiLanguageTest extends TestCase
         return [
             'de' => [
                 'languageId' => '0',
-                'title'      => 'Wie bestellen?',
-                'categoryTitle' => 'Bekleidung',
-                'seo' => 'Wie-bestellen'
+                'title' => 'GraphQL content with category DE',
+                'categoryTitle' => 'Kites',
+                'seo' => 'GraphQL-content-with-category-DE'
             ],
             'en' => [
                 'languageId' => '1',
-                'title'      => 'How to order?',
-                'categoryTitle' => 'Gear',
-                'seo' => 'How-to-order'
+                'title' => 'GraphQL content with category EN',
+                'categoryTitle' => 'Kites',
+                'seo' => 'GraphQL-content-with-category-EN'
             ],
         ];
     }
