@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
@@ -69,6 +70,8 @@ class RatingRelationService
                 );
             }
         } catch (NotFound $e) {
+            return null;
+        } catch (InvalidLogin $e) {
             return null;
         }
 

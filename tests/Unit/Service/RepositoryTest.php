@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Unit\Service;
 
+use OxidEsales\GraphQL\Catalogue\Resolver\BaseResolver;
 use PHPUnit\Framework\TestCase;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
@@ -17,7 +18,8 @@ class RepositoryTest extends TestCase
     {
         $this->expectException(\Error::class);
         $repository = new Repository(
-            $this->createMock(QueryBuilderFactoryInterface::class)
+            $this->createMock(QueryBuilderFactoryInterface::class),
+            $this->createMock(BaseResolver::class)
         );
         $repository->getById(
             'foo',
@@ -29,7 +31,8 @@ class RepositoryTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $repository = new Repository(
-            $this->createMock(QueryBuilderFactoryInterface::class)
+            $this->createMock(QueryBuilderFactoryInterface::class),
+            $this->createMock(BaseResolver::class)
         );
         $repository->getById(
             'foo',
@@ -41,7 +44,8 @@ class RepositoryTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $repository = new Repository(
-            $this->createMock(QueryBuilderFactoryInterface::class)
+            $this->createMock(QueryBuilderFactoryInterface::class),
+            $this->createMock(BaseResolver::class)
         );
         $repository->getById(
             'foo',
@@ -53,7 +57,8 @@ class RepositoryTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $repository = new Repository(
-            $this->createMock(QueryBuilderFactoryInterface::class)
+            $this->createMock(QueryBuilderFactoryInterface::class),
+            $this->createMock(BaseResolver::class)
         );
         $repository->getByFilter(
             new EmptyFilterList(),

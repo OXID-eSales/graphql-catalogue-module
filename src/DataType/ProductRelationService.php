@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
 use OxidEsales\Eshop\Application\Model\Attribute;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
@@ -135,7 +136,10 @@ class ProductRelationService
             );
         } catch (NotFound $e) {
             return null;
+        } catch (InvalidLogin $e) {
+            return null;
         }
+
         if (!$bundleProduct->getEshopModel()->isVisible()) {
             return null;
         }

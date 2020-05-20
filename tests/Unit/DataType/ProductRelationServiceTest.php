@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Unit\DataType;
 
+use OxidEsales\GraphQL\Catalogue\Resolver\BaseResolver;
 use PHPUnit\Framework\TestCase;
-use OxidEsales\GraphQL\Catalogue\DataType\Category;
 use OxidEsales\GraphQL\Catalogue\DataType\Product;
 use OxidEsales\Eshop\Application\Model\Article as EshopArticleModel;
 use OxidEsales\Eshop\Application\Model\Category as EshopCategoryModel;
@@ -22,7 +22,8 @@ final class ProductRelationServiceTest extends TestCase
     {
         $productRelationService = new ProductRelationService(
             new Repository(
-                $this->createMock(QueryBuilderFactoryInterface::class)
+                $this->createMock(QueryBuilderFactoryInterface::class),
+                $this->createMock(BaseResolver::class)
             )
         );
         $noCategoryProductModelStub = new class extends EshopArticleModel {
@@ -49,7 +50,8 @@ final class ProductRelationServiceTest extends TestCase
     {
         $productRelationService = new ProductRelationService(
             new Repository(
-                $this->createMock(QueryBuilderFactoryInterface::class)
+                $this->createMock(QueryBuilderFactoryInterface::class),
+                $this->createMock(BaseResolver::class)
             )
         );
         $emptyCategoryProductModelStub = new class extends EshopArticleModel {
