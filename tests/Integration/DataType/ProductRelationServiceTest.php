@@ -23,6 +23,7 @@ final class ProductRelationServiceTest extends TokenTestCase
     private const ACTIVE_PRODUCT_WITH_ACCESSORIES = '05848170643ab0deb9914566391c0c63';
     private const ACTIVE_PRODUCT_WITH_UNITNAME = 'f33d5bcc7135908fd36fc736c643aa1c';
     private const ACTIVE_PRODUCT_WITHOUT_CROSSSELLING = 'f33d5bcc7135908fd36fc736c643aa1c';
+    private const INACTIVE_CROSSSELLING_PRODUCT = 'b5685a5230f5050475f214b4bb0e239b';
     private const ACTIVE_PRODUCT_WITH_SELECTION_LISTS = '058de8224773a1d5fd54d523f0c823e0';
     private const ACTIVE_PRODUCT_WITH_RESTOCK_DATE = 'f4fe754e1692b9f79f2a7b1a01bb8dee';
     private const ACTIVE_PRODUCT_WITH_SCALE_PRICES = 'dc53d3c0ca2ae7c38bf51f3410da0bf8';
@@ -332,6 +333,7 @@ final class ProductRelationServiceTest extends TokenTestCase
                 id
                 crossSelling {
                     id
+                    active
                 }
             }
         }');
@@ -344,6 +346,14 @@ final class ProductRelationServiceTest extends TokenTestCase
         $this->assertCount(
             3,
             $result['body']['data']['product']['crossSelling']
+        );
+
+        $this->assertSame(
+            [
+                'id' => self::INACTIVE_CROSSSELLING_PRODUCT,
+                'active' => true
+            ],
+            $result['body']['data']['product']['crossSelling'][0]
         );
     }
 
@@ -366,6 +376,48 @@ final class ProductRelationServiceTest extends TokenTestCase
         $this->assertSame(
             [],
             $result['body']['data']['product']['crossSelling']
+        );
+    }
+
+    public function testInactiveCrossSellingRelationWithToken()
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+
+        $queryBuilder = $queryBuilderFactory->create();
+        $queryBuilder->update('oxarticles')
+            ->set('oxactive', 0)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::INACTIVE_CROSSSELLING_PRODUCT)
+            ->execute();
+
+        $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT . '") {
+                id
+                crossSelling {
+                    id
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            3,
+            $result['body']['data']['product']['crossSelling']
+        );
+
+        $this->assertSame(
+            [
+                'id' => self::INACTIVE_CROSSSELLING_PRODUCT,
+                'active' => false
+            ],
+            $result['body']['data']['product']['crossSelling'][0]
         );
     }
 
@@ -575,6 +627,46 @@ final class ProductRelationServiceTest extends TokenTestCase
                      ->setParameter(':OXID', self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM)
                      ->setParameter(':BUNDLEID', '')
                      ->execute();
+    }
+
+    public function testInactiveBundleProductsWithToken()
+    {
+        $this->prepareToken();
+
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+
+        $queryBuilder = $queryBuilderFactory->create();
+        $queryBuilder->update('oxarticles')
+            ->set('oxactive', 0)
+            ->set('oxbundleid', ':BUNDLEID')
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM)
+            ->setParameter(':BUNDLEID', self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM)
+            ->execute();
+
+        $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM . '") {
+                id
+                bundleProduct {
+                    id
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertSame([
+            'id'     => self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM,
+            'active' => false
+        ],
+            $result['body']['data']['product']['bundleProduct']
+        );
     }
 
     /**
