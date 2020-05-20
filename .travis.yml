@@ -35,6 +35,7 @@ before_install:
 install:
     - composer update $DEFAULT_COMPOSER_FLAGS $DEPENDENCIES
     - npm install -g @2fd/graphdoc
+    - pip install --user travis-sphinx
 
 script:
     - composer test:syntax
@@ -51,7 +52,7 @@ deploy:
     skip_cleanup: true
     github_token: $jsPrivGithubPage
     keep_history: true
-    local_dir: ./deploy/schema
+    local_dir: ./deploy
     repo: j-skoczek/j-skoczek.github.io
     target_branch: master
     on:

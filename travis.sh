@@ -41,5 +41,7 @@ sed -i "s|\INSTALLATION_ROOT_PATH . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_S
 cd $TRAVIS_BUILD_DIR && pwd
 php -S localhost:8080 &
 php graphdocs.php
+#generate sphinx documentation using travis-sphinx
+travis-sphinx --outdir=./deploy build
+#generate graphql schema documentation using graphdoc
 graphdoc -e http://localhost:8080/graphdocs.php -o ./deploy/schema
-test -e ./deploy/schema && echo file exists || echo file not found
