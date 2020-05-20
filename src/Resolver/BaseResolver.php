@@ -12,21 +12,21 @@ namespace OxidEsales\GraphQL\Catalogue\Resolver;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OxidEsales\EshopCommunity\Core\Model\BaseModel;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
-use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
+use OxidEsales\GraphQL\Base\Service\Authentication;
+use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Catalogue\DataType\DataType;
 
 class BaseResolver
 {
-    /** @var AuthenticationServiceInterface */
+    /** @var Authentication */
     protected $authenticationService;
 
-    /** @var AuthorizationServiceInterface */
+    /** @var Authorization */
     protected $authorizationService;
 
     public function __construct(
-        AuthenticationServiceInterface $authenticationService,
-        AuthorizationServiceInterface $authorizationService
+        Authentication $authenticationService,
+        Authorization $authorizationService
     ) {
         $this->authenticationService = $authenticationService;
         $this->authorizationService = $authorizationService;
