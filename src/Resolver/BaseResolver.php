@@ -91,6 +91,7 @@ class BaseResolver
         return [
             new ProductResolver(),
             new CategoryResolver(),
+            new VendorResolver(),
         ];
     }
 }
