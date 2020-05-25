@@ -661,10 +661,11 @@ final class ProductRelationServiceTest extends TokenTestCase
             $result
         );
 
-        $this->assertSame([
-            'id'     => self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM,
-            'active' => false
-        ],
+        $this->assertSame(
+            [
+                'id'     => self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM,
+                'active' => false
+            ],
             $result['body']['data']['product']['bundleProduct']
         );
     }

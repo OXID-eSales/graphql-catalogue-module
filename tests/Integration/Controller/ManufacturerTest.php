@@ -9,11 +9,12 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
-use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
-class ManufacturerTest extends TestCase
+class ManufacturerTest extends TokenTestCase
 {
-
     private const ACTIVE_MANUFACTURER = "oiaf6ab7e12e86291e86dd3ff891fe40";
     private const ACTIVE_MANUFACTURER_WITHOUT_PRODUCTS = "3a909e7c886063857e86982c7a3c5b84";
     private const INACTIVE_MANUFACTURER  = "dc50589ad69b6ec71721b25bdd403171";
@@ -328,6 +329,69 @@ class ManufacturerTest extends TestCase
                 'id' => self::PRODUCT_RELATED_TO_ACTIVE_MANUFACTURER
             ],
             $result['body']['data']['manufacturer']['products'][0]
+        );
+    }
+
+    public function getManufacturerProductDataProvider()
+    {
+        return [
+            [
+                'withToken'             => false,
+                'expectedProductsCount' => 1,
+                'active'                => true,
+            ], [
+                'withToken'             => true,
+                'expectedProductsCount' => 2,
+                'active'                => false,
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getManufacturerProductDataProvider
+     */
+    public function testManufacturerProductsWithToken($withToken, $productCount, $active)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        // set product to inactive
+        $queryBuilder
+            ->update('oxarticles')
+            ->set('oxactive', 0)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::PRODUCT_RELATED_TO_ACTIVE_MANUFACTURER)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            manufacturer(id: "' . self::ACTIVE_MANUFACTURER . '") {
+                id
+                products {
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            $productCount,
+            $result['body']['data']['manufacturer']['products']
+        );
+
+        $productStatus = $result['body']['data']['manufacturer']['products'][0]['active'];
+        $this->assertSame(
+            $active,
+            $productStatus
         );
     }
 
