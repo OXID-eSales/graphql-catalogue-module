@@ -45,3 +45,5 @@ php graphdocs.php
 travis-sphinx --outdir=./deploy build
 #generate graphql schema documentation using graphdoc
 graphdoc -e http://localhost:8080/graphdocs.php -o ./deploy/schema
+#generate graphql schema documentation using mhallin/graphql-docs
+graphql-docs-gen http://localhost:8080/graphdocs.php /deploy/graphql-docs/documentation.html

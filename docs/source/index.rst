@@ -8,6 +8,7 @@ Welcome to asd12's documentation!
 
 
 `Schema documentation <https://j-skoczek.github.io/schema/index.html>`_
+`Schema documentation generated using mhallin/graphql-docs <https://j-skoczek.github.io/graphql-docs/documentation.html>`_
 
 .. toctree::
    :maxdepth: 2
