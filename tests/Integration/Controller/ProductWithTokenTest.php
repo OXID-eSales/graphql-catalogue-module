@@ -96,7 +96,7 @@ final class ProductWithTokenTest extends TokenTestCase
         $this->assertEquals(200, $result['status']);
 
         $this->assertCount(
-            52,
+            54,
             $result['body']['data']['products']
         );
     }

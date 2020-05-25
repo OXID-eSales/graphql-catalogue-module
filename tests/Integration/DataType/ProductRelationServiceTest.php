@@ -27,7 +27,9 @@ final class ProductRelationServiceTest extends TokenTestCase
     private const ACTIVE_PRODUCT_WITH_RESTOCK_DATE = 'f4fe754e1692b9f79f2a7b1a01bb8dee';
     private const ACTIVE_PRODUCT_WITH_SCALE_PRICES = 'dc53d3c0ca2ae7c38bf51f3410da0bf8';
     private const ACTIVE_PRODUCT_WITH_BUNDLE_ITEM = 'dc53d3c0ca2ae7c38bf51f3410da0bf8';
+    private const ACTIVE_PRODUCT_WITHOUT_MANUFACTURER = 'f33d5bcc7135908fd36fc736c643aa1c';
     private const INACTIVE_PRODUCT  = '09602cddb5af0aba745293d08ae6bcf6';
+    private const ACTIVE_MAIN_BUNDLE_PRODUCT = '_test_active_main_bundle';
 
     public function testGetAccessoriesRelation()
     {
@@ -389,6 +391,21 @@ final class ProductRelationServiceTest extends TokenTestCase
         );
     }
 
+    public function testGetProductWithoutManufacturerRelation()
+    {
+        $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT_WITHOUT_MANUFACTURER . '") {
+                id
+                manufacturer {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(200, $result);
+        $this->assertNull($result['body']['data']['product']['manufacturer']);
+    }
+
     public function testGetNoProductBundleItemRelation()
     {
         $config = Registry::getConfig();
@@ -492,6 +509,27 @@ final class ProductRelationServiceTest extends TokenTestCase
                      ->setParameter(':OXID', self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM)
                      ->setParameter(':BUNDLEID', '')
                      ->execute();
+    }
+
+    public function testGetInvisibleProductBundleItemRelation()
+    {
+        $this->prepareToken();
+
+        $result = $this->query('query {
+            product (id: "' . self::ACTIVE_MAIN_BUNDLE_PRODUCT . '") {
+                id
+                bundleProduct {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertNull($result['body']['data']['product']['bundleProduct']);
     }
 
     public function testGetExistingProductBundleItemRelation()

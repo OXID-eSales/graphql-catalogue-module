@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
-use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
+use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
-class PromotionTest extends TestCase
+class PromotionTest extends TokenTestCase
 {
 
     private const ACTIVE_PROMOTION = "test_active_promotion_1";
@@ -71,6 +71,31 @@ class PromotionTest extends TestCase
         $this->assertResponseStatus(
             401,
             $result
+        );
+    }
+
+    public function testGetSingleInactivePromotionWithToken()
+    {
+        $this->prepareToken();
+
+        $result = $this->query('query {
+            promotion (id: "' . self::INACTIVE_PROMOTION . '") {
+                id
+                active
+                title
+                text
+            }
+        }');
+
+        $this->assertResponseStatus(200, $result);
+        $this->assertEquals(
+            [
+                'id' => self::INACTIVE_PROMOTION,
+                'active' => false,
+                'title' => 'Upcoming promotion EN',
+                'text' => 'Long description 3 EN',
+            ],
+            $result['body']['data']['promotion']
         );
     }
 
