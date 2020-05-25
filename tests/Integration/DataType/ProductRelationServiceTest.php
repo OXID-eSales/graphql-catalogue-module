@@ -379,48 +379,6 @@ final class ProductRelationServiceTest extends TokenTestCase
         );
     }
 
-    public function testInactiveCrossSellingRelationWithToken()
-    {
-        $queryBuilderFactory = ContainerFactory::getInstance()
-            ->getContainer()
-            ->get(QueryBuilderFactoryInterface::class);
-
-        $queryBuilder = $queryBuilderFactory->create();
-        $queryBuilder->update('oxarticles')
-            ->set('oxactive', 0)
-            ->where('OXID = :OXID')
-            ->setParameter(':OXID', self::INACTIVE_CROSSSELLING_PRODUCT)
-            ->execute();
-
-        $result = $this->query('query {
-            product (id: "' . self::ACTIVE_PRODUCT . '") {
-                id
-                crossSelling {
-                    id
-                    active
-                }
-            }
-        }');
-
-        $this->assertResponseStatus(
-            200,
-            $result
-        );
-
-        $this->assertCount(
-            3,
-            $result['body']['data']['product']['crossSelling']
-        );
-
-        $this->assertSame(
-            [
-                'id' => self::INACTIVE_CROSSSELLING_PRODUCT,
-                'active' => false
-            ],
-            $result['body']['data']['product']['crossSelling'][0]
-        );
-    }
-
     public function testGetProductManufacturerRelation()
     {
          $result = $this->query('query {

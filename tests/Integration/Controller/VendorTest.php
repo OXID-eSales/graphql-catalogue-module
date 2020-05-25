@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 use TheCodingMachine\GraphQLite\Types\DateTimeType;
 
@@ -16,6 +18,7 @@ final class VendorTest extends TokenTestCase
 {
     private const ACTIVE_VENDOR = "a57c56e3ba710eafb2225e98f058d989";
     private const INACTIVE_VENDOR  = "05833e961f65616e55a2208c2ed7c6b8";
+    private const PRODUCT_RELATED_TO_ACTIVE_VENDOR  = "531b537118f5f4d7a427cdb825440922";
 
     public function testGetSingleActiveVendor()
     {
@@ -270,6 +273,69 @@ final class VendorTest extends TokenTestCase
                 ['title' => 'Kuyichi Jeans KYLE']
             ],
             $products
+        );
+    }
+
+    public function getVendorProductsDataProvider()
+    {
+        return [
+            [
+                'withToken'             => false,
+                'expectedProductsCount' => 12,
+                'active'                => true,
+            ], [
+                'withToken'             => true,
+                'expectedProductsCount' => 13,
+                'active'                => false,
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getVendorProductsDataProvider
+     */
+    public function testVendorProductsWithToken($withToken, $productCount, $active)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        // set product to inactive
+        $queryBuilder
+            ->update('oxarticles')
+            ->set('oxactive', 0)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::PRODUCT_RELATED_TO_ACTIVE_VENDOR)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            vendor(id: "' . self::ACTIVE_VENDOR . '") {
+                id
+                products {
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            $productCount,
+            $result['body']['data']['vendor']['products']
+        );
+
+        $productStatus = $result['body']['data']['vendor']['products'][0]['active'];
+        $this->assertSame(
+            $active,
+            $productStatus
         );
     }
 }
