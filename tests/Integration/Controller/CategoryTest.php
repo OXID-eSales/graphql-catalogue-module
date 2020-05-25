@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
 final class CategoryTest extends TokenTestCase
@@ -18,6 +20,7 @@ final class CategoryTest extends TokenTestCase
     private const CATEGORY_WITHOUT_CHILDREN  = "0f4270b89fbef1481958381410a0dbca";
     private const CATEGORY_WITH_CHILDREN  = "943173edecf6d6870a0f357b8ac84d32";
     private const CATEGORY_WITH_PRODUCTS  = "0f4fb00809cec9aa0910aa9c8fe36751";
+    private const PRODUCT_RELATED_TO_ACTIVE_CATEGORY = 'b56369b1fc9d7b97f9c5fc343b349ece';
 
     public function testGetSingleActiveCategory()
     {
@@ -468,6 +471,69 @@ final class CategoryTest extends TokenTestCase
         $this->assertCount(
             12,
             $products
+        );
+    }
+
+    public function getCategoryProductListDataProvider()
+    {
+        return [
+            [
+                'withToken'             => false,
+                'expectedProductsCount' => 11,
+                'active'                => true,
+            ], [
+                'withToken'             => true,
+                'expectedProductsCount' => 12,
+                'active'                => false,
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getCategoryProductListDataProvider
+     */
+    public function testCategoryProductListWithToken($withToken, $productCount, $active)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        // set product to inactive
+        $queryBuilder
+            ->update('oxarticles')
+            ->set('oxactive', 0)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::PRODUCT_RELATED_TO_ACTIVE_CATEGORY)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            category (id: "' . self::CATEGORY_WITH_PRODUCTS . '") {
+                title
+                products {
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            $productCount,
+            $result['body']['data']['category']['products']
+        );
+
+        $productStatus = $result['body']['data']['category']['products'][0]['active'];
+        $this->assertSame(
+            $active,
+            $productStatus
         );
     }
 
