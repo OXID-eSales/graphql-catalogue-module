@@ -36,7 +36,6 @@ install:
     - composer update $DEFAULT_COMPOSER_FLAGS $DEPENDENCIES
     - npm install -g @2fd/graphdoc
     - pip install --user travis-sphinx
-    - npm install -g graphql-docs
 
 script:
     - composer test:syntax
