@@ -10,12 +10,15 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
 final class ReviewTest extends TokenTestCase
 {
     private const ACTIVE_REVIEW = '94415306f824dc1aa2fce0dc4f12783d';
     private const INACTIVE_REVIEW = 'bcb341381858129f7412beb11c827a25';
+    private const REVIEW_PRODUCT = 'b56597806428de2f58b1c6c7d3e0e093';
     private const WRONG_USER = '_test_wrong_user';
     private const WRONG_PRODUCT = '_test_wrong_product';
     private const WRONG_OBJECT_TYPE = '_test_wrong_object_type';
@@ -60,7 +63,7 @@ final class ReviewTest extends TokenTestCase
                 'lastName' => 'Muster'
             ],
             'product' => [
-                'id' => 'b56597806428de2f58b1c6c7d3e0e093',
+                'id' => self::REVIEW_PRODUCT,
                 'title' => 'Kite NBK EVO 2010'
             ]
         ], $review);
@@ -197,6 +200,65 @@ final class ReviewTest extends TokenTestCase
         return [
             [self::WRONG_PRODUCT],
             [self::WRONG_OBJECT_TYPE]
+        ];
+    }
+
+    /**
+     * @dataProvider getReviewProductDataProvider
+     */
+    public function testReviewProductWithToken($withToken, $product)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        // set product to inactive
+        $queryBuilder
+            ->update('oxarticles')
+            ->set('oxactive', 0)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::REVIEW_PRODUCT)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            review(id: "' . self::ACTIVE_REVIEW . '") {
+                id
+                product {
+                    id
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertSame([
+            'id' => self::ACTIVE_REVIEW,
+            'product' => $product
+        ], $result['body']['data']['review']);
+    }
+
+    public function getReviewProductDataProvider()
+    {
+        return [
+            [
+                'withToken'       => false,
+                'expectedProduct' => null,
+            ], [
+                'withToken'       => true,
+                'expectedProduct' => [
+                    'id'     => self::REVIEW_PRODUCT,
+                    'active' => false
+                ],
+            ]
         ];
     }
 }
