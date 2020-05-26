@@ -138,6 +138,7 @@ final class ProductTest extends TokenTestCase
                 insert
                 freeShipping
                 timestamp
+                wishedPriceDisabled
             }
         }');
 
@@ -268,6 +269,7 @@ final class ProductTest extends TokenTestCase
         );
         $this->assertEquals('german product seo description', $product['seo']['description']);
         $this->assertEquals('german product seo keywords', $product['seo']['keywords']);
+        $this->assertFalse($product['wishedPriceDisabled']);
     }
 
     public function testGetSingleInactiveProductWithoutToken()
