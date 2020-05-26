@@ -142,7 +142,7 @@ final class RatingTest extends TokenTestCase
     /**
      * @dataProvider getRatingProductDataProvider
      */
-    public function testReviewProductWithToken($withToken, $product)
+    public function testRatingProductWithToken($withToken, $product)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()

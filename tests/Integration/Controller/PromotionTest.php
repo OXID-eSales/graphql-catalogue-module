@@ -13,7 +13,6 @@ use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
 class PromotionTest extends TokenTestCase
 {
-
     private const ACTIVE_PROMOTION = "test_active_promotion_1";
     private const INACTIVE_PROMOTION  = "test_inactive_promotion_1";
 
@@ -99,6 +98,31 @@ class PromotionTest extends TokenTestCase
         );
     }
 
+    public function testGetSingleInactiveProductWithToken()
+    {
+        $this->prepareToken();
+
+        $result = $this->query('query {
+            promotion (id: "' . self::INACTIVE_PROMOTION . '") {
+                id
+                active
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertEquals(
+            [
+                'id'     => self::INACTIVE_PROMOTION,
+                'active' => false
+            ],
+            $result['body']['data']['promotion']
+        );
+    }
+
     public function testGet404ForSingleNonExistingPromotion()
     {
         $result = $this->query('query {
@@ -132,6 +156,25 @@ class PromotionTest extends TokenTestCase
         // fixtures have 2 active promotions
         $this->assertEquals(
             2,
+            count($result['body']['data']['promotions'])
+        );
+    }
+
+    public function testGetPromotionListWithToken()
+    {
+        $result = $this->query('query{
+            promotions {
+                id
+            }
+        }');
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        // fixtures have 2 active and 4 inactive promotions
+        $this->assertEquals(
+            6,
             count($result['body']['data']['promotions'])
         );
     }
