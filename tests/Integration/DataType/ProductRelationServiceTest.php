@@ -587,47 +587,6 @@ final class ProductRelationServiceTest extends TokenTestCase
                      ->execute();
     }
 
-    public function testInactiveBundleProductsWithToken()
-    {
-        $this->prepareToken();
-
-        $queryBuilderFactory = ContainerFactory::getInstance()
-            ->getContainer()
-            ->get(QueryBuilderFactoryInterface::class);
-
-        $queryBuilder = $queryBuilderFactory->create();
-        $queryBuilder->update('oxarticles')
-            ->set('oxactive', 0)
-            ->set('oxbundleid', ':BUNDLEID')
-            ->where('OXID = :OXID')
-            ->setParameter(':OXID', self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM)
-            ->setParameter(':BUNDLEID', self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM)
-            ->execute();
-
-        $result = $this->query('query {
-            product (id: "' . self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM . '") {
-                id
-                bundleProduct {
-                    id
-                    active
-                }
-            }
-        }');
-
-        $this->assertResponseStatus(
-            200,
-            $result
-        );
-
-        $this->assertSame(
-            [
-                'id'     => self::ACTIVE_PRODUCT_WITH_BUNDLE_ITEM,
-                'active' => false
-            ],
-            $result['body']['data']['product']['bundleProduct']
-        );
-    }
-
     /**
      * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductScalePrice
      * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService

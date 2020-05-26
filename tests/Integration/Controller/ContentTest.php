@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
 final class ContentTest extends TokenTestCase
@@ -16,6 +18,7 @@ final class ContentTest extends TokenTestCase
     private const ACTIVE_CONTENT = "e6fc3fe89d5da58da9bfcfba451fd365";
     private const INACTIVE_CONTENT  = "67c5bcf75ee346bd9566bce6c8"; // credits
     private const ACTIVE_CONTENT_AGB = "2eb4676806a3d2e87.06076523"; //agb
+    private const CATEGORY_RELATED_TO_ACTIVE_CONTENT  = "0f4fb00809cec9aa0910aa9c8fe36751";
 
     public function testGetSingleActiveContent()
     {
@@ -46,7 +49,7 @@ final class ContentTest extends TokenTestCase
         $this->assertSame(self::ACTIVE_CONTENT, $content['id']);
         $this->assertTrue($content['active']);
         $this->assertEquals('GraphQL content with category DE', $content['title']);
-        $this->assertEquals('CMSFOLDER_USERINFO', $content['folder']);
+        $this->assertEquals('CMSFOLDER_CATEGORY', $content['folder']);
         $this->assertEmpty($content['version']);
         $this->assertEquals($content['category']['id'], '0f4fb00809cec9aa0910aa9c8fe36751');
         $this->assertEquals($content['category']['title'], 'Kites');
@@ -235,5 +238,131 @@ final class ContentTest extends TokenTestCase
             0,
             count($result['body']['data']['contents'])
         );
+    }
+
+    public function getProductCategoryDataProvider()
+    {
+        return [
+            [
+                'withToken' => false
+            ], [
+                'withToken' => true
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getProductCategoryDataProvider
+     */
+    public function testContentCategoryWithToken($withToken)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        // set product to inactive
+        $queryBuilder
+            ->update('oxcategories')
+            ->set('oxactive', 0)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::CATEGORY_RELATED_TO_ACTIVE_CONTENT)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            content(id: "' . self::ACTIVE_CONTENT . '") {
+                id
+                category {
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $category = $result['body']['data']['content']['category'];
+        if (!$withToken) {
+            $this->assertNull($category);
+        } else {
+            $this->assertSame(
+                [
+                    'active' => false
+                ],
+                $category
+            );
+        }
+    }
+
+    public function getContentsCategoryDataProvider()
+    {
+        return [
+            [
+                'withToken' => false
+            ], [
+                'withToken' => true
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getContentsCategoryDataProvider
+     */
+    public function testContentsCategoryWithToken($withToken)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        // set product to inactive
+        $queryBuilder
+            ->update('oxcategories')
+            ->set('oxactive', 0)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::CATEGORY_RELATED_TO_ACTIVE_CONTENT)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            contents (filter: {
+                folder: {
+                    equals: "CMSFOLDER_CATEGORY"
+                }
+            }) {
+                id
+                category {
+                    id
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $contentCategory = $result['body']['data']['contents'][0]['category'];
+        if (!$withToken) {
+            $this->assertNull($contentCategory);
+        } else {
+            $this->assertSame(
+                [
+                    'id'     => self::CATEGORY_RELATED_TO_ACTIVE_CONTENT,
+                    'active' => false
+                ],
+                $contentCategory
+            );
+        }
     }
 }

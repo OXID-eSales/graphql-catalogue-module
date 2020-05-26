@@ -338,4 +338,71 @@ final class VendorTest extends TokenTestCase
             $productStatus
         );
     }
+
+    public function getVendorsProductListWithToken()
+    {
+        return [
+            [
+                'withToken'             => false,
+                'expectedProductsCount' => 12,
+                'active'                => true,
+            ], [
+                'withToken'             => true,
+                'expectedProductsCount' => 13,
+                'active'                => false,
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getVendorsProductListWithToken
+     */
+    public function testVendorsProductListWithToken($withToken, $productCount, $active)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        // set product to inactive
+        $queryBuilder
+            ->update('oxarticles')
+            ->set('oxactive', 0)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::PRODUCT_RELATED_TO_ACTIVE_VENDOR)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+          vendors(filter: {
+            title: {
+              contains: "fashion"
+            }
+              }) {
+                id
+                products {
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            $productCount,
+            $result['body']['data']['vendors'][0]['products']
+        );
+
+        $productStatus = $result['body']['data']['vendors'][0]['products'][0]['active'];
+        $this->assertSame(
+            $active,
+            $productStatus
+        );
+    }
 }

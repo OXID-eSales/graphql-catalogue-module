@@ -535,6 +535,14 @@ final class CategoryTest extends TokenTestCase
             $active,
             $productStatus
         );
+
+        // set product to active
+        $queryBuilder
+            ->update('oxarticles')
+            ->set('oxactive', 1)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::PRODUCT_RELATED_TO_ACTIVE_CATEGORY)
+            ->execute();
     }
 
     /**
