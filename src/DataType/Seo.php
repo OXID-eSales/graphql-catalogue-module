@@ -14,7 +14,6 @@ use OxidEsales\Eshop\Core\Model\BaseModel as EshopModel;
 use OxidEsales\Eshop\Core\Registry as EshopRegistry;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
-use TheCodingMachine\GraphQLite\Types\ID;
 
 /**
  * @Type()

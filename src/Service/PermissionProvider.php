@@ -17,16 +17,17 @@ class PermissionProvider implements PermissionProviderInterface
     {
         return [
             'admin' => [
-                'VIEW_INACTIVE_BANNER',
-                'VIEW_INACTIVE_MANUFACTURER',
-                'VIEW_INACTIVE_VENDOR',
-                'VIEW_INACTIVE_CATEGORY',
-                'VIEW_INACTIVE_PRODUCT',
-                'VIEW_INACTIVE_REVIEW',
                 'VIEW_INACTIVE_ACTION',
-                'VIEW_INACTIVE_PROMOTION',
-                'VIEW_INACTIVE_LINK',
+                'VIEW_INACTIVE_ATTRIBUTE',
+                'VIEW_INACTIVE_BANNER',
+                'VIEW_INACTIVE_CATEGORY',
                 'VIEW_INACTIVE_CONTENT',
+                'VIEW_INACTIVE_LINK',
+                'VIEW_INACTIVE_MANUFACTURER',
+                'VIEW_INACTIVE_PRODUCT',
+                'VIEW_INACTIVE_PROMOTION',
+                'VIEW_INACTIVE_REVIEW',
+                'VIEW_INACTIVE_VENDOR',
                 'VIEW_WISHED_PRICES',
             ]
         ];

@@ -12,8 +12,6 @@ namespace OxidEsales\GraphQL\Catalogue\DataType;
 use OxidEsales\Eshop\Core\Model\BaseModel as EshopBaseModel;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
-use DateTimeImmutable;
-use DateTimeInterface;
 
 /**
  * @Type()

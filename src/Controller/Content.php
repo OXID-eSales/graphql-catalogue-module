@@ -15,7 +15,6 @@ use OxidEsales\GraphQL\Catalogue\DataType\Content as ContentDataType;
 use OxidEsales\GraphQL\Catalogue\DataType\ContentFilterList;
 use OxidEsales\GraphQL\Catalogue\Exception\ContentNotFound;
 use TheCodingMachine\GraphQLite\Annotations\Query;
-use OxidEsales\GraphQL\Base\DataType\StringFilter;
 
 class Content extends Base
 {

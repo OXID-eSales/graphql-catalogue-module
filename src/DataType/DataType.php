@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
-use OxidEsales\Eshop\Core\Model\BaseModel;
-
 interface DataType
 {
     /**

@@ -12,7 +12,6 @@ namespace OxidEsales\GraphQL\Catalogue\DataType;
 use OxidEsales\Eshop\Core\Price as PriceModel;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
-use TheCodingMachine\GraphQLite\Types\ID;
 
 /**
  * @Type()

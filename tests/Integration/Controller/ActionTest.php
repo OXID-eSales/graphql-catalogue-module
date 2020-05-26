@@ -202,7 +202,8 @@ final class ActionTest extends TokenTestCase
         $result = $this->query('query {
             actions {
                 id,
-                title
+                title,
+                active
             }
         }');
 
@@ -216,31 +217,38 @@ final class ActionTest extends TokenTestCase
         $this->assertEquals([
             [
                 'id' => 'oxbargain',
-                'title' => 'Angebot der Woche'
+                'title' => 'Angebot der Woche',
+                'active' => true,
             ],
             [
                 'id' => 'oxcatoffer',
-                'title' => 'Kategorien-Topangebot'
+                'title' => 'Kategorien-Topangebot',
+                'active' => true,
             ],
             [
                 'id' => 'oxnewest',
-                'title' => 'Frisch eingetroffen'
+                'title' => 'Frisch eingetroffen',
+                'active' => true,
             ],
             [
                 'id' => 'oxnewsletter',
-                'title' => 'Newsletter'
+                'title' => 'Newsletter',
+                'active' => true,
             ],
             [
                 'id' => 'oxstart',
-                'title' => 'Startseite unten'
+                'title' => 'Startseite unten',
+                'active' => false,
             ],
             [
                 'id' => 'oxtop5',
-                'title' => 'Topseller'
+                'title' => 'Topseller',
+                'active' => true,
             ],
             [
                 'id' => 'oxtopstart',
-                'title' => 'Topangebot Startseite'
+                'title' => 'Topangebot Startseite',
+                'active' => true,
             ],
         ], $result['body']['data']['actions']);
     }

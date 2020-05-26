@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
 use OxidEsales\GraphQL\Base\DataType\StringFilter;
-use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 class ProductRatingFilterList extends FilterList
 {

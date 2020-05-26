@@ -13,8 +13,6 @@ use OxidEsales\Eshop\Application\Model\Content as EshopContentModel;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 use TheCodingMachine\GraphQLite\Types\ID;
-use DateTimeImmutable;
-use DateTimeInterface;
 
 /**
  * @Type()
