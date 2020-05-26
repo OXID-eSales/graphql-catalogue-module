@@ -5,12 +5,12 @@ services:
     autowire: true
 
   OxidEsales\GraphQL\Catalogue\Controller\:
-    resource: 'src/Controller/*'
+    resource: 'src/Controller/'
     public: true
 
   OxidEsales\GraphQL\Catalogue\Resolver\:
-      resource: 'src/Resolver/*'
-      public: true
+    resource: 'src/Resolver/'
+    public: true
 
   OxidEsalesGraphQLCatalogueDataTypeServices:
     namespace: OxidEsales\GraphQL\Catalogue\DataType\
