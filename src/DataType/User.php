@@ -55,4 +55,12 @@ final class User implements DataType
     {
         return (string) $this->user->getFieldData('oxlname');
     }
+
+    /**
+     * @Field()
+     */
+    public function getUserName(): string
+    {
+        return (string) $this->user->getFieldData('oxusername');
+    }
 }

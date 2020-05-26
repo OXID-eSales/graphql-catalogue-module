@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
+use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;
@@ -38,6 +39,7 @@ abstract class Base
      * @param String $action
      *
      * @return bool
+     * @throws InvalidToken
      */
     public function isAuthorized(string $action)
     {
@@ -49,5 +51,18 @@ abstract class Base
         }
 
         return false;
+    }
+
+    /**
+     * @throws InvalidToken
+     */
+    public function isAuthenticated(): bool
+    {
+        return $this->authenticationService->isLogged();
+    }
+
+    public function whoIsAuthenticated(): string
+    {
+        return $this->authenticationService->whoIsLogged();
     }
 }
