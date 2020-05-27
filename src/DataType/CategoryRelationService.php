@@ -11,8 +11,10 @@ namespace OxidEsales\GraphQL\Catalogue\DataType;
 
 use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
 use OxidEsales\GraphQL\Base\DataType\StringFilter;
-use OxidEsales\GraphQL\Base\Exception\NotFound;
-use OxidEsales\GraphQL\Catalogue\Service\Repository;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Catalogue\Exception\CategoryNotFound;
+use OxidEsales\GraphQL\Catalogue\Service\Product as ProductService;
+use OxidEsales\GraphQL\Catalogue\Service\Category as CategoryService;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 
@@ -21,39 +23,46 @@ use TheCodingMachine\GraphQLite\Annotations\Field;
  */
 class CategoryRelationService
 {
-    /** @var Repository */
-    private $repository;
+    /** @var ProductService */
+    private $productService;
+
+    /** @var CategoryService */
+    private $categoryService;
 
     public function __construct(
-        Repository $repository
+        ProductService $productService,
+        CategoryService $categoryService
     ) {
-        $this->repository = $repository;
+        $this->productService = $productService;
+        $this->categoryService = $categoryService;
     }
 
     /**
      * @Field()
      */
-    public function getParent(Category $child): ?Category
+    public function getParent(Category $category): ?Category
     {
         try {
-            return $this->repository->getById(
-                (string)$child->getParentId(),
-                Category::class
+            return $this->categoryService->category(
+                (string)$category->getParentId()
             );
-        } catch (NotFound $e) {
-            return null;
+        } catch (InvalidLogin | CategoryNotFound $e) {
         }
+        return null;
     }
 
     /**
      * @Field()
      */
-    public function getRoot(Category $category): Category
+    public function getRoot(Category $category): ?Category
     {
-        return $this->repository->getById(
-            (string)$category->getRootId(),
-            Category::class
-        );
+        try {
+            return $this->categoryService->category(
+                (string)$category->getRootId()
+            );
+        } catch (InvalidLogin | CategoryNotFound $e) {
+        }
+        return null;
     }
 
     /**
@@ -63,14 +72,11 @@ class CategoryRelationService
      */
     public function getChildren(Category $category): array
     {
-        $filter = $filter ?? new CategoryFilterList(
-            null,
-            new \OxidEsales\GraphQL\Base\DataType\StringFilter((string)$category->getId())
-        );
-
-        return $this->repository->getByFilter(
-            $filter,
-            Category::class
+        return $this->categoryService->categories(
+            new CategoryFilterList(
+                null,
+                new StringFilter((string)$category->getId())
+            )
         );
     }
 
@@ -93,12 +99,11 @@ class CategoryRelationService
         Category $category,
         ?PaginationFilter $pagination
     ): array {
-        return $this->repository->getByFilter(
+        return $this->productService->products(
             new ProductFilterList(
                 null,
                 new CategoryIDFilter($category->getId())
             ),
-            Product::class,
             $pagination
         );
     }

@@ -10,11 +10,14 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\DataType;
 
 use OxidEsales\Eshop\Application\Model\Article as EshopArticle;
+use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 use OxidEsales\GraphQL\Catalogue\DataType\Product;
 use OxidEsales\GraphQL\Catalogue\DataType\ProductAttribute;
 use OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;
+use OxidEsales\GraphQL\Catalogue\Service\Product as ProductService;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 
 /**
  * @covers \OxidEsales\GraphQL\Catalogue\DataType\ProductAttribute
@@ -22,13 +25,27 @@ use OxidEsales\GraphQL\Catalogue\Service\Repository;
  */
 class ProductAttributeTest extends TestCase
 {
+    private function productRelationService(): ProductRelationService
+    {
+        $repo = new Repository(
+            $this->createMock(QueryBuilderFactoryInterface::class)
+        );
+
+        return new ProductRelationService(
+            new ProductService(
+                $repo,
+                $this->createMock(Authorization::class)
+            )
+        );
+    }
+
     public function testGetProductAttributesTypeAndCount()
     {
         $article = oxNew(EshopArticle::class);
         $article->load('096e38032896a847682651d565966c45');
         $product = new Product($article);
 
-        $productRelation = new ProductRelationService($this->createPartialMock(Repository::class, []));
+        $productRelation = $this->productRelationService();
         $productAttributes = $productRelation->getAttributes($product);
 
         $this->assertCount(2, $productAttributes);
@@ -53,7 +70,7 @@ class ProductAttributeTest extends TestCase
         $article->load('096e38032896a847682651d565966c45');
         $product = new Product($article);
 
-        $productRelation = new ProductRelationService($this->createPartialMock(Repository::class, []));
+        $productRelation = $this->productRelationService();
         $productAttributes = $productRelation->getAttributes($product);
 
         $this->assertEquals($title, $productAttributes[$key]->getAttribute()->getTitle());

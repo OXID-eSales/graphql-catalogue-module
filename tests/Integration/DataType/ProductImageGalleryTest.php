@@ -9,6 +9,10 @@ use OxidEsales\GraphQL\Catalogue\DataType\Product;
 use OxidEsales\GraphQL\Catalogue\DataType\ProductImage;
 use OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService;
 use PHPUnit\Framework\TestCase;
+use OxidEsales\GraphQL\Catalogue\Service\Repository;
+use OxidEsales\GraphQL\Catalogue\Service\Product as ProductService;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\GraphQL\Base\Service\Authorization;
 
 /**
  * @covers \OxidEsales\GraphQL\Catalogue\DataType\ProductImageGallery
@@ -16,6 +20,21 @@ use PHPUnit\Framework\TestCase;
  */
 class ProductImageGalleryTest extends TestCase
 {
+    private function productRelationService(): ProductRelationService
+    {
+        $repo = new Repository(
+            $this->createMock(QueryBuilderFactoryInterface::class)
+        );
+
+        return new ProductRelationService(
+            new ProductService(
+                $repo,
+                $this->createMock(Authorization::class)
+            )
+        );
+    }
+
+
     public function testGetImageGalleryIconAndThumb()
     {
         $article = oxNew(EshopArticle::class);
@@ -23,10 +42,8 @@ class ProductImageGalleryTest extends TestCase
         $product = new Product(
             $article
         );
+        $productRelation = $this->productRelationService();
 
-        $productRelation = new ProductRelationService(
-            $this->createPartialMock(\OxidEsales\GraphQL\Catalogue\Service\Repository::class, [])
-        );
         $imageGallery = $productRelation->getImageGallery($product);
 
         $this->assertRegExp(
@@ -47,10 +64,8 @@ class ProductImageGalleryTest extends TestCase
         $product = new Product(
             $article
         );
+        $productRelation = $this->productRelationService();
 
-        $productRelation = new ProductRelationService(
-            $this->createPartialMock(\OxidEsales\GraphQL\Catalogue\Service\Repository::class, [])
-        );
         $imageGallery = $productRelation->getImageGallery($product);
 
         $images = $imageGallery->getImages();
@@ -76,10 +91,8 @@ class ProductImageGalleryTest extends TestCase
         $product = new Product(
             $article
         );
+        $productRelation = $this->productRelationService();
 
-        $productRelation = new ProductRelationService(
-            $this->createPartialMock(\OxidEsales\GraphQL\Catalogue\Service\Repository::class, [])
-        );
         $imageGallery = $productRelation->getImageGallery($product);
 
         /** @var ProductImage[] $images */

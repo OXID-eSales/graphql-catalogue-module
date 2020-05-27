@@ -10,8 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Service;
 
 use OxidEsales\Eshop\Core\Config;
-use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\Currency;
 use OxidEsales\GraphQL\Catalogue\Exception\CurrencyNotFound;
 

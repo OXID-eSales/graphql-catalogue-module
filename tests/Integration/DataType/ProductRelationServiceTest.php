@@ -529,7 +529,10 @@ final class ProductRelationServiceTest extends TokenTestCase
             $result
         );
 
-        $this->assertNull($result['body']['data']['product']['bundleProduct']);
+        $this->assertSame(
+            '_test_inactive_bundle',
+            $result['body']['data']['product']['bundleProduct']['id']
+        );
     }
 
     public function testGetExistingProductBundleItemRelation()

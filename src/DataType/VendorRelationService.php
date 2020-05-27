@@ -11,7 +11,7 @@ namespace OxidEsales\GraphQL\Catalogue\DataType;
 
 use OxidEsales\GraphQL\Base\DataType\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
-use OxidEsales\GraphQL\Catalogue\Service\Repository;
+use OxidEsales\GraphQL\Catalogue\Service\Product as ProductService;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 
@@ -20,13 +20,13 @@ use TheCodingMachine\GraphQLite\Annotations\Field;
  */
 class VendorRelationService
 {
-    /** @var Repository */
-    private $repository;
+    /** @var ProductService */
+    private $productService = null;
 
     public function __construct(
-        Repository $repository
+        ProductService $productService
     ) {
-        $this->repository = $repository;
+        $this->productService = $productService;
     }
 
     /**
@@ -48,14 +48,13 @@ class VendorRelationService
         Vendor $vendor,
         ?PaginationFilter $pagination = null
     ): array {
-        return $this->repository->getByFilter(
+        return $this->productService->products(
             new ProductFilterList(
                 null,
                 null,
                 null,
                 new IDFilter($vendor->getId())
             ),
-            Product::class,
             $pagination
         );
     }

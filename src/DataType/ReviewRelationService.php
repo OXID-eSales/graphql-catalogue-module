@@ -11,6 +11,8 @@ namespace OxidEsales\GraphQL\Catalogue\DataType;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
+use OxidEsales\GraphQL\Catalogue\Exception\ProductNotFound;
+use OxidEsales\GraphQL\Catalogue\Service\Product as ProductService;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
@@ -18,15 +20,20 @@ use TheCodingMachine\GraphQLite\Annotations\Field;
 /**
  * @ExtendType(class=Review::class)
  */
-class ReviewRelationService
+final class ReviewRelationService
 {
+    /** @var ProductService */
+    private $productService;
+
     /** @var Repository */
     private $repository;
 
     public function __construct(
-        Repository $repository
+        Repository $repository,
+        ProductService $productService
     ) {
         $this->repository = $repository;
+        $this->productService = $productService;
     }
 
     /**
@@ -56,25 +63,17 @@ class ReviewRelationService
     public function getProduct(Review $review): ?Product
     {
         $reviewModel = $review->getEshopModel();
-        $product = null;
 
         if ($reviewModel->getFieldData('oxtype') !== 'oxarticle') {
             return null;
         }
 
         try {
-            if ($objectId = (string)$reviewModel->getFieldData('oxobjectid')) {
-                $product = $this->repository->getById(
-                    $objectId,
-                    Product::class
-                );
-            }
-        } catch (NotFound $e) {
-            return null;
-        } catch (InvalidLogin $e) {
-            return null;
+            return $this->productService->product(
+                (string)$reviewModel->getFieldData('oxobjectid')
+            );
+        } catch (ProductNotFound | InvalidLogin $e) {
         }
-
-        return $product;
+        return null;
     }
 }

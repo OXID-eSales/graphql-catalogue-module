@@ -10,14 +10,23 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\Vendor as VendorDataType;
 use OxidEsales\GraphQL\Catalogue\DataType\VendorFilterList;
 use OxidEsales\GraphQL\Catalogue\Exception\VendorNotFound;
+use OxidEsales\GraphQL\Catalogue\Service\Vendor as VendorService;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
-class Vendor extends Base
+final class Vendor
 {
+    /** @var VendorService */
+    private $vendorService = null;
+
+    public function __construct(
+        VendorService $vendorService
+    ) {
+        $this->vendorService = $vendorService;
+    }
+
     /**
      * @Query()
      *
@@ -26,16 +35,7 @@ class Vendor extends Base
      */
     public function vendor(string $id): VendorDataType
     {
-        try {
-            $vendor = $this->repository->getById(
-                $id,
-                VendorDataType::class
-            );
-        } catch (NotFound $e) {
-            throw VendorNotFound::byId($id);
-        }
-
-        return $vendor;
+        return $this->vendorService->vendor($id);
     }
 
     /**
@@ -44,13 +44,8 @@ class Vendor extends Base
      */
     public function vendors(?VendorFilterList $filter = null): array
     {
-        $filter = $filter ?? new VendorFilterList();
-
-        $vendors = $this->repository->getByFilter(
-            $filter,
-            VendorDataType::class
+        return $this->vendorService->vendors(
+            $filter ?? new VendorFilterList()
         );
-
-        return $vendors;
     }
 }

@@ -9,44 +9,28 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
-use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\Action as ActionDataType;
 use OxidEsales\GraphQL\Catalogue\DataType\ActionFilterList;
-use OxidEsales\GraphQL\Catalogue\Exception\ActionNotFound;
+use OxidEsales\GraphQL\Catalogue\Service\Action as ActionService;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
-class Action extends Base
+final class Action
 {
+    /** @var ActionService */
+    private $actionService = null;
+
+    public function __construct(
+        ActionService $actionService
+    ) {
+        $this->actionService = $actionService;
+    }
+
     /**
      * @Query()
-     *
-     * @return ActionDataType
-     *
-     * @throws ActionNotFound
-     * @throws InvalidLogin
      */
     public function action(string $id): ActionDataType
     {
-        try {
-            /** @var ActionDataType $action */
-            $action = $this->repository->getById(
-                $id,
-                ActionDataType::class
-            );
-        } catch (NotFound $e) {
-            throw ActionNotFound::byId($id);
-        }
-
-        if ($action->isActive()) {
-            return $action;
-        }
-
-        if (!$this->isAuthorized('VIEW_INACTIVE_ACTION')) {
-            throw new InvalidLogin("Unauthorized");
-        }
-
-        return $action;
+        return $this->actionService->action($id);
     }
 
     /**
@@ -56,19 +40,8 @@ class Action extends Base
      */
     public function actions(?ActionFilterList $filter = null): array
     {
-        $filter = $filter ?? new ActionFilterList();
-
-        // In case user has VIEW_INACTIVE_ACTION permissions
-        // return all actions including inactive ones
-        if ($this->isAuthorized('VIEW_INACTIVE_ACTION')) {
-            $filter = $filter->withActiveFilter(null);
-        }
-
-        $actions = $this->repository->getByFilter(
-            $filter,
-            ActionDataType::class
+        return $this->actionService->actions(
+            $filter ?? new ActionFilterList()
         );
-
-        return $actions;
     }
 }

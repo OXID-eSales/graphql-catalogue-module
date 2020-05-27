@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
-use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Catalogue\Exception\ProductNotFound;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;
+use OxidEsales\GraphQL\Catalogue\Service\Product as ProductService;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 
@@ -23,10 +25,15 @@ class RatingRelationService
     /** @var Repository */
     private $repository;
 
+    /** @var ProductService */
+    private $productService = null;
+
     public function __construct(
-        Repository $repository
+        Repository $repository,
+        ProductService $productService
     ) {
         $this->repository = $repository;
+        $this->productService = $productService;
     }
 
     /**
@@ -56,25 +63,17 @@ class RatingRelationService
     public function getProduct(Rating $rating): ?Product
     {
         $ratingModel = $rating->getEshopModel();
-        $product = null;
 
         if ($ratingModel->getFieldData('oxtype') !== 'oxarticle') {
             return null;
         }
 
         try {
-            if ($objectId = (string)$ratingModel->getFieldData('oxobjectid')) {
-                $product = $this->repository->getById(
-                    $objectId,
-                    Product::class
-                );
-            }
-        } catch (NotFound $e) {
-            return null;
-        } catch (InvalidLogin $e) {
-            return null;
+            return $this->productService->product(
+                (string)$ratingModel->getFieldData('oxobjectid')
+            );
+        } catch (ProductNotFound | InvalidLogin $e) {
         }
-
-        return $product;
+        return null;
     }
 }

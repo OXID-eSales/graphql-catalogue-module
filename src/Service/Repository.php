@@ -14,11 +14,9 @@ use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\DataType\FilterInterface;
 use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
-use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\FilterList;
 use OxidEsales\GraphQL\Catalogue\DataType\DataType;
-use OxidEsales\GraphQL\Catalogue\Resolver\BaseResolver;
 use PDO;
 
 class Repository
@@ -26,15 +24,10 @@ class Repository
     /** @var QueryBuilderFactoryInterface $queryBuilderFactory */
     private $queryBuilderFactory;
 
-    /** @var BaseResolver */
-    private $resolver;
-
     public function __construct(
-        QueryBuilderFactoryInterface $queryBuilderFactory,
-        BaseResolver $resolver
+        QueryBuilderFactoryInterface $queryBuilderFactory
     ) {
         $this->queryBuilderFactory = $queryBuilderFactory;
-        $this->resolver = $resolver;
     }
 
     /**
@@ -43,7 +36,6 @@ class Repository
      * @return T
      * @throws InvalidArgumentException if $type is not instance of DataType
      * @throws NotFound if BaseModel can not be loaded
-     * @throws InvalidLogin on invalid permissions
      */
     public function getById(
         string $id,
@@ -59,9 +51,6 @@ class Repository
         if (!($type instanceof DataType)) {
             throw new InvalidArgumentException();
         }
-
-        $this->resolver->resolveById($type);
-
         return $type;
     }
 
@@ -85,7 +74,15 @@ class Repository
                      ->from($model->getViewName())
                      ->orderBy($model->getViewName() . '.oxid');
 
-        $this->resolver->resolveList($model, $queryBuilder);
+        if (
+            $filter->getActive() !== null &&
+            $filter->getActive()->equals() === true
+        ) {
+            $activeSnippet = $model->getSqlActiveSnippet();
+            if (strlen($activeSnippet)) {
+                $queryBuilder->andWhere($activeSnippet);
+            }
+        }
 
         /** @var FilterInterface[] $filters */
         $filters = array_filter($filter->getFilters());

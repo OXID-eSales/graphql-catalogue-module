@@ -11,26 +11,23 @@ namespace OxidEsales\GraphQL\Catalogue\DataType;
 
 use OxidEsales\GraphQL\Base\DataType\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
-use OxidEsales\GraphQL\Base\DataType\StringFilter;
-use OxidEsales\GraphQL\Base\Exception\NotFound;
-use OxidEsales\GraphQL\Catalogue\Service\Repository;
+use OxidEsales\GraphQL\Catalogue\Service\Product as ProductService;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use OxidEsales\GraphQL\Catalogue\DataType\Product as ProductDataType;
-use OxidEsales\GraphQL\Base\DataType\BoolFilter;
 
 /**
  * @ExtendType(class=Manufacturer::class)
  */
 class ManufacturerRelationService
 {
-    /** @var Repository */
-    private $repository;
+    /** @var ProductService */
+    private $productService;
 
     public function __construct(
-        Repository $repository
+        ProductService $productService
     ) {
-        $this->repository = $repository;
+        $this->productService = $productService;
     }
 
     /**
@@ -52,17 +49,14 @@ class ManufacturerRelationService
         Manufacturer $manufacturer,
         ?PaginationFilter $pagination = null
     ): array {
-        return $this->repository->getByFilter(
+        return $this->productService->products(
             new ProductFilterList(
                 null,
                 null,
                 new IDFilter(
                     $manufacturer->getId()
-                ),
-                null,
-                new BoolFilter(true)
+                )
             ),
-            ProductDataType::class,
             $pagination
         );
     }

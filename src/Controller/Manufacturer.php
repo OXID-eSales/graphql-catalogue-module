@@ -9,44 +9,28 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
-use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\Manufacturer as ManufacturerDataType;
 use OxidEsales\GraphQL\Catalogue\DataType\ManufacturerFilterList;
-use OxidEsales\GraphQL\Catalogue\Exception\ManufacturerNotFound;
+use OxidEsales\GraphQL\Catalogue\Service\Manufacturer as ManufacturerService;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
-class Manufacturer extends Base
+final class Manufacturer
 {
+    /** @var ManufacturerService */
+    private $manufacturerService = null;
+
+    public function __construct(
+        ManufacturerService $manufacturerService
+    ) {
+        $this->manufacturerService = $manufacturerService;
+    }
+
     /**
      * @Query()
-     *
-     * @return ManufacturerDataType
-     *
-     * @throws ManufacturerNotFound
-     * @throws InvalidLogin
      */
     public function manufacturer(string $id): ManufacturerDataType
     {
-        try {
-            /** @var ManufacturerDataType $manufacturer */
-            $manufacturer = $this->repository->getById(
-                $id,
-                ManufacturerDataType::class
-            );
-        } catch (NotFound $e) {
-            throw ManufacturerNotFound::byId($id);
-        }
-
-        if ($manufacturer->isActive()) {
-            return $manufacturer;
-        }
-
-        if (!$this->isAuthorized('VIEW_INACTIVE_MANUFACTURER')) {
-            throw new InvalidLogin("Unauthorized");
-        }
-
-        return $manufacturer;
+        return $this->manufacturerService->manufacturer($id);
     }
 
     /**
@@ -56,19 +40,8 @@ class Manufacturer extends Base
      */
     public function manufacturers(?ManufacturerFilterList $filter = null): array
     {
-        $filter = $filter ?? new ManufacturerFilterList();
-
-        // In case user has VIEW_INACTIVE_MANUFACTURER permissions
-        // return all manufacturers including inactive ones
-        if ($this->isAuthorized('VIEW_INACTIVE_MANUFACTURER')) {
-            $filter = $filter->withActiveFilter(null);
-        }
-
-        $manufacturers = $this->repository->getByFilter(
-            $filter,
-            ManufacturerDataType::class
+        return $this->manufacturerService->manufacturers(
+            $filter ?? new ManufacturerFilterList()
         );
-
-        return $manufacturers;
     }
 }

@@ -11,8 +11,8 @@ namespace OxidEsales\GraphQL\Catalogue\DataType;
 
 use OxidEsales\Eshop\Application\Model\Attribute;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Exception\NotFound;
-use OxidEsales\GraphQL\Catalogue\Service\Repository;
+use OxidEsales\GraphQL\Catalogue\Exception\ProductNotFound;
+use OxidEsales\GraphQL\Catalogue\Service\Product as ProductService;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 
@@ -26,13 +26,13 @@ use function strlen;
  */
 class ProductRelationService
 {
-    /** @var Repository */
-    private $repository;
+    /** @var ProductService */
+    private $productService;
 
     public function __construct(
-        Repository $repository
+        ProductService $productService
     ) {
-        $this->repository = $repository;
+        $this->productService = $productService;
     }
 
     /**
@@ -126,24 +126,18 @@ class ProductRelationService
     public function getBundleProduct(Product $product): ?Product
     {
         $bundleProductId = (string)$product->getEshopModel()->getFieldData('oxbundleid');
+
         if (!strlen($bundleProductId)) {
             return null;
         }
-        try {
-            $bundleProduct = $this->repository->getById(
-                $bundleProductId,
-                Product::class
-            );
-        } catch (NotFound $e) {
-            return null;
-        } catch (InvalidLogin $e) {
-            return null;
-        }
 
-        if (!$bundleProduct->getEshopModel()->isVisible()) {
-            return null;
+        try {
+            return $this->productService->product(
+                $bundleProductId
+            );
+        } catch (ProductNotFound | InvalidLogin $e) {
         }
-        return $bundleProduct;
+        return null;
     }
 
     /**

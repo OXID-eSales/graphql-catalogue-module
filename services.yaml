@@ -8,18 +8,14 @@ services:
     resource: 'src/Controller/'
     public: true
 
-  OxidEsales\GraphQL\Catalogue\Resolver\:
-    resource: 'src/Resolver/'
-    public: true
-
   OxidEsalesGraphQLCatalogueDataTypeServices:
     namespace: OxidEsales\GraphQL\Catalogue\DataType\
     resource: 'src/DataType/*Service.php'
     public: true
 
-  OxidEsalesGraphQLCatalogueRepositories:
+  OxidEsalesGraphQLCatalogueServices:
     namespace: OxidEsales\GraphQL\Catalogue\Service\
-    resource: 'src/Service/*Repository.php'
+    resource: 'src/Service/*.php'
 
   OxidEsales\GraphQL\Catalogue\Framework\NamespaceMapper:
     class: OxidEsales\GraphQL\Catalogue\Framework\NamespaceMapper
