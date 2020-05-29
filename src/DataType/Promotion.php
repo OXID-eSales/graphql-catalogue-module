@@ -19,7 +19,6 @@ use TheCodingMachine\GraphQLite\Types\ID;
  */
 class Promotion implements DataType
 {
-
     public const PROMOTION_ACTION_TYPE = '2';
 
     /** @var EshopActionsModel */

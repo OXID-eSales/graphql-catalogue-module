@@ -238,11 +238,11 @@ class ProductRelationService
         return $crossSellings;
     }
 
-   /**
-    * @Field()
-    *
-    * @return ProductAttribute[]
-    */
+    /**
+     * @Field()
+     *
+     * @return ProductAttribute[]
+     */
     public function getAttributes(Product $product): array
     {
         /** @var \OxidEsales\Eshop\Application\Model\AttributeList $productAttributes */

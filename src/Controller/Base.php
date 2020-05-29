@@ -62,10 +62,10 @@ abstract class Base
     }
 
     /**
-     * @throws \OutOfBoundsException
+     * @throws InvalidToken
      */
     public function whoIsAuthenticated(): string
     {
-        return $this->authenticationService->whoIsLogged();
+        return $this->authenticationService->getUserName();
     }
 }

@@ -69,7 +69,7 @@ class BaseTest extends TestCase
         $this->assertSame($username, $base->whoIsAuthenticated());
     }
 
-    private function getBase(bool $allowed, bool $logged, string $userName = 'user@oxid-esales.com') :Base
+    private function getBase(bool $allowed, bool $logged, string $userName = 'user@oxid-esales.com'): Base
     {
         $repository = $this->getMockBuilder(Repository::class)
             ->disableOriginalConstructor()
@@ -85,20 +85,16 @@ class BaseTest extends TestCase
 
         $authenticationService = $this->getMockBuilder(Authentication::class)
             ->disableOriginalConstructor()
-            ->setMethods(['isLogged', 'whoIsLogged'])
+            ->setMethods(['isLogged', 'getUserName'])
             ->getMock();
         $authenticationService
             ->method("isLogged")
             ->willReturn($logged);
         $authenticationService
-            ->method("whoIsLogged")
+            ->method("getUserName")
             ->willReturn($userName);
 
-        return new class (
-            $repository,
-            $authenticationService,
-            $authorizationService
-        ) extends Base {
+        return new class ($repository, $authenticationService, $authorizationService) extends Base {
         };
     }
 }
