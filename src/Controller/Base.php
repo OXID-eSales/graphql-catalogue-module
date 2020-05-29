@@ -61,6 +61,9 @@ abstract class Base
         return $this->authenticationService->isLogged();
     }
 
+    /**
+     * @throws \OutOfBoundsException
+     */
     public function whoIsAuthenticated(): string
     {
         return $this->authenticationService->whoIsLogged();

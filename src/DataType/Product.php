@@ -182,6 +182,9 @@ class Product implements DataType
         );
     }
 
+    /**
+     * @Field()
+     */
     public function isWishedPriceDisabled(): bool
     {
         return (bool)$this->product->getFieldData('oxblfixedprice');

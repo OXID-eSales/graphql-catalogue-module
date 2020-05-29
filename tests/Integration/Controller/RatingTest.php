@@ -30,6 +30,7 @@ final class RatingTest extends TokenTestCase
                     id
                     firstName
                     lastName
+                    userName
                 }
                 product {
                     id
@@ -52,7 +53,8 @@ final class RatingTest extends TokenTestCase
             'user' => [
                 'id' => 'e7af1c3b786fd02906ccd75698f4e6b9',
                 'firstName' => 'Marc',
-                'lastName' => 'Muster'
+                'lastName' => 'Muster',
+                'userName' => 'user@oxid-esales.com'
             ],
             'product' => [
                 'id' => 'd86e244c8114c8214fbf83da8d6336b3',
