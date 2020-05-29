@@ -94,7 +94,7 @@ class BaseTest extends TestCase
             ->method("whoIsLogged")
             ->willReturn($userName);
 
-        return new class($repository, $authenticationService, $authorizationService) extends Base {
+        return new class ($repository, $authenticationService, $authorizationService) extends Base {
         };
     }
 }
