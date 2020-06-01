@@ -67,6 +67,55 @@ final class ProductRelationServiceTest extends TokenTestCase
         );
     }
 
+    public function testGetAccessoriesRelationWithToken()
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $queryBuilder
+            ->update('oxarticles')
+            ->set('oxactive', 0)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', 'd86236918e1533cccb679208628eda32')
+            ->execute();
+
+        $this->prepareToken();
+
+        $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT_WITH_ACCESSORIES . '") {
+                id
+                accessories {
+                    id
+                }
+            }
+        }');
+
+        $product = $result['body']['data']['product'];
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            2,
+            $product['accessories']
+        );
+
+        $this->assertSame(
+            [
+                [
+                    'id' => 'adcb9deae73557006a8ac748f45288b4'
+                ], [
+                    'id' => 'd86236918e1533cccb679208628eda32'
+                ]
+            ],
+            $product['accessories']
+        );
+    }
+
     /**
      * @dataProvider productWithATtributesProvider
      */
@@ -230,6 +279,46 @@ final class ProductRelationServiceTest extends TokenTestCase
                 ]
             ]
         ];
+    }
+
+    /**
+     * Get inactive product reviews with token
+     * even when blGBModerate is active.
+     */
+    public function testGetReviewsRelationWithToken()
+    {
+        $this->prepareToken();
+
+        $this->getConfig()->setConfigParam('blGBModerate', true);
+
+        $result = $this->query('query {
+            product (id: "' . self::ACTIVE_PRODUCT . '") {
+                id
+                reviews {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $product = $result['body']['data']['product'];
+
+        $this->assertSame(
+            [
+                [
+                    'id' => '_test_real_product_1'
+                ], [
+                    'id' => '_test_real_product_2'
+                ], [
+                    'id' => '_test_real_product_inactive'
+                ]
+            ],
+            $product['reviews']
+        );
     }
 
     public function testGetNoReviewsRelation()
