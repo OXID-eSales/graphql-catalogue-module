@@ -19,6 +19,7 @@ final class ReviewTest extends TokenTestCase
     private const ACTIVE_REVIEW = '94415306f824dc1aa2fce0dc4f12783d';
     private const INACTIVE_REVIEW = 'bcb341381858129f7412beb11c827a25';
     private const REVIEW_PRODUCT = 'b56597806428de2f58b1c6c7d3e0e093';
+    private const REVIEW_USER = 'e7af1c3b786fd02906ccd75698f4e6b9';
     private const WRONG_USER = '_test_wrong_user';
     private const WRONG_PRODUCT = '_test_wrong_product';
     private const WRONG_OBJECT_TYPE = '_test_wrong_object_type';
@@ -260,5 +261,70 @@ final class ReviewTest extends TokenTestCase
                 ],
             ]
         ];
+    }
+
+    public function getReviewUserProvider()
+    {
+        return [
+            [
+                'isUserActive' => false,
+                'withToken' => false,
+                'expectedUser' => null,
+            ],
+            [
+                'isUserActive' => false,
+                'withToken' => true,
+                'expectedUser' => ['id' => self::REVIEW_USER],
+            ],
+            [
+                'isUserActive' => true,
+                'withToken' => false,
+                'expectedUser' => ['id' => self::REVIEW_USER],
+            ],
+            [
+                'isUserActive' => true,
+                'withToken' => true,
+                'expectedUser' => ['id' => self::REVIEW_USER],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getReviewUserProvider
+     */
+    public function testReviewUserWithToken($isUserActive, $withToken, $expectedUser)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $oxactive = $isUserActive ? 1 : 0;
+        $queryBuilder
+            ->update('oxuser')
+            ->set('oxactive', $oxactive)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::REVIEW_USER)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            review(id: "' . self::ACTIVE_REVIEW . '") {
+                id
+                user {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertSame($expectedUser, $result['body']['data']['review']['user']);
     }
 }

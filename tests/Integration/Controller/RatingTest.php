@@ -18,6 +18,7 @@ final class RatingTest extends TokenTestCase
 {
     private const RATING_ID = '13f810d1aa415400c8abdd37a5b2181a';
     private const RATING_PRODUCT = 'd86e244c8114c8214fbf83da8d6336b3';
+    private const RATING_USER = 'e7af1c3b786fd02906ccd75698f4e6b9';
     private const WRONG_USER = '_test_wrong_user';
     private const WRONG_PRODUCT = '_test_wrong_product';
     private const WRONG_OBJECT_TYPE = '_test_wrong_object_type';
@@ -54,7 +55,7 @@ final class RatingTest extends TokenTestCase
             'rating' => 4,
             'timestamp' => '2011-02-16T15:21:20+01:00',
             'user' => [
-                'id' => 'e7af1c3b786fd02906ccd75698f4e6b9',
+                'id' => self::RATING_USER,
                 'firstName' => 'Marc',
                 'lastName' => 'Muster',
                 'userName' => 'user@oxid-esales.com'
@@ -196,5 +197,70 @@ final class RatingTest extends TokenTestCase
                 ],
             ]
         ];
+    }
+
+    public function getRatingUserProvider()
+    {
+        return [
+            [
+                'isUserActive' => false,
+                'withToken' => false,
+                'expectedUser' => null,
+            ],
+            [
+                'isUserActive' => false,
+                'withToken' => true,
+                'expectedUser' => ['id' => self::RATING_USER],
+            ],
+            [
+                'isUserActive' => true,
+                'withToken' => false,
+                'expectedUser' => ['id' => self::RATING_USER],
+            ],
+            [
+                'isUserActive' => true,
+                'withToken' => true,
+                'expectedUser' => ['id' => self::RATING_USER],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getRatingUserProvider
+     */
+    public function testRatingUserWithToken($isUserActive, $withToken, $expectedUser)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $oxactive = $isUserActive ? 1 : 0;
+        $queryBuilder
+            ->update('oxuser')
+            ->set('oxactive', $oxactive)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::RATING_USER)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            rating(id: "' . self::RATING_ID . '") {
+                id
+                user {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertSame($expectedUser, $result['body']['data']['rating']['user']);
     }
 }
