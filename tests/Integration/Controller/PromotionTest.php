@@ -162,20 +162,23 @@ class PromotionTest extends TokenTestCase
 
     public function testGetPromotionListWithToken()
     {
+        $this->prepareToken();
+
         $result = $this->query('query{
             promotions {
                 id
             }
         }');
+
         $this->assertResponseStatus(
             200,
             $result
         );
 
         // fixtures have 2 active and 4 inactive promotions
-        $this->assertEquals(
+        $this->assertCount(
             6,
-            count($result['body']['data']['promotions'])
+            $result['body']['data']['promotions']
         );
     }
 

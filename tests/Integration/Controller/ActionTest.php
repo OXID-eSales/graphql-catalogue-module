@@ -9,14 +9,18 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
 final class ActionTest extends TokenTestCase
 {
     private const ACTIVE_ACTION_WITH_PRODUCTS = 'oxtop5';
+    private const ACTIVE_ACTION_WITH_INACTIVE_PRODUCT = 'oxcatoffer';
     private const ACTIVE_ACTION_WITHOUT_PRODUCTS = 'oxnewsletter';
     private const INACTIVE_ACTION = 'oxstart';
     private const WRONG_TYPE_ACTION = 'b5639c6431b26687321f6ce654878fa5';
+    private const PRODUCT_RELATED_TO_ACTIVE_ACTION = 'ed6a4182ae58874e4fdaa4775566af6c';
 
     public function testGetSingleActiveActionWithoutProducts()
     {
@@ -331,5 +335,138 @@ final class ActionTest extends TokenTestCase
                 [],
             ],
         ];
+    }
+
+
+    public function getActionProductListWithToken()
+    {
+        return [
+            [
+                'withToken'             => false,
+                'expectedProducts'      => [
+                    [
+                        'id'     => 'd86e244c8114c8214fbf83da8d6336b3',
+                        'active' => true
+                    ], [
+                        'id'     => 'ed6573c0259d6a6fb641d106dcb2faec',
+                        'active' => true
+                    ]
+                ],
+            ], [
+                'withToken'             => true,
+                'expectedProducts'      => [
+                    [
+                        'id'     => 'd86e244c8114c8214fbf83da8d6336b3',
+                        'active' => true
+                    ], [
+                        'id'     => 'ed6573c0259d6a6fb641d106dcb2faec',
+                        'active' => true
+                    ], [
+                        'id'     => 'ed6a4182ae58874e4fdaa4775566af6c',
+                        'active' => false
+                    ],
+                ],
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getActionProductListWithToken
+     */
+    public function testActionsProductListWithToken($withToken, $expectedProducts)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        // set product to inactive
+        $queryBuilder
+            ->update('oxarticles')
+            ->set('oxactive', 0)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::PRODUCT_RELATED_TO_ACTIVE_ACTION)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            actions(filter: {
+                actionId: {
+                    contains: "' . self::ACTIVE_ACTION_WITH_INACTIVE_PRODUCT . '"
+                }
+            }) {
+                id
+                products{
+                    id
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            count($expectedProducts),
+            $result['body']['data']['actions'][0]['products']
+        );
+
+        $this->assertEquals(
+            $expectedProducts,
+            $result['body']['data']['actions'][0]['products']
+        );
+    }
+
+    /**
+     * @dataProvider getActionProductListWithToken
+     */
+    public function testActionProductListWithToken($withToken, $expectedProducts)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        // set product to inactive
+        $queryBuilder
+            ->update('oxarticles')
+            ->set('oxactive', 0)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::PRODUCT_RELATED_TO_ACTIVE_ACTION)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            action (id: "' . self::ACTIVE_ACTION_WITH_INACTIVE_PRODUCT . '") {
+                id
+                products {
+                    id
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            count($expectedProducts),
+            $result['body']['data']['action']['products']
+        );
+
+        $this->assertEquals(
+            $expectedProducts,
+            $result['body']['data']['action']['products']
+        );
     }
 }
