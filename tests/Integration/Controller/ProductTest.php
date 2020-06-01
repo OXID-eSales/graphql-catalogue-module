@@ -21,6 +21,7 @@ final class ProductTest extends TokenTestCase
     private const ACTIVE_PRODUCT_WITH_ACCESSORIES = '05848170643ab0deb9914566391c0c63';
     private const ACTIVE_PRODUCT_WITH_VARIANTS = '531b537118f5f4d7a427cdb825440922';
     private const ACTIVE_PRODUCT_MANUFACTURER = 'oiaf6ab7e12e86291e86dd3ff891fe40';
+    private const VENDOR_OF_ACTIVE_PRODUCT = 'a57c56e3ba710eafb2225e98f058d989';
 
     public function testGetSingleActiveProduct()
     {
@@ -724,5 +725,155 @@ final class ProductTest extends TokenTestCase
             ],
             $result['body']['data']['products']
         );
+    }
+
+    public function productVendorWithTokenProvider()
+    {
+        return [
+            [
+                'isVendorActive' => false,
+                'withToken' => false,
+                'expectedVendor' => null,
+            ],
+            [
+                'isVendorActive' => false,
+                'withToken' => true,
+                'expectedVendor' => [
+                    'id' => self::VENDOR_OF_ACTIVE_PRODUCT,
+                    'active' => false,
+                ],
+            ],
+            [
+                'isVendorActive' => true,
+                'withToken' => false,
+                'expectedVendor' => [
+                    'id' => self::VENDOR_OF_ACTIVE_PRODUCT,
+                    'active' => true,
+                ],
+            ],
+            [
+                'isVendorActive' => true,
+                'withToken' => true,
+                'expectedVendor' => [
+                    'id' => self::VENDOR_OF_ACTIVE_PRODUCT,
+                    'active' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider productVendorWithTokenProvider
+     */
+    public function testGetProductVendorWithToken($isVendorActive, $withToken, $expectedVendor)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $oxactive = $isVendorActive ? 1 : 0;
+        $queryBuilder
+            ->update('oxvendor')
+            ->set('oxactive', $oxactive)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::VENDOR_OF_ACTIVE_PRODUCT)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            product(id: "' . self::ACTIVE_PRODUCT_WITH_VARIANTS . '") {
+                vendor {
+                    id
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $productVendor = $result['body']['data']['product']['vendor'];
+        $this->assertSame($expectedVendor, $productVendor);
+    }
+
+    public function productManufacturerWithTokenProvider()
+    {
+        return [
+            [
+                'isManufacturerActive' => false,
+                'withToken' => false,
+                'expectedManufacturer' => null,
+            ],
+            [
+                'isManufacturerActive' => false,
+                'withToken' => true,
+                'expectedManufacturer' => [
+                    'id' => self::ACTIVE_PRODUCT_MANUFACTURER,
+                    'active' => false,
+                ],
+            ],
+            [
+                'isManufacturerActive' => true,
+                'withToken' => false,
+                'expectedManufacturer' => [
+                    'id' => self::ACTIVE_PRODUCT_MANUFACTURER,
+                    'active' => true,
+                ],
+            ],
+            [
+                'isManufacturerActive' => true,
+                'withToken' => true,
+                'expectedManufacturer' => [
+                    'id' => self::ACTIVE_PRODUCT_MANUFACTURER,
+                    'active' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider productManufacturerWithTokenProvider
+     */
+    public function testGetProductManufacturerWithToken($isManufacturerActive, $withToken, $expectedManufacturer)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $oxactive = $isManufacturerActive ? 1 : 0;
+        $queryBuilder
+            ->update('oxmanufacturers')
+            ->set('oxactive', $oxactive)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::ACTIVE_PRODUCT_MANUFACTURER)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            product(id: "' . self::ACTIVE_PRODUCT . '") {
+                manufacturer {
+                    id
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $productManufacturer = $result['body']['data']['product']['manufacturer'];
+        $this->assertSame($expectedManufacturer, $productManufacturer);
     }
 }
