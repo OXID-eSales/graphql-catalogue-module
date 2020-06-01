@@ -23,6 +23,7 @@ final class ProductTest extends TokenTestCase
     private const ACTIVE_PRODUCT_MANUFACTURER = 'oiaf6ab7e12e86291e86dd3ff891fe40';
     private const VENDOR_OF_ACTIVE_PRODUCT = 'a57c56e3ba710eafb2225e98f058d989';
     private const ACTIVE_CROSSSOLD_FOR_ACTIVE_PRODUCT = 'b5685a5230f5050475f214b4bb0e239b';
+    private const ACTIVE_PRODUCT_CATEGORY = '0f40c6a077b68c21f164767c4a903fd2';
 
     public function testGetSingleActiveProduct()
     {
@@ -962,5 +963,81 @@ final class ProductTest extends TokenTestCase
         });
 
         $this->assertSame($expectedCrossSelling, $filteredCrossSelling);
+    }
+
+    public function productCategoryWithTokenProvider()
+    {
+        return [
+            [
+                'isCSProductActive' => false,
+                'withToken' => false,
+                'expectedCrossSelling' => [],
+            ],
+            [
+                'isCSProductActive' => false,
+                'withToken' => true,
+                'expectedCrossSelling' => [
+                    'id' => self::ACTIVE_PRODUCT_CATEGORY,
+                    'active' => false,
+                ],
+            ],
+            [
+                'isCSProductActive' => true,
+                'withToken' => false,
+                'expectedCrossSelling' => [
+                    'id' => self::ACTIVE_PRODUCT_CATEGORY,
+                    'active' => true,
+                ],
+            ],
+            [
+                'isCSProductActive' => true,
+                'withToken' => true,
+                'expectedCrossSelling' => [
+                    'id' => self::ACTIVE_PRODUCT_CATEGORY,
+                    'active' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider productCategoryWithTokenProvider
+     */
+    public function tetsGetProductCategoryWithToken($isCategoryActive, $withToken, $expectedCategory)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $oxactive = $isCategoryActive ? 1 : 0;
+        $queryBuilder
+            ->update('oxcategories')
+            ->set('oxactive', $oxactive)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::ACTIVE_PRODUCT_CATEGORY)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            product(id: "' . self::ACTIVE_PRODUCT . '") {
+                category {
+                    id
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $productCategory = $result['body']['data']['product']['category'];
+
+        $this->assertSame($expectedCategory, $productCategory);
     }
 }
