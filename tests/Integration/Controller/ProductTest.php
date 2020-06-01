@@ -22,6 +22,7 @@ final class ProductTest extends TokenTestCase
     private const ACTIVE_PRODUCT_WITH_VARIANTS = '531b537118f5f4d7a427cdb825440922';
     private const ACTIVE_PRODUCT_MANUFACTURER = 'oiaf6ab7e12e86291e86dd3ff891fe40';
     private const VENDOR_OF_ACTIVE_PRODUCT = 'a57c56e3ba710eafb2225e98f058d989';
+    private const ACTIVE_CROSSSOLD_FOR_ACTIVE_PRODUCT = 'b5685a5230f5050475f214b4bb0e239b';
 
     public function testGetSingleActiveProduct()
     {
@@ -875,5 +876,91 @@ final class ProductTest extends TokenTestCase
 
         $productManufacturer = $result['body']['data']['product']['manufacturer'];
         $this->assertSame($expectedManufacturer, $productManufacturer);
+    }
+
+    public function productCrossSellingWithTokenProvider()
+    {
+        return [
+            [
+                'isCSProductActive' => false,
+                'withToken' => false,
+                'expectedCrossSelling' => [],
+            ],
+            [
+                'isCSProductActive' => false,
+                'withToken' => true,
+                'expectedCrossSelling' => [
+                    [
+                        'id' => self::ACTIVE_CROSSSOLD_FOR_ACTIVE_PRODUCT,
+                        'active' => false,
+                    ]
+                ],
+            ],
+            [
+                'isCSProductActive' => true,
+                'withToken' => false,
+                'expectedCrossSelling' => [
+                    [
+                        'id' => self::ACTIVE_CROSSSOLD_FOR_ACTIVE_PRODUCT,
+                        'active' => true,
+                    ]
+                ],
+            ],
+            [
+                'isCSProductActive' => true,
+                'withToken' => true,
+                'expectedCrossSelling' => [
+                    [
+                        'id' => self::ACTIVE_CROSSSOLD_FOR_ACTIVE_PRODUCT,
+                        'active' => true,
+                    ]
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider productCrossSellingWithTokenProvider
+     */
+    public function testGetProductCrossSellingWithToken($isCSProductActive, $withToken, $expectedCrossSelling)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $oxactive = $isCSProductActive ? 1 : 0;
+        $queryBuilder
+            ->update('oxarticles')
+            ->set('oxactive', $oxactive)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::ACTIVE_CROSSSOLD_FOR_ACTIVE_PRODUCT)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            product(id: "' . self::ACTIVE_PRODUCT . '") {
+                crossSelling {
+                    id
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $productCrossSelling = $result['body']['data']['product']['crossSelling'];
+
+        $filteredCrossSelling = array_filter($productCrossSelling, function ($product) {
+            return $product['id'] === self::ACTIVE_CROSSSOLD_FOR_ACTIVE_PRODUCT;
+        });
+
+        $this->assertSame($expectedCrossSelling, $filteredCrossSelling);
     }
 }
