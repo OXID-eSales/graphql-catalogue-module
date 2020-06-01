@@ -1,5 +1,12 @@
 SET @@session.sql_mode = '';
 
+# Product with inactive bundle
+UPDATE `oxarticles` SET `OXMAPID` = 1118, `OXVPE` = 1 WHERE OXID='_test_active_main_bundle';
+UPDATE `oxarticles` SET `OXMAPID` = 1119, `OXVPE` = 1 WHERE OXID='_test_inactive_bundle';
+INSERT INTO `oxarticles2shop` (`OXSHOPID`, `OXMAPOBJECTID`, `OXTIMESTAMP`) VALUES
+(1, 1118, '2020-01-01 00:00:00'),
+(1, 1119, '2020-01-01 00:00:00');
+
 REPLACE INTO oxvendor2shop (OXSHOPID, OXMAPOBJECTID) VALUES
 (1, 902), (1, 903), (1, 904);
 
