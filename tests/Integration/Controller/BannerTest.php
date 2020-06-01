@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
 final class BannerTest extends TokenTestCase
@@ -18,6 +20,7 @@ final class BannerTest extends TokenTestCase
     private const INACTIVE_BANNER = 'b56a097dedf5db44e20ed56ac6defaa8';
     private const INACTIVE_BANNER_WITH_INTERVAL = '_test_active_interval';
     private const WRONG_TYPE_ACTION = 'd51545e80843be666a9326783a73e91d';
+    private const ACTIVE_BANNER_PRODUCT = 'f4fc98f99e3660bd2ecd7450f832c41a';
 
     /**
      * If product assigned, link is pointing to product
@@ -52,7 +55,7 @@ final class BannerTest extends TokenTestCase
             'title' => 'Banner 1',
             'sorting' => 4,
             'product' => [
-                'id' => 'f4fc98f99e3660bd2ecd7450f832c41a',
+                'id' => self::ACTIVE_BANNER_PRODUCT,
                 'title' => 'Neoprenanzug NPX ASSASSIN'
             ]
         ], $banner);
@@ -279,5 +282,81 @@ final class BannerTest extends TokenTestCase
                 'sorting' => 6
             ]
         ], $result['body']['data']['banners']);
+    }
+
+    public function bannerProductWithTokenProvider()
+    {
+        return [
+            [
+                'isProductActive' => false,
+                'withToken' => false,
+                'expectedProduct' => null,
+            ],
+            [
+                'isProductActive' => false,
+                'withToken' => true,
+                'expectedProduct' => [
+                    'id' => self::ACTIVE_BANNER_PRODUCT,
+                    'active' => false,
+                ],
+            ],
+            [
+                'isProductActive' => true,
+                'withToken' => false,
+                'expectedProduct' => [
+                    'id' => self::ACTIVE_BANNER_PRODUCT,
+                    'active' => false,
+                ],
+            ],
+            [
+                'isProductActive' => true,
+                'withToken' => true,
+                'expectedProduct' => [
+                    'id' => self::ACTIVE_BANNER_PRODUCT,
+                    'active' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider bannerProductWithTokenProvider
+     */
+    public function testGetBannerProductWithToken($isProductActive, $withToken, $expectedProduct)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $oxactive = $isProductActive ? 1 : 0;
+        $queryBuilder
+            ->update('oxarticles')
+            ->set('oxactive', $oxactive)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::ACTIVE_BANNER_PRODUCT)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            banner(id: "' . self::ACTIVE_BANNER_WITH_PRODUCT . '") {
+                id
+                product{
+                  id
+                  active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $bannerProduct = $result['body']['data']['banner']['product'];
+        $this->assertSame($expectedProduct, $bannerProduct);
     }
 }
