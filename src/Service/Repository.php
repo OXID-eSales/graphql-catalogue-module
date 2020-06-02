@@ -121,4 +121,25 @@ class Repository
         }
         return $model;
     }
+
+    /**
+     * @template T
+     * @param class-string<T> $type
+     * @return bool
+     * @throws NotFound
+     */
+    public function delete(string $id, string $type, bool $disableSubShop = true): bool
+    {
+        $model = $this->getModel($type::getModelClass(), $disableSubShop);
+
+        if (!$model->load($id) || (method_exists($model, 'canView') && !$model->canView())) {
+            throw new NotFound($id);
+        }
+
+        if (!$model->delete($id)) {
+            throw new \RuntimeException('Failed deleting object');
+        }
+
+        return true;
+    }
 }
