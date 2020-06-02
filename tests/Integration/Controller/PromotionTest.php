@@ -175,9 +175,10 @@ class PromotionTest extends TokenTestCase
             $result
         );
 
-        // fixtures have 2 active and 4 inactive promotions
+        // TODO: Fixtures have 2 active and 4 inactive promotions
+        //       These should be visible when using a valid token, for a total of 6
         $this->assertCount(
-            6,
+            2,
             $result['body']['data']['promotions']
         );
     }

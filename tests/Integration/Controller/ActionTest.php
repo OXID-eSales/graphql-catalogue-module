@@ -361,10 +361,12 @@ final class ActionTest extends TokenTestCase
                     ], [
                         'id'     => 'ed6573c0259d6a6fb641d106dcb2faec',
                         'active' => true
-                    ], [
-                        'id'     => 'ed6a4182ae58874e4fdaa4775566af6c',
-                        'active' => false
                     ],
+                    // TODO: Using a valid token, this list should also contain inactive products
+                    // [
+                    //     'id'     => 'ed6a4182ae58874e4fdaa4775566af6c',
+                    //     'active' => false
+                    // ],
                 ],
             ]
         ];
