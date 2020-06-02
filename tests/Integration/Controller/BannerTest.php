@@ -359,4 +359,107 @@ final class BannerTest extends TokenTestCase
         $bannerProduct = $result['body']['data']['banner']['product'];
         $this->assertSame($expectedProduct, $bannerProduct);
     }
+
+    public function bannersProductWithTokenProvider()
+    {
+        return [
+            [
+                'isProductActive' => false,
+                'withToken' => false,
+                'expectedBanners' => [
+                    [
+                        'id' => self::ACTIVE_BANNER_WITH_PRODUCT,
+                        'product' => null,
+                    ],
+                ],
+            ],
+            [
+                'isProductActive' => false,
+                'withToken' => true,
+                'expectedBanners' => [
+                    [
+                        'id' => self::ACTIVE_BANNER_WITH_PRODUCT,
+                        'product' => [
+                            'id' => self::ACTIVE_BANNER_PRODUCT,
+                            'active' => false,
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'isProductActive' => true,
+                'withToken' => false,
+                'expectedBanners' => [
+                    [
+                        'id' => self::ACTIVE_BANNER_WITH_PRODUCT,
+                        'product' => [
+                            'id' => self::ACTIVE_BANNER_PRODUCT,
+                            'active' => true,
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'isProductActive' => true,
+                'withToken' => true,
+                'expectedBanners' => [
+                    [
+                        'id' => self::ACTIVE_BANNER_WITH_PRODUCT,
+                        'product' => [
+                            'id' => self::ACTIVE_BANNER_PRODUCT,
+                            'active' => true,
+                        ],
+                    ],
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider bannersProductWithTokenProvider
+     */
+    public function testGetBannersProductWithToken($isProductActive, $withToken, $expectedBanners)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $oxactive = $isProductActive ? 1 : 0;
+        $queryBuilder
+            ->update('oxarticles')
+            ->set('oxactive', $oxactive)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::ACTIVE_BANNER_PRODUCT)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            banners {
+                id
+                product {
+                  id
+                  active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $banners = $result['body']['data']['banners'];
+
+        $filteredBanners = array_values(
+            array_filter($banners, function ($banner) {
+                return $banner['product'] && $banner['product']['id'] === self::ACTIVE_BANNER_PRODUCT;
+            })
+        );
+
+        $this->assertSame($expectedBanners, $filteredBanners);
+    }
 }
