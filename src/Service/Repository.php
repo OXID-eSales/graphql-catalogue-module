@@ -127,6 +127,10 @@ class Repository
 
     public function saveModel(BaseModel $item): bool
     {
-        return (bool)$item->save();
+        if (!$item->save()) {
+            throw new \RuntimeException('Object save failed');
+        }
+
+        return true;
     }
 }
