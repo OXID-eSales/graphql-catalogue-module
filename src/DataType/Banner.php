@@ -38,6 +38,11 @@ final class Banner implements DataType
         return EshopActionsModel::class;
     }
 
+    public function getEshopModel(): EshopActionsModel
+    {
+        return $this->actionsModel;
+    }
+
     /**
      * @Field()
      */
@@ -79,20 +84,6 @@ final class Banner implements DataType
     public function getTitle(): string
     {
         return (string)$this->actionsModel->getFieldData('oxtitle');
-    }
-
-    /**
-     * @Field()
-     */
-    public function getProduct(): ?Product
-    {
-        /** @var \OxidEsales\Eshop\Application\Model\Article|null $product */
-        $product = $this->actionsModel->getBannerArticle();
-        if ($product !== null) {
-            return new Product($product);
-        }
-
-        return null;
     }
 
     /**
