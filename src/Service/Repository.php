@@ -124,4 +124,9 @@ class Repository
         }
         return $model;
     }
+
+    public function saveModel(BaseModel $item): bool
+    {
+        return (bool)$item->save();
+    }
 }
