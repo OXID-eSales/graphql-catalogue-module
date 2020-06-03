@@ -26,6 +26,11 @@ final class Currency
         $this->currency = $currencyObject;
     }
 
+    public function getEshopModel(): stdClass
+    {
+        return $this->currency;
+    }
+
     /**
      * @Field()
      */
