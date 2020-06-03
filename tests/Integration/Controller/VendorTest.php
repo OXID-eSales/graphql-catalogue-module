@@ -294,7 +294,7 @@ final class VendorTest extends TokenTestCase
     /**
      * @dataProvider getVendorProductsDataProvider
      */
-    public function testVendorProductsWithToken($withToken, $productCount, $active)
+    public function testVendorProducts($withToken, $productCount, $active)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -357,7 +357,7 @@ final class VendorTest extends TokenTestCase
     /**
      * @dataProvider getVendorsProductListWithToken
      */
-    public function testVendorsProductListWithToken($withToken, $productCount, $active)
+    public function testVendorsProductList($withToken, $productCount, $active)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()

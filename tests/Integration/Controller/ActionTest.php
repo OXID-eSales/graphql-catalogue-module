@@ -375,7 +375,7 @@ final class ActionTest extends TokenTestCase
     /**
      * @dataProvider getActionProductListWithToken
      */
-    public function testActionsProductListWithToken($withToken, $expectedProducts)
+    public function testActionsProductList($withToken, $expectedProducts)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -427,7 +427,7 @@ final class ActionTest extends TokenTestCase
     /**
      * @dataProvider getActionProductListWithToken
      */
-    public function testActionProductListWithToken($withToken, $expectedProducts)
+    public function testActionProductList($withToken, $expectedProducts)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()

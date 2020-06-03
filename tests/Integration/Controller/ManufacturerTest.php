@@ -350,7 +350,7 @@ class ManufacturerTest extends TokenTestCase
     /**
      * @dataProvider getManufacturerProductDataProvider
      */
-    public function testManufacturerProductsWithToken($withToken, $productCount, $active)
+    public function testManufacturerProducts($withToken, $productCount, $active)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()

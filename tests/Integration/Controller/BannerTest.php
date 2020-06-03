@@ -322,7 +322,7 @@ final class BannerTest extends TokenTestCase
     /**
      * @dataProvider bannerProductWithTokenProvider
      */
-    public function testGetBannerProductWithToken($isProductActive, $withToken, $expectedProduct)
+    public function testGetBannerProduct($isProductActive, $withToken, $expectedProduct)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -418,7 +418,7 @@ final class BannerTest extends TokenTestCase
     /**
      * @dataProvider bannersProductWithTokenProvider
      */
-    public function testGetBannersProductWithToken($isProductActive, $withToken, $expectedBanners)
+    public function testGetBannersProduct($isProductActive, $withToken, $expectedBanners)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()

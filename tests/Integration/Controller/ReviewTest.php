@@ -207,7 +207,7 @@ final class ReviewTest extends TokenTestCase
     /**
      * @dataProvider getReviewProductDataProvider
      */
-    public function testReviewProductWithToken($withToken, $product)
+    public function testReviewProduct($withToken, $product)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -292,7 +292,7 @@ final class ReviewTest extends TokenTestCase
     /**
      * @dataProvider getReviewUserProvider
      */
-    public function testReviewUserWithToken($isUserActive, $withToken, $expectedUser)
+    public function testReviewUser($isUserActive, $withToken, $expectedUser)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()

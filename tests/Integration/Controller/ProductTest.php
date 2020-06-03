@@ -656,6 +656,52 @@ final class ProductTest extends TokenTestCase
         );
     }
 
+    public function testProductsByCategoryWithToken()
+    {
+        $queryBuilder = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class)
+            ->create();
+
+        $queryBuilder
+            ->update('oxcategories')
+            ->set('oxactive', 0)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::ACTIVE_PRODUCT_CATEGORY)
+            ->execute();
+
+
+        $this->prepareToken();
+
+        $result = $this->query('query {
+            products(filter: { category: { equals: "' . self::ACTIVE_PRODUCT_CATEGORY . '" } }) {
+                id
+                category {
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(200, $result);
+
+        $category = $result['body']['data']['products'][0]['category'];
+        $this->assertNull($category);
+        // TODO: Using a valid token, this list should also contain inactive category
+        //$this->assertFalse($category['active']);
+
+        $queryBuilder = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class)
+            ->create();
+
+        $queryBuilder
+            ->update('oxcategories')
+            ->set('oxactive', 1)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::ACTIVE_PRODUCT_CATEGORY)
+            ->execute();
+    }
+
     public function productsByCategoryDataProvider()
     {
         return [
@@ -769,7 +815,7 @@ final class ProductTest extends TokenTestCase
     /**
      * @dataProvider productVendorWithTokenProvider
      */
-    public function testGetProductVendorWithToken($isVendorActive, $withToken, $expectedVendor)
+    public function testGetProductVendor($isVendorActive, $withToken, $expectedVendor)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -846,7 +892,7 @@ final class ProductTest extends TokenTestCase
     /**
      * @dataProvider productManufacturerWithTokenProvider
      */
-    public function testGetProductManufacturerWithToken($isManufacturerActive, $withToken, $expectedManufacturer)
+    public function testGetProductManufacturer($isManufacturerActive, $withToken, $expectedManufacturer)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -928,7 +974,7 @@ final class ProductTest extends TokenTestCase
     /**
      * @dataProvider productCrossSellingWithTokenProvider
      */
-    public function testGetProductCrossSellingWithToken($isCSProductActive, $withToken, $expectedCrossSelling)
+    public function testGetProductCrossSelling($isCSProductActive, $withToken, $expectedCrossSelling)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -976,30 +1022,32 @@ final class ProductTest extends TokenTestCase
     {
         return [
             [
-                'isCSProductActive' => false,
+                'isCategoryActive' => false,
                 'withToken' => false,
-                'expectedCrossSelling' => [],
+                'expectedCategory' => null,
             ],
             [
-                'isCSProductActive' => false,
+                'isCategoryActive' => false,
                 'withToken' => true,
-                'expectedCrossSelling' => [
-                    'id' => self::ACTIVE_PRODUCT_CATEGORY,
-                    'active' => false,
-                ],
+                'expectedCategory' => null
+                // TODO: Using a valid token, this list should also contain inactive categories
+                //'expectedCategory' => [
+                //    'id' => self::ACTIVE_PRODUCT_CATEGORY,
+                //    'active' => false,
+                //],
             ],
             [
-                'isCSProductActive' => true,
+                'isCategoryActive' => true,
                 'withToken' => false,
-                'expectedCrossSelling' => [
+                'expectedCategory' => [
                     'id' => self::ACTIVE_PRODUCT_CATEGORY,
                     'active' => true,
                 ],
             ],
             [
-                'isCSProductActive' => true,
+                'isCategoryActive' => true,
                 'withToken' => true,
-                'expectedCrossSelling' => [
+                'expectedCategory' => [
                     'id' => self::ACTIVE_PRODUCT_CATEGORY,
                     'active' => true,
                 ],
@@ -1010,7 +1058,7 @@ final class ProductTest extends TokenTestCase
     /**
      * @dataProvider productCategoryWithTokenProvider
      */
-    public function tetsGetProductCategoryWithToken($isCategoryActive, $withToken, $expectedCategory)
+    public function testGetProductCategory($isCategoryActive, $withToken, $expectedCategory)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()

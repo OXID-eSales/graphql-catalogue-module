@@ -240,21 +240,18 @@ final class ContentTest extends TokenTestCase
         );
     }
 
-    public function getProductCategoryDataProvider()
+    public function useTokenDataProvider()
     {
         return [
-            [
-                'withToken' => false
-            ], [
-                'withToken' => true
-            ]
+            ['withToken' => false],
+            ['withToken' => true]
         ];
     }
 
     /**
-     * @dataProvider getProductCategoryDataProvider
+     * @dataProvider useTokenDataProvider
      */
-    public function testContentCategoryWithToken($withToken)
+    public function testContentCategory($withToken)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -300,21 +297,10 @@ final class ContentTest extends TokenTestCase
         }
     }
 
-    public function getContentsCategoryDataProvider()
-    {
-        return [
-            [
-                'withToken' => false
-            ], [
-                'withToken' => true
-            ]
-        ];
-    }
-
     /**
-     * @dataProvider getContentsCategoryDataProvider
+     * @dataProvider useTokenDataProvider
      */
-    public function testContentsCategoryWithToken($withToken)
+    public function testContentsCategory($withToken)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()

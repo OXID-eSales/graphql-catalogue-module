@@ -449,7 +449,7 @@ final class CategoryTest extends TokenTestCase
         );
     }
 
-    public function testCategoryProductList()
+    public function testCategoryProductListWithoutToken()
     {
         $result = $this->query('query {
             category (id: "' . self::CATEGORY_WITH_PRODUCTS . '") {
@@ -492,7 +492,7 @@ final class CategoryTest extends TokenTestCase
     /**
      * @dataProvider getCategoryProductListDataProvider
      */
-    public function testCategoryProductListWithToken($withToken, $productCount, $active)
+    public function testCategoryProductList($withToken, $productCount, $active)
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()

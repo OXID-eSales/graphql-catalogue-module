@@ -98,31 +98,6 @@ class PromotionTest extends TokenTestCase
         );
     }
 
-    public function testGetSingleInactiveProductWithToken()
-    {
-        $this->prepareToken();
-
-        $result = $this->query('query {
-            promotion (id: "' . self::INACTIVE_PROMOTION . '") {
-                id
-                active
-            }
-        }');
-
-        $this->assertResponseStatus(
-            200,
-            $result
-        );
-
-        $this->assertEquals(
-            [
-                'id'     => self::INACTIVE_PROMOTION,
-                'active' => false
-            ],
-            $result['body']['data']['promotion']
-        );
-    }
-
     public function testGet404ForSingleNonExistingPromotion()
     {
         $result = $this->query('query {
