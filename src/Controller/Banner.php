@@ -16,7 +16,7 @@ use OxidEsales\GraphQL\Catalogue\Exception\BannerNotFound;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 use OxidEsales\GraphQL\Catalogue\Service\Banner as BannerService;
 
-class Banner extends Base
+class Banner
 {
     /** @var BannerService */
     private $bannerService = null;
