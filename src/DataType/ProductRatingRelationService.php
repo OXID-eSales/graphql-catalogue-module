@@ -15,7 +15,8 @@ use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 
 /**
- * @ExtendType(class=ProductRating::class)
+ * @deprecated Not used for catalogue, we keep the code and later move it to admin
+ * module.
  */
 class ProductRatingRelationService
 {
@@ -29,17 +30,17 @@ class ProductRatingRelationService
     }
 
     /**
-     * @Field
-     *
-     * @return Rating[]
+     * @return array
      */
     public function getRatings(ProductRating $rating): array
     {
+        /*
         return $this->repository->getByFilter(
             new ProductRatingFilterList(
                 new StringFilter((string)$rating->getEshopModel()->getId())
             ),
             Rating::class
-        );
+        ); */
+        return [];
     }
 }
