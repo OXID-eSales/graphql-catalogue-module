@@ -72,4 +72,19 @@ final class Review implements DataType
             (string) $this->review->getFieldData('oxcreate')
         );
     }
+
+    public function getUserId(): string
+    {
+        return (string) $this->review->getFieldData('oxuserid');
+    }
+
+    public function isArticleType(): bool
+    {
+        return (bool)((string)$this->review->getFieldData('oxtype') === 'oxarticle');
+    }
+
+    public function getObjectId(): string
+    {
+        return (string)$this->review->getFieldData('oxobjectid');
+    }
 }

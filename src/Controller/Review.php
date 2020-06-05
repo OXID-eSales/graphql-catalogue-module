@@ -9,54 +9,26 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
-use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Exception\NotFound;
-use OxidEsales\GraphQL\Base\Service\Authentication;
-use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Catalogue\DataType\Review as ReviewDataType;
-use OxidEsales\GraphQL\Catalogue\DataType\ReviewActivityService;
-use OxidEsales\GraphQL\Catalogue\Exception\ReviewNotFound;
-use OxidEsales\GraphQL\Catalogue\Service\Repository;
+use OxidEsales\GraphQL\Catalogue\Service\Review as ReviewService;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
-class Review extends Base
+class Review
 {
-    /** @var ReviewActivityService */
-    private $reviewActivityService;
+    /** @var ReviewService */
+    private $reviewService = null;
 
     public function __construct(
-        Repository $repository,
-        Authentication $authenticationService,
-        Authorization $authorizationService,
-        ReviewActivityService $reviewActivityService
+        ReviewService $reviewService
     ) {
-        parent::__construct($repository, $authenticationService, $authorizationService);
-
-        $this->reviewActivityService = $reviewActivityService;
+        $this->reviewService = $reviewService;
     }
 
     /**
      * @Query()
-     *
-     * @throws ReviewNotFound
      */
     public function review(string $id): ReviewDataType
     {
-        try {
-            /** @var ReviewDataType $review */
-            $review = $this->repository->getById($id, ReviewDataType::class);
-        } catch (NotFound $e) {
-            throw ReviewNotFound::byId($id);
-        }
-
-        if ($this->reviewActivityService->isActive($review)) {
-            return $review;
-        }
-
-        if (!$this->isAuthorized('VIEW_INACTIVE_REVIEW')) {
-            throw new InvalidLogin("Unauthorized");
-        }
-
-        return $review;
+        return $this->reviewService->review($id);
     }
 }

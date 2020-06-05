@@ -13,6 +13,7 @@ use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\Exception\ProductNotFound;
 use OxidEsales\GraphQL\Catalogue\Service\Product as ProductService;
+use OxidEsales\GraphQL\Catalogue\Service\User as UserService;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
@@ -28,12 +29,17 @@ final class ReviewRelationService
     /** @var Repository */
     private $repository;
 
+    /** @var UserService */
+    private $userService;
+
     public function __construct(
         Repository $repository,
-        ProductService $productService
+        ProductService $productService,
+        UserService $userService
     ) {
         $this->repository = $repository;
         $this->productService = $productService;
+        $this->userService = $userService;
     }
 
     /**
@@ -41,20 +47,17 @@ final class ReviewRelationService
      */
     public function getUser(Review $review): ?User
     {
-        $user = null;
+        $userId = (string)$review->getUserId();
+        return $this->userService->user($userId);
+    }
 
-        try {
-            if ($userId = (string)$review->getEshopModel()->getFieldData('oxuserid')) {
-                $user = $this->repository->getById(
-                    $userId,
-                    User::class
-                );
-            }
-        } catch (NotFound $e) {
-            return null;
-        }
-
-        return $user;
+    /**
+     * @Field()
+     */
+    public function getUserFirstName(Review $review): string
+    {
+        $userId = (string)$review->getUserId();
+        return $this->userService->userFirstName($userId);
     }
 
     /**
@@ -62,18 +65,10 @@ final class ReviewRelationService
      */
     public function getProduct(Review $review): ?Product
     {
-        $reviewModel = $review->getEshopModel();
-
-        if ($reviewModel->getFieldData('oxtype') !== 'oxarticle') {
+        if (!$review->isArticleType()) {
             return null;
         }
 
-        try {
-            return $this->productService->product(
-                (string)$reviewModel->getFieldData('oxobjectid')
-            );
-        } catch (ProductNotFound | InvalidLogin $e) {
-        }
-        return null;
+        return $this->productService->product($review->getObjectId());
     }
 }
