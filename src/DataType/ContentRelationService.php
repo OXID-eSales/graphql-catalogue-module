@@ -10,8 +10,10 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\Category as CategoryDataType;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;
+use OxidEsales\GraphQL\Catalogue\Service\Category as CategoryService;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 
@@ -23,10 +25,15 @@ class ContentRelationService
     /** @var Repository */
     private $repository;
 
+    /** @var CategoryService */
+    private $categoryService;
+
     public function __construct(
-        Repository $repository
+        Repository $repository,
+        CategoryService $categoryService
     ) {
         $this->repository = $repository;
+        $this->categoryService = $categoryService;
     }
 
     /**
@@ -42,7 +49,7 @@ class ContentRelationService
     /**
      * @Field()
      */
-    public function getCategory(Content $content): ?Category
+    public function getCategory(Content $content): ?CategoryDataType
     {
         $id = (string) $content->getEshopModel()->getCategoryId();
 
@@ -51,8 +58,8 @@ class ContentRelationService
         }
 
         try {
-            return $this->repository->getById($id, CategoryDataType::class);
-        } catch (InvalidLogin $e) {
+            return $this->categoryService->category($id);
+        } catch (NotFound | InvalidLogin $e) {
             return null;
         }
     }
