@@ -15,7 +15,6 @@ use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Catalogue\DataType\Review as ReviewDataType;
 use OxidEsales\GraphQL\Catalogue\DataType\ReviewActivityService;
 use OxidEsales\GraphQL\Catalogue\Exception\ReviewNotFound;
-use OxidEsales\GraphQL\Catalogue\Service\Repository;
 
 final class Review
 {

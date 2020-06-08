@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\Banner as BannerDataType;
 use OxidEsales\GraphQL\Catalogue\Exception\BannerNotFound;
 use TheCodingMachine\GraphQLite\Annotations\Query;

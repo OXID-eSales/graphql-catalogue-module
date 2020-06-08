@@ -9,9 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\DataType;
 
-use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Exception\NotFound;
-use OxidEsales\GraphQL\Catalogue\Exception\ProductNotFound;
 use OxidEsales\GraphQL\Catalogue\Service\Product as ProductService;
 use OxidEsales\GraphQL\Catalogue\Service\User as UserService;
 use OxidEsales\GraphQL\Catalogue\Service\Repository;

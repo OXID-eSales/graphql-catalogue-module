@@ -59,8 +59,6 @@ final class Product
     }
 
     /**
-     * @Query()
-     *
      * @return ProductDataType[]
      */
     public function products(ProductFilterList $filter, ?PaginationFilter $pagination = null): array

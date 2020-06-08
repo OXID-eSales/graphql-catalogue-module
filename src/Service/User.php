@@ -15,7 +15,6 @@ use OxidEsales\GraphQL\Catalogue\Exception\UserNotFound;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Catalogue\DataType\User as UserDataType;
-use OxidEsales\GraphQL\Catalogue\Service\Repository;
 
 final class User
 {

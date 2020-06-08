@@ -11,12 +11,12 @@ namespace OxidEsales\GraphQL\Catalogue\Service;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
-use OxidEsales\GraphQL\Catalogue\DataType\Content as ContentDataType;
-use OxidEsales\GraphQL\Catalogue\DataType\ContentFilterList;
-use OxidEsales\GraphQL\Catalogue\Exception\ContentNotFound;
+use OxidEsales\GraphQL\Catalogue\DataType\Link as LinkDataType;
+use OxidEsales\GraphQL\Catalogue\DataType\LinkFilterList;
 use OxidEsales\GraphQL\Base\Service\Authorization;
+use OxidEsales\GraphQL\Catalogue\Exception\LinkNotFound;
 
-final class Content
+final class Link
 {
     /** @var Repository */
     private $repository;
@@ -33,48 +33,50 @@ final class Content
     }
 
     /**
-     * @throws ContentNotFound
+     * @return LinkDataType
+     *
+     * @throws LinkNotFound
      * @throws InvalidLogin
      */
-    public function content(string $id): ContentDataType
+    public function link(string $id): LinkDataType
     {
         try {
-            $content = $this->repository->getById(
+            /** @var LinkDataType $link */
+            $link = $this->repository->getById(
                 $id,
-                ContentDataType::class,
-                false
+                LinkDataType::class
             );
         } catch (NotFound $e) {
-            throw ContentNotFound::byId($id);
+            throw LinkNotFound::byId($id);
         }
 
-        if ($content->isActive()) {
-            return $content;
+        if ($link->isActive()) {
+            return $link;
         }
 
-        if (!$this->authorizationService->isAllowed('VIEW_INACTIVE_CONTENT')) {
+        if (!$this->authorizationService->isAllowed('VIEW_INACTIVE_LINK')) {
             throw new InvalidLogin("Unauthorized");
         }
 
-        return $content;
+        return $link;
     }
 
     /**
-     * @return ContentDataType[]
+     * @return LinkDataType[]
      */
-    public function contents(ContentFilterList $filter): array
+    public function links(LinkFilterList $filter): array
     {
-        // In case user has VIEW_INACTIVE_CONTENT permissions
-        // return all contents including inactive
-        if ($this->authorizationService->isAllowed('VIEW_INACTIVE_CONTENT')) {
+        // In case user has VIEW_INACTIVE_LINK permissions
+        // return all links including inactive ones
+        if ($this->authorizationService->isAllowed('VIEW_INACTIVE_LINK')) {
             $filter = $filter->withActiveFilter(null);
         }
 
-        $contents = $this->repository->getByFilter(
+        $links = $this->repository->getByFilter(
             $filter,
-            ContentDataType::class
+            LinkDataType::class
         );
 
-        return $contents;
+        return $links;
     }
 }
