@@ -70,9 +70,6 @@ final class ProductTest extends TokenTestCase
                 rating {
                     rating
                     count
-                    ratings {
-                        rating
-                    }
                 }
                 scalePrices {
                     absoluteScalePrice
@@ -235,7 +232,6 @@ final class ProductTest extends TokenTestCase
         $rating = $product['rating'];
         $this->assertSame(0.0, $rating['rating']);
         $this->assertSame(0, $rating['count']);
-        $this->assertCount(3, $rating['ratings']);
 
         $this->assertSame(
             [],

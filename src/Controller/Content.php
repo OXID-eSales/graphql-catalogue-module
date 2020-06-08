@@ -9,42 +9,28 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
-use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\Content as ContentDataType;
 use OxidEsales\GraphQL\Catalogue\DataType\ContentFilterList;
-use OxidEsales\GraphQL\Catalogue\Exception\ContentNotFound;
+use OxidEsales\GraphQL\Catalogue\Service\Content as ContentService;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
-class Content extends Base
+class Content
 {
+    /** @var ContentService */
+    private $contentService = null;
+
+    public function __construct(
+        ContentService $contentService
+    ) {
+        $this->contentService = $contentService;
+    }
+
     /**
      * @Query()
-     *
-     * @throws ContentNotFound
-     * @throws InvalidLogin
      */
     public function content(string $id): ContentDataType
     {
-        try {
-            $content = $this->repository->getById(
-                $id,
-                ContentDataType::class,
-                false
-            );
-        } catch (NotFound $e) {
-            throw ContentNotFound::byId($id);
-        }
-
-        if ($content->isActive()) {
-            return $content;
-        }
-
-        if (!$this->isAuthorized('VIEW_INACTIVE_CONTENT')) {
-            throw new InvalidLogin("Unauthorized");
-        }
-
-        return $content;
+        return $this->contentService->content($id);
     }
 
     /**
@@ -53,19 +39,8 @@ class Content extends Base
      */
     public function contents(?ContentFilterList $filter = null): array
     {
-        $filter = $filter ?? new ContentFilterList();
-
-        // In case user has VIEW_INACTIVE_CONTENT permissions
-        // return all contents including inactive
-        if ($this->isAuthorized('VIEW_INACTIVE_CONTENT')) {
-            $filter = $filter->withActiveFilter(null);
-        }
-
-        $contents = $this->repository->getByFilter(
-            $filter,
-            ContentDataType::class
+        return $this->contentService->contents(
+            $filter ?? new ContentFilterList()
         );
-
-        return $contents;
     }
 }
