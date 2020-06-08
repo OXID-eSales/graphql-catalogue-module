@@ -60,6 +60,16 @@ class RepositoryTest extends TestCase
             WrongType::class
         );
     }
+
+    public function testExceptionOnFailToDeleteModel()
+    {
+        $this->expectException(\RuntimeException::class);
+        $repository = new Repository(
+            $this->createMock(QueryBuilderFactoryInterface::class),
+            $this->createMock(BaseResolver::class)
+        );
+        $repository->delete('does_not_exist', AlsoWrongType::class);
+    }
 }
 
 // phpcs:disable
@@ -93,6 +103,11 @@ class CorrectModel extends \OxidEsales\Eshop\Core\Model\BaseModel
     public function load($oxid)
     {
         return true;
+    }
+
+    public function delete($oxid = null)
+    {
+        return false;
     }
 }
 

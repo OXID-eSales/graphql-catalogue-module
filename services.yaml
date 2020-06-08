@@ -16,6 +16,7 @@ services:
   OxidEsalesGraphQLCatalogueServices:
     namespace: OxidEsales\GraphQL\Catalogue\Service\
     resource: 'src/Service/*.php'
+    public: true
 
   OxidEsales\GraphQL\Catalogue\Framework\NamespaceMapper:
     class: OxidEsales\GraphQL\Catalogue\Framework\NamespaceMapper
