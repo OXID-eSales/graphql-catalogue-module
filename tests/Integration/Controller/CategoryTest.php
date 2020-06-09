@@ -562,6 +562,7 @@ final class CategoryTest extends TokenTestCase
                     limit: ' . $limit . '
                 }) {
                     id
+                    title
                 }
             }
         }');
@@ -587,27 +588,54 @@ final class CategoryTest extends TokenTestCase
                 0,
                 2,
                 [
-                    ['id' => 'b56a5554a328d329aa2b2e65b6e870e0'],
-                    ['id' => 'b56f4183fd33d95797c0e8cadc0c4a70'],
+                    [
+                        'id'    => 'b56369b1fc9d7b97f9c5fc343b349ece',
+                        'title' => 'Kite CORE GTS'
+                    ],
+                    [
+                        'id'    => 'b56597806428de2f58b1c6c7d3e0e093',
+                        'title' => 'Kite NBK EVO 2010'
+                    ],
                 ]
             ],
             [
                 4,
                 3,
                 [
-                    ['id' => 'b569a858511324d95c25cf017ba18261'],
-                    ['id' => 'dc53a316f2db4c7a2cde9c340f547c8d'],
-                    ['id' => 'dc5244863bbf3cd3f5e2c1d08f28cbd1'],
+                    [
+                        'id'    => 'b56c560872da93602ff88c7267eb4774',
+                        'title' => 'Kite NAISH PARK 2011'
+                    ],
+                    [
+                        'id'    => 'dc5480c47d8cd5a9eab9da5db9159cc6',
+                        'title' => 'Kite RRD PASSION 2009'
+                    ],
+                    [
+                        'id'    => 'dc57391739360d306c8dfcb3a4295e19',
+                        'title' => 'Kite RRD PASSION 2010'
+                    ],
                 ]
             ],
             [
                 8,
                 20,
                 [
-                    ['id' => 'f4fad7471d8d4dc99962e0821b7243c7'],
-                    ['id' => 'f4f816efdcf5f5e0c6abaa2c5462b738'],
-                    ['id' => 'fad2b5808154dd3e10de1608752b7c6f'],
-                    ['id' => 'fad40f529705b93bd38acbfa65a9abb1'],
+                    [
+                        'id'    => 'f4f0cb3606e231c3fdb34fcaee2d6d04',
+                        'title' => 'Kite LIQUID FORCE ENVY'
+                    ],
+                    [
+                        'id'    => 'f4fe052346b4ec271011e25c052682c5',
+                        'title' => 'Kite CORE GT'
+                    ],
+                    [
+                        'id'    => 'fad21eb148918c8f4d9f0077fedff1ba',
+                        'title' => 'Kite LIQUID FORCE HAVOC'
+                    ],
+                    [
+                        'id'    => 'fadc492a5807c56eb80b0507accd756b',
+                        'title' => 'Kite SPLEENE SP-X 2010'
+                    ],
                 ]
             ],
         ];
