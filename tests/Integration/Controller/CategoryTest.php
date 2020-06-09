@@ -20,6 +20,7 @@ final class CategoryTest extends TokenTestCase
     private const CATEGORY_WITHOUT_CHILDREN  = "0f4270b89fbef1481958381410a0dbca";
     private const CATEGORY_WITH_CHILDREN  = "943173edecf6d6870a0f357b8ac84d32";
     private const CATEGORY_WITH_PRODUCTS  = "0f4fb00809cec9aa0910aa9c8fe36751";
+    private const CATEGORY_WITH_PARENT = "0f41a4463b227c437f6e6bf57b1697c4";
     private const PRODUCT_RELATED_TO_ACTIVE_CATEGORY = 'b56369b1fc9d7b97f9c5fc343b349ece';
 
     public function testGetSingleActiveCategory()
@@ -639,5 +640,107 @@ final class CategoryTest extends TokenTestCase
                 ]
             ],
         ];
+    }
+
+    public function filterCategoriesByParentProvider()
+    {
+        return [
+            [
+                'isParentActive' => false,
+                'withToken' => false,
+                'expectedCategories' => [],
+            ],
+            [
+                'isParentActive' => false,
+                'withToken' => true,
+                'expectedCategories' => [],
+                'expectedProducts' => [
+                    [
+                        'id' => '0f40c6a077b68c21f164767c4a903fd2',
+                        'parent' => [
+                            'id' => self::CATEGORY_WITH_CHILDREN,
+                            'active' => false,
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'isParentActive' => true,
+                'withToken' => false,
+                'expectedCategories' => [
+                    [
+                        'id' => '0f40c6a077b68c21f164767c4a903fd2',
+                        'parent' => [
+                            'id' => self::CATEGORY_WITH_CHILDREN,
+                            'active' => true,
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'isParentActive' => true,
+                'withToken' => true,
+                'expectedCategories' => [
+                    [
+                        'id' => '0f40c6a077b68c21f164767c4a903fd2',
+                        'parent' => [
+                            'id' => self::CATEGORY_WITH_CHILDREN,
+                            'active' => true,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider filterCategoriesByParentProvider
+     */
+    public function testFilterCategoriesByParent($isParentActive, $withToken, $expectedCategories)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $oxactive = $isParentActive ? 1 : 0;
+        $queryBuilder
+            ->update('oxcategories')
+            ->set('oxactive', $oxactive)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::CATEGORY_WITH_CHILDREN)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            categories(
+                filter: {
+                    parentId: {
+                        equals: "' . self::CATEGORY_WITH_CHILDREN . '"
+                    }
+                    title: {
+                        equals: "Bindungen"
+                    }
+                }
+            ) {
+                id
+                parent {
+                    id
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $actualCategories = $result['body']['data']['categories'];
+
+        $this->assertEquals($expectedCategories, $actualCategories);
     }
 }

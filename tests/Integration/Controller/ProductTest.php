@@ -24,6 +24,8 @@ final class ProductTest extends TokenTestCase
     private const VENDOR_OF_ACTIVE_PRODUCT = 'a57c56e3ba710eafb2225e98f058d989';
     private const ACTIVE_CROSSSOLD_FOR_ACTIVE_PRODUCT = 'b5685a5230f5050475f214b4bb0e239b';
     private const ACTIVE_PRODUCT_CATEGORY = '0f40c6a077b68c21f164767c4a903fd2';
+    private const ACTIVE_PRODUCT_TITLE = 'Bindung O&#039;BRIEN DECADE CT 2010';
+    private const ACTIVE_PRODUCT_WITH_VARIANTS_TITLE = 'Kuyichi Jeans ANNA';
 
     public function testGetSingleActiveProduct()
     {
@@ -1104,17 +1106,15 @@ final class ProductTest extends TokenTestCase
                 'isCategoryActive' => false,
                 'withToken' => true,
                 'expectedProducts' => [],
-                // TODO: Using a valid token, this list should also contain products,
-                // filtered by an inactive category
-                // 'expectedProducts' => [
-                //     [
-                //         'id' => self::ACTIVE_PRODUCT,
-                //         'category' => [
-                //             'id' => self::ACTIVE_PRODUCT_CATEGORY,
-                //             'active' => true,
-                //         ],
-                //     ],
-                // ],
+                'expectedProducts' => [
+                    [
+                        'id' => self::ACTIVE_PRODUCT,
+                        'category' => [
+                            'id' => self::ACTIVE_PRODUCT_CATEGORY,
+                            'active' => false,
+                        ],
+                    ],
+                ],
             ],
             [
                 'isCategoryActive' => true,
@@ -1208,17 +1208,15 @@ final class ProductTest extends TokenTestCase
                 'isManufacturerActive' => false,
                 'withToken' => true,
                 'expectedProducts' => [],
-                // TODO: Using a valid token, this list should also contain products,
-                // filtered by an inactive manufacturer
-                // 'expectedProducts' => [
-                //     [
-                //         'id' => self::ACTIVE_PRODUCT,
-                //         'manufacturer' => [
-                //             'id' => self::ACTIVE_PRODUCT_MANUFACTURER,
-                //             'active' => true,
-                //         ],
-                //     ],
-                // ],
+                'expectedProducts' => [
+                    [
+                        'id' => self::ACTIVE_PRODUCT,
+                        'manufacturer' => [
+                            'id' => self::ACTIVE_PRODUCT_MANUFACTURER,
+                            'active' => false,
+                        ],
+                    ],
+                ],
             ],
             [
                 'isManufacturerActive' => true,
@@ -1264,7 +1262,7 @@ final class ProductTest extends TokenTestCase
             ->update('oxmanufacturers')
             ->set('oxactive', $oxactive)
             ->where('OXID = :OXID')
-            ->setParameter(':OXID', self::ACTIVE_PRODUCT_CATEGORY)
+            ->setParameter(':OXID', self::ACTIVE_PRODUCT_MANUFACTURER)
             ->execute();
 
         if ($withToken) {
@@ -1275,10 +1273,10 @@ final class ProductTest extends TokenTestCase
             products(
                 filter: {
                     manufacturer: {
-                        equals: "' . self::ACTIVE_PRODUCT_CATEGORY . '"
+                        equals: "' . self::ACTIVE_PRODUCT_MANUFACTURER . '"
                     }
                     title: {
-                        contains: "DECADE"
+                        equals: "' . self::ACTIVE_PRODUCT_TITLE . '"
                     }
                 }
             ) {
@@ -1312,24 +1310,22 @@ final class ProductTest extends TokenTestCase
                 'isVendorActive' => false,
                 'withToken' => true,
                 'expectedProducts' => [],
-                // TODO: Using a valid token, this list should also contain products,
-                // filtered by an inactive vendor
-                // 'expectedProducts' => [
-                //     [
-                //         'id' => self::ACTIVE_PRODUCT,
-                //         'vendor' => [
-                //             'id' => self::ACTIVE_PRODUCT_CATEGORY,
-                //             'active' => true,
-                //         ],
-                //     ],
-                // ],
+                'expectedProducts' => [
+                    [
+                        'id' => self::ACTIVE_PRODUCT,
+                        'vendor' => [
+                            'id' => self::VENDOR_OF_ACTIVE_PRODUCT,
+                            'active' => false,
+                        ],
+                    ],
+                ],
             ],
             [
                 'isVendorActive' => true,
                 'withToken' => false,
                 'expectedProducts' => [
                     [
-                        'id' => self::ACTIVE_PRODUCT,
+                        'id' => self::ACTIVE_PRODUCT_WITH_VARIANTS,
                         'vendor' => [
                             'id' => self::VENDOR_OF_ACTIVE_PRODUCT,
                             'active' => true,
@@ -1342,7 +1338,7 @@ final class ProductTest extends TokenTestCase
                 'withToken' => true,
                 'expectedProducts' => [
                     [
-                        'id' => self::ACTIVE_PRODUCT,
+                        'id' => self::ACTIVE_PRODUCT_WITH_VARIANTS,
                         'vendor' => [
                             'id' => self::VENDOR_OF_ACTIVE_PRODUCT,
                             'active' => true,
@@ -1382,7 +1378,7 @@ final class ProductTest extends TokenTestCase
                         equals: "' . self::VENDOR_OF_ACTIVE_PRODUCT . '"
                     }
                     title: {
-                        contains: "DECADE"
+                        equals: "' . self::ACTIVE_PRODUCT_WITH_VARIANTS_TITLE . '"
                     }
                 }
             ) {
@@ -1400,7 +1396,55 @@ final class ProductTest extends TokenTestCase
         );
 
         $actualProducts = $result['body']['data']['products'];
-
         $this->assertEquals($expectedProducts, $actualProducts);
+    }
+
+    public function testProductExistsInListFilteredByCategory()
+    {
+        $productResult = $this->query('query {
+            product(id: "' . self::ACTIVE_PRODUCT . '") {
+                id
+                active
+                title
+                category {
+                    id
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(200, $productResult);
+
+        $expectedProduct = [
+            'id' => self::ACTIVE_PRODUCT,
+            'active' => true,
+            'title' => self::ACTIVE_PRODUCT_TITLE,
+            'category' => [
+                'id' => self::ACTIVE_PRODUCT_CATEGORY,
+                'active' => true,
+            ],
+        ];
+        $actualProduct = $productResult['body']['data']['product'];
+        $this->assertEquals($expectedProduct, $actualProduct);
+
+        $productListResult = $this->query('query {
+            products(filter: {
+                category: {equals: "' . self::ACTIVE_PRODUCT_CATEGORY . '"}
+                title: {equals: "' . self::ACTIVE_PRODUCT_TITLE . '"}
+            }) {
+                id
+                active
+                title
+                category {
+                    id
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(200, $productListResult);
+
+        $actualProducts = $productListResult['body']['data']['products'];
+        $this->assertEquals([$actualProduct], $actualProducts);
     }
 }
