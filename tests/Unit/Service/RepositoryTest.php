@@ -65,6 +65,37 @@ class RepositoryTest extends TestCase
             WrongType::class
         );
     }
+
+    public function testModelSave()
+    {
+        $repository = new Repository(
+            $this->createMock(QueryBuilderFactoryInterface::class),
+            $this->createMock(BaseResolver::class)
+        );
+
+        $model = $this->createPartialMock(
+            \OxidEsales\Eshop\Core\Model\BaseModel::class,
+            ['save']
+        );
+        $model->expects($this->any())->method('save')->willReturn("someid");
+        $this->assertTrue($repository->saveModel($model));
+    }
+
+    public function testModelSaveFailed()
+    {
+        $this->expectException(\RuntimeException::class);
+        $repository = new Repository(
+            $this->createMock(QueryBuilderFactoryInterface::class),
+            $this->createMock(BaseResolver::class)
+        );
+
+        $model = $this->createPartialMock(
+            \OxidEsales\Eshop\Core\Model\BaseModel::class,
+            ['save']
+        );
+        $model->expects($this->any())->method('save')->willReturn(false);
+        $this->assertTrue($repository->saveModel($model));
+    }
 }
 
 // phpcs:disable
