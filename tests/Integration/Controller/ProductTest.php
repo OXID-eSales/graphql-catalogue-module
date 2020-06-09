@@ -1091,4 +1091,316 @@ final class ProductTest extends TokenTestCase
 
         $this->assertSame($expectedCategory, $productCategory);
     }
+
+    public function filterProductsByCategoryProvider()
+    {
+        return [
+            [
+                'isCategoryActive' => false,
+                'withToken' => false,
+                'expectedProducts' => [],
+            ],
+            [
+                'isCategoryActive' => false,
+                'withToken' => true,
+                'expectedProducts' => [],
+                // TODO: Using a valid token, this list should also contain products,
+                // filtered by an inactive category
+                // 'expectedProducts' => [
+                //     [
+                //         'id' => self::ACTIVE_PRODUCT,
+                //         'category' => [
+                //             'id' => self::ACTIVE_PRODUCT_CATEGORY,
+                //             'active' => true,
+                //         ],
+                //     ],
+                // ],
+            ],
+            [
+                'isCategoryActive' => true,
+                'withToken' => false,
+                'expectedProducts' => [
+                    [
+                        'id' => self::ACTIVE_PRODUCT,
+                        'category' => [
+                            'id' => self::ACTIVE_PRODUCT_CATEGORY,
+                            'active' => true,
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'isCategoryActive' => true,
+                'withToken' => true,
+                'expectedProducts' => [
+                    [
+                        'id' => self::ACTIVE_PRODUCT,
+                        'category' => [
+                            'id' => self::ACTIVE_PRODUCT_CATEGORY,
+                            'active' => true,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider filterProductsByCategoryProvider
+     */
+    public function testFilterProductsByCategory($isCategoryActive, $withToken, $expectedProducts)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $oxactive = $isCategoryActive ? 1 : 0;
+        $queryBuilder
+            ->update('oxcategories')
+            ->set('oxactive', $oxactive)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::ACTIVE_PRODUCT_CATEGORY)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            products(
+                filter: {
+                    category: {
+                        equals: "' . self::ACTIVE_PRODUCT_CATEGORY . '"
+                    }
+                    title: {
+                        contains: "DECADE"
+                    }
+                }
+            ) {
+                id
+                category {
+                    id
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $actualProducts = $result['body']['data']['products'];
+        
+        $this->assertEquals($expectedProducts, $actualProducts);
+    }
+
+    public function filterProductsByManufacturerProvider()
+    {
+        return [
+            [
+                'isManufacturerActive' => false,
+                'withToken' => false,
+                'expectedProducts' => [],
+            ],
+            [
+                'isManufacturerActive' => false,
+                'withToken' => true,
+                'expectedProducts' => [],
+                // TODO: Using a valid token, this list should also contain products,
+                // filtered by an inactive manufacturer
+                // 'expectedProducts' => [
+                //     [
+                //         'id' => self::ACTIVE_PRODUCT,
+                //         'manufacturer' => [
+                //             'id' => self::ACTIVE_PRODUCT_MANUFACTURER,
+                //             'active' => true,
+                //         ],
+                //     ],
+                // ],
+            ],
+            [
+                'isManufacturerActive' => true,
+                'withToken' => false,
+                'expectedProducts' => [
+                    [
+                        'id' => self::ACTIVE_PRODUCT,
+                        'manufacturer' => [
+                            'id' => self::ACTIVE_PRODUCT_MANUFACTURER,
+                            'active' => true,
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'isManufacturerActive' => true,
+                'withToken' => true,
+                'expectedProducts' => [
+                    [
+                        'id' => self::ACTIVE_PRODUCT,
+                        'manufacturer' => [
+                            'id' => self::ACTIVE_PRODUCT_MANUFACTURER,
+                            'active' => true,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider filterProductsByManufacturerProvider
+     */
+    public function testFilterProductsByManufacturer($isManufacturerActive, $withToken, $expectedProducts)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $oxactive = $isManufacturerActive ? 1 : 0;
+        $queryBuilder
+            ->update('oxmanufacturers')
+            ->set('oxactive', $oxactive)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::ACTIVE_PRODUCT_CATEGORY)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            products(
+                filter: {
+                    manufacturer: {
+                        equals: "' . self::ACTIVE_PRODUCT_CATEGORY . '"
+                    }
+                    title: {
+                        contains: "DECADE"
+                    }
+                }
+            ) {
+                id
+                manufacturer {
+                    id
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $actualProducts = $result['body']['data']['products'];
+
+        $this->assertEquals($expectedProducts, $actualProducts);
+    }
+
+    public function filterProductsByVendorProvider()
+    {
+        return [
+            [
+                'isVendorActive' => false,
+                'withToken' => false,
+                'expectedProducts' => [],
+            ],
+            [
+                'isVendorActive' => false,
+                'withToken' => true,
+                'expectedProducts' => [],
+                // TODO: Using a valid token, this list should also contain products,
+                // filtered by an inactive vendor
+                // 'expectedProducts' => [
+                //     [
+                //         'id' => self::ACTIVE_PRODUCT,
+                //         'vendor' => [
+                //             'id' => self::ACTIVE_PRODUCT_CATEGORY,
+                //             'active' => true,
+                //         ],
+                //     ],
+                // ],
+            ],
+            [
+                'isVendorActive' => true,
+                'withToken' => false,
+                'expectedProducts' => [
+                    [
+                        'id' => self::ACTIVE_PRODUCT,
+                        'vendor' => [
+                            'id' => self::VENDOR_OF_ACTIVE_PRODUCT,
+                            'active' => true,
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'isVendorActive' => true,
+                'withToken' => true,
+                'expectedProducts' => [
+                    [
+                        'id' => self::ACTIVE_PRODUCT,
+                        'vendor' => [
+                            'id' => self::VENDOR_OF_ACTIVE_PRODUCT,
+                            'active' => true,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider filterProductsByVendorProvider
+     */
+    public function testFilterProductsByVendor($isVendorActive, $withToken, $expectedProducts)
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $oxactive = $isVendorActive ? 1 : 0;
+        $queryBuilder
+            ->update('oxvendor')
+            ->set('oxactive', $oxactive)
+            ->where('OXID = :OXID')
+            ->setParameter(':OXID', self::VENDOR_OF_ACTIVE_PRODUCT)
+            ->execute();
+
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $result = $this->query('query {
+            products(
+                filter: {
+                    vendor: {
+                        equals: "' . self::VENDOR_OF_ACTIVE_PRODUCT . '"
+                    }
+                    title: {
+                        contains: "DECADE"
+                    }
+                }
+            ) {
+                id
+                vendor {
+                    id
+                    active
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $actualProducts = $result['body']['data']['products'];
+
+        $this->assertEquals($expectedProducts, $actualProducts);
+    }
 }
