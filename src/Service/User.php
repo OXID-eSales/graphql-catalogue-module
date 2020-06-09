@@ -43,10 +43,6 @@ final class User
      */
     public function user(string $id): UserDataType
     {
-        if (!$this->authorizationService->isAllowed('VIEW_USER')) {
-            throw new InvalidLogin("Unauthorized");
-        }
-
         try {
             /** @var UserDataType $user */
             $user = $this->repository->getById($id, UserDataType::class);
@@ -55,22 +51,5 @@ final class User
         }
 
         return $user;
-    }
-
-    /**
-     * @throws UserNotFound
-     * @throws InvalidLogin
-     */
-    public function userFirstName(string $id): string
-    {
-        try {
-            /** @var UserDataType $user */
-            $user = $this->repository->getById($id, UserDataType::class);
-        } catch (NotFound $e) {
-            //TODO: maybe better throw new InvalidLogin("Unauthorized"); ?
-            throw UserNotFound::byId($id);
-        }
-
-        return $user->getFirstName();
     }
 }
