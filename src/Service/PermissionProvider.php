@@ -30,6 +30,7 @@ class PermissionProvider implements PermissionProviderInterface
                 'VIEW_INACTIVE_VENDOR',
                 'VIEW_WISHED_PRICES',
                 'DELETE_WISHED_PRICE',
+                'VIEW_USER'
             ]
         ];
     }

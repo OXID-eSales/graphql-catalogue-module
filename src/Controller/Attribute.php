@@ -9,35 +9,30 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
-use OxidEsales\GraphQL\Base\DataType\BoolFilter;
-use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\Attribute as AttributeDataType;
-use OxidEsales\GraphQL\Catalogue\Exception\AttributeNotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\AttributeFilterList;
+use OxidEsales\GraphQL\Catalogue\Service\Attribute as AttributeService;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
-class Attribute extends Base
+class Attribute
 {
+    /** @var AttributeService */
+    private $attributeService = null;
+
+    public function __construct(
+        AttributeService $attributeService
+    ) {
+        $this->attributeService = $attributeService;
+    }
+
     /**
      * @Query()
      *
      * @return AttributeDataType
-     *
-     * @throws AttributeNotFound
      */
     public function attribute(string $id): AttributeDataType
     {
-        try {
-            /** @var AttributeDataType $attribute */
-            $attribute = $this->repository->getById(
-                $id,
-                AttributeDataType::class
-            );
-        } catch (NotFound $e) {
-            throw AttributeNotFound::byId($id);
-        }
-
-        return $attribute;
+        return $this->attributeService->attribute($id);
     }
 
     /**
@@ -47,15 +42,8 @@ class Attribute extends Base
      */
     public function attributes(?AttributeFilterList $filter = null): array
     {
-        $filter = $filter ?? new AttributeFilterList();
-
-        if (!$this->isAuthorized('VIEW_INACTIVE_ATTRIBUTE')) {
-            $filter = $filter->withActiveFilter(new BoolFilter(true));
-        }
-
-        return $this->repository->getByFilter(
-            $filter,
-            AttributeDataType::class
+        return $this->attributeService->attributes(
+            $filter ?? new AttributeFilterList()
         );
     }
 }

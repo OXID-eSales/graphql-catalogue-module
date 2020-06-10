@@ -70,7 +70,7 @@ class Repository
         $model = $this->getModel($type::getModelClass(), $disableSubShop);
 
         $queryBuilder = $this->queryBuilderFactory->create();
-        $queryBuilder->select('*')
+        $queryBuilder->select($model->getViewName() . '.*')
                      ->from($model->getViewName())
                      ->orderBy($model->getViewName() . '.oxid');
 

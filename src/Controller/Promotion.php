@@ -9,44 +9,29 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Controller;
 
-use OxidEsales\Eshop\Application\Model\ActionList;
-use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\DataType\Promotion as PromotionDataType;
-use OxidEsales\GraphQL\Catalogue\Exception\PromotionNotFound;
+use OxidEsales\GraphQL\Catalogue\Service\Promotion as PromotionService;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
-class Promotion extends Base
+class Promotion
 {
+    /** @var PromotionService */
+    private $promotionService = null;
+
+    public function __construct(
+        PromotionService $promotionService
+    ) {
+        $this->promotionService = $promotionService;
+    }
+
     /**
      * @Query()
      *
      * @return PromotionDataType
-     *
-     * @throws PromotionNotFound
-     * @throws InvalidLogin
      */
     public function promotion(string $id): PromotionDataType
     {
-        try {
-            /** @var PromotionDataType $promotion */
-            $promotion = $this->repository->getById(
-                $id,
-                PromotionDataType::class
-            );
-        } catch (NotFound $e) {
-            throw PromotionNotFound::byId($id);
-        }
-
-        if ($promotion->isActive()) {
-            return $promotion;
-        }
-
-        if (!$this->isAuthorized('VIEW_INACTIVE_PROMOTION')) {
-            throw new InvalidLogin("Unauthorized");
-        }
-
-        return $promotion;
+        return $this->promotionService->promotion($id);
     }
 
     /**
@@ -56,16 +41,6 @@ class Promotion extends Base
      */
     public function promotions(): array
     {
-        /** @var ActionList $actionList */
-        $actionList = oxNew(ActionList::class);
-        $actionList->loadCurrent();
-
-        $result = [];
-        if ($promotions = $actionList->getArray()) {
-            foreach ($promotions as $promotion) {
-                $result[] = new \OxidEsales\GraphQL\Catalogue\DataType\Promotion($promotion);
-            }
-        }
-        return $result;
+        return $this->promotionService->promotions();
     }
 }

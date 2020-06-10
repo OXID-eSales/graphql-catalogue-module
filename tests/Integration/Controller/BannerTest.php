@@ -366,12 +366,7 @@ final class BannerTest extends TokenTestCase
             [
                 'isProductActive' => false,
                 'withToken' => false,
-                'expectedBanners' => [
-                    [
-                        'id' => self::ACTIVE_BANNER_WITH_PRODUCT,
-                        'product' => null,
-                    ],
-                ],
+                'expectedBanners' => [],
             ],
             [
                 'isProductActive' => false,

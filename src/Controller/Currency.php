@@ -14,7 +14,7 @@ use OxidEsales\GraphQL\Catalogue\Exception\CurrencyNotFound;
 use OxidEsales\GraphQL\Catalogue\Service\CurrencyRepository;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
-class Currency extends Base
+class Currency
 {
     /** @var CurrencyRepository */
     private $currencyRepository;

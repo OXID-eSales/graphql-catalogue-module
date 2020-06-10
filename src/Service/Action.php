@@ -15,7 +15,6 @@ use OxidEsales\GraphQL\Catalogue\DataType\Action as ActionDataType;
 use OxidEsales\GraphQL\Catalogue\DataType\ActionFilterList;
 use OxidEsales\GraphQL\Catalogue\Exception\ActionNotFound;
 use OxidEsales\GraphQL\Base\Service\Authorization;
-use OxidEsales\GraphQL\Catalogue\Service\Repository;
 
 final class Action
 {

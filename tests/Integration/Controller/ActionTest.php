@@ -337,7 +337,6 @@ final class ActionTest extends TokenTestCase
         ];
     }
 
-
     public function getActionProductListWithToken()
     {
         return [
@@ -470,5 +469,69 @@ final class ActionTest extends TokenTestCase
             $expectedProducts,
             $result['body']['data']['action']['products']
         );
+    }
+
+    public function filterActionsByIdProvider(): array
+    {
+        return [
+            [
+                'withToken' => false,
+                'isActionActive' => false,
+                'expected' => [],
+            ],
+            [
+                'withToken' => true,
+                'isActionActive' => false,
+                'expected' => [
+                    [
+                        'id' => self::INACTIVE_ACTION,
+                        'active' => false,
+                    ],
+                ],
+            ],
+            [
+                'withToken' => false,
+                'isActionActive' => true,
+                'expected' => [
+                    [
+                        'id' => self::ACTIVE_ACTION_WITH_PRODUCTS,
+                        'active' => true
+                    ],
+                ],
+            ],
+            [
+                'withToken' => false,
+                'isActionActive' => true,
+                'expected' => [
+                    [
+                        'id' => self::ACTIVE_ACTION_WITH_PRODUCTS,
+                        'active' => true
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider filterActionsByIdProvider
+     */
+    public function testFilterActionsById(bool $withToken, bool $isActionActive, array $expected): void
+    {
+        if ($withToken) {
+            $this->prepareToken();
+        }
+
+        $actionId = $isActionActive ? self::ACTIVE_ACTION_WITH_PRODUCTS : self::INACTIVE_ACTION;
+
+        $result = $this->query('query {
+            actions(filter: {actionId: {equals: "' . $actionId . '"}}) {
+                id
+                active
+            }
+        }');
+
+        $this->assertResponseStatus(200, $result);
+
+        $this->assertEquals($expected, $result['body']['data']['actions']);
     }
 }
