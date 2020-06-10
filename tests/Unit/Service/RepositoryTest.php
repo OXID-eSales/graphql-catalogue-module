@@ -65,10 +65,38 @@ class RepositoryTest extends TestCase
     {
         $this->expectException(\RuntimeException::class);
         $repository = new Repository(
-            $this->createMock(QueryBuilderFactoryInterface::class),
-            $this->createMock(BaseResolver::class)
+            $this->createMock(QueryBuilderFactoryInterface::class)
         );
         $repository->delete('does_not_exist', AlsoWrongType::class);
+    }
+
+    public function testModelSave()
+    {
+        $repository = new Repository(
+            $this->createMock(QueryBuilderFactoryInterface::class)
+        );
+
+        $model = $this->createPartialMock(
+            \OxidEsales\Eshop\Core\Model\BaseModel::class,
+            ['save']
+        );
+        $model->expects($this->any())->method('save')->willReturn("someid");
+        $this->assertTrue($repository->saveModel($model));
+    }
+
+    public function testModelSaveFailed()
+    {
+        $this->expectException(\RuntimeException::class);
+        $repository = new Repository(
+            $this->createMock(QueryBuilderFactoryInterface::class)
+        );
+
+        $model = $this->createPartialMock(
+            \OxidEsales\Eshop\Core\Model\BaseModel::class,
+            ['save']
+        );
+        $model->expects($this->any())->method('save')->willReturn(false);
+        $this->assertTrue($repository->saveModel($model));
     }
 }
 
