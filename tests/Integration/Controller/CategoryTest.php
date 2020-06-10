@@ -648,13 +648,17 @@ final class CategoryTest extends TokenTestCase
             [
                 'isParentActive' => false,
                 'withToken' => false,
-                'expectedCategories' => [],
+                'expectedCategories' => [
+                    [
+                        'id'     => '0f40c6a077b68c21f164767c4a903fd2',
+                        'parent' => null
+                    ]
+                ],
             ],
             [
                 'isParentActive' => false,
                 'withToken' => true,
-                'expectedCategories' => [],
-                'expectedProducts' => [
+                'expectedCategories' => [
                     [
                         'id' => '0f40c6a077b68c21f164767c4a903fd2',
                         'parent' => [
