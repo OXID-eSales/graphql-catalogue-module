@@ -14,20 +14,18 @@ use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
 
 /**
  * Class AttributeEnterpriseTest
- *
- * @package OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller
  */
-class AttributeEnterpriseTest extends MultishopTestCase
+final class AttributeEnterpriseTest extends MultishopTestCase
 {
-    private const ATTRIBUTE_ID = "6cf89d2d73e666457d167cebfc3eb492";
+    private const ATTRIBUTE_ID = '6cf89d2d73e666457d167cebfc3eb492';
 
     /**
      * Check if attribute from shop 1 is not accessible for
      * shop 2 if its not yet related to shop 2
      */
-    public function testGetSingleNotInShopAttributeWillFail()
+    public function testGetSingleNotInShopAttributeWillFail(): void
     {
-        $this->setGETRequestParameter('shp', "2");
+        $this->setGETRequestParameter('shp', '2');
 
         $result = $this->query('query {
             attribute (id: "' . self::ATTRIBUTE_ID . '") {
@@ -45,9 +43,9 @@ class AttributeEnterpriseTest extends MultishopTestCase
      * Check if attribute from shop 1 is accessible for
      * shop 2 if its related to shop 2
      */
-    public function testGetSingleInShopAttributeWillWork()
+    public function testGetSingleInShopAttributeWillWork(): void
     {
-        $this->setGETRequestParameter('shp', "2");
+        $this->setGETRequestParameter('shp', '2');
         $this->addAttributeToShops([2]);
 
         $result = $this->query('query {
@@ -63,37 +61,34 @@ class AttributeEnterpriseTest extends MultishopTestCase
 
         $this->assertEquals(
             [
-                'title' => 'Lieferumfang'
+                'title' => 'Lieferumfang',
             ],
             $result['body']['data']['attribute']
         );
     }
 
-    /**
-     * @return array
-     */
     public function providerGetAttributeMultilanguage(): array
     {
         return [
             'shop_1_de' => [
-                'shopId' => '1',
+                'shopId'     => '1',
                 'languageId' => '0',
-                'title' => 'Lieferumfang'
+                'title'      => 'Lieferumfang',
             ],
             'shop_1_en' => [
-                'shopId' => '1',
+                'shopId'     => '1',
                 'languageId' => '1',
-                'title' => 'Included in delivery'
+                'title'      => 'Included in delivery',
             ],
             'shop_2_de' => [
-                'shopId' => '2',
+                'shopId'     => '2',
                 'languageId' => '0',
-                'title' => 'Lieferumfang'
+                'title'      => 'Lieferumfang',
             ],
             'shop_2_en' => [
-                'shopId' => '2',
+                'shopId'     => '2',
                 'languageId' => '1',
-                'title' => 'Included in delivery'
+                'title'      => 'Included in delivery',
             ],
         ];
     }
@@ -102,12 +97,8 @@ class AttributeEnterpriseTest extends MultishopTestCase
      * Check multishop multilanguage data is accessible
      *
      * @dataProvider providerGetAttributeMultilanguage
-     *
-     * @param string $shopId
-     * @param string $languageId
-     * @param string $title
      */
-    public function testGetSingleTranslatedSecondShopAttribute(string $shopId, string $languageId, string $title)
+    public function testGetSingleTranslatedSecondShopAttribute(string $shopId, string $languageId, string $title): void
     {
         $this->setGETRequestParameter('shp', $shopId);
         $this->setGETRequestParameter('lang', $languageId);
@@ -126,30 +117,19 @@ class AttributeEnterpriseTest extends MultishopTestCase
 
         $this->assertEquals(
             [
-                'title' => $title
+                'title' => $title,
             ],
             $result['body']['data']['attribute']
         );
     }
 
     /**
-     * @param int[] $shops
-     */
-    private function addAttributeToShops(array $shops)
-    {
-        $oElement2ShopRelations = oxNew(Element2ShopRelations::class, 'oxattribute');
-        $oElement2ShopRelations->setShopIds($shops);
-        $oElement2ShopRelations->addToShop(self::ATTRIBUTE_ID);
-    }
-
-    /**
      * @dataProvider providerGetAttributeMultishop
      *
-     * @param string $shopId
      * @param string $languageId
      * @param array  $attributes
      */
-    public function testAttributeListMultishop(string $shopId, $languageId, $attributes)
+    public function testAttributeListMultishop(string $shopId, $languageId, $attributes): void
     {
         $this->setGETRequestParameter('shp', $shopId);
         $this->setGETRequestParameter('lang', $languageId);
@@ -164,6 +144,7 @@ class AttributeEnterpriseTest extends MultishopTestCase
             200,
             $result
         );
+
         foreach ($attributes as $key => $attribute) {
             $this->assertSame(
                 $attribute,
@@ -172,47 +153,44 @@ class AttributeEnterpriseTest extends MultishopTestCase
         }
     }
 
-    /**
-     * @return array
-     */
     public function providerGetAttributeMultishop(): array
     {
         return [
             'shop_1_de' => [
-                'shopId' => '1',
+                'shopId'     => '1',
                 'languageId' => '0',
                 'attributes' => [
                     'EU-Größe',
                     'Washing',
-                    'Lieferumfang'
-                ]
+                    'Lieferumfang',
+                ],
             ],
             'shop_1_en' => [
-                'shopId' => '1',
+                'shopId'     => '1',
                 'languageId' => '1',
                 'attributes' => [
                     'EU-Size',
                     'Washing',
-                    'Included in delivery'
-                ]
+                    'Included in delivery',
+                ],
             ],
             'shop_2_de' => [
-                'shopId' => '2',
+                'shopId'     => '2',
                 'languageId' => '0',
                 'attributes' => [
                     'EU-Größe',
                     'Washing',
-                    'Lieferumfang'
-                ]
+                    'Lieferumfang',
+                ],
             ],
             'shop_2_en' => [
-                'shopId' => '2',
+                'shopId'     => '2',
                 'languageId' => '1',
                 'attributes' => [
                     'EU-Size',
                     'Washing',
-                    'Included in delivery'
-                ]
+                    'Included in delivery',
+                ],
             ],
         ];
     }
@@ -220,7 +198,17 @@ class AttributeEnterpriseTest extends MultishopTestCase
     /**
      * @param int[] $shops
      */
-    private function addAttributesToShops(array $shops)
+    private function addAttributeToShops(array $shops): void
+    {
+        $oElement2ShopRelations = oxNew(Element2ShopRelations::class, 'oxattribute');
+        $oElement2ShopRelations->setShopIds($shops);
+        $oElement2ShopRelations->addToShop(self::ATTRIBUTE_ID);
+    }
+
+    /**
+     * @param int[] $shops
+     */
+    private function addAttributesToShops(array $shops): void
     {
         $attributes = [
             '6b6bc9f9ab8b153d9bebc2ad6ca2aa13',
@@ -230,6 +218,7 @@ class AttributeEnterpriseTest extends MultishopTestCase
 
         $oElement2ShopRelations = oxNew(Element2ShopRelations::class, 'oxattribute');
         $oElement2ShopRelations->setShopIds($shops);
+
         foreach ($attributes as $attribute) {
             $oElement2ShopRelations->addToShop($attribute);
         }

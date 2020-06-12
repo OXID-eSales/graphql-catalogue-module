@@ -11,9 +11,8 @@ namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
 use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
-class ManufacturerMultilanguageTest extends TestCase
+final class ManufacturerMultilanguageTest extends TestCase
 {
-
     private const ACTIVE_MULTILANGUAGE_MANUFACTURER = 'adc6df0977329923a6330cc8f3c0a906';
 
     public function providerGetManufacturerMultilanguage()
@@ -23,13 +22,13 @@ class ManufacturerMultilanguageTest extends TestCase
                 'languageId'         => '0',
                 'title'              => 'Liquid Force',
                 'url'                => 'Nach-Hersteller/Liquid-Force/',
-                'productDescription' => 'Bewährte Qualität in neuem Design'
+                'productDescription' => 'Bewährte Qualität in neuem Design',
             ],
             'en' => [
                 'languageId'         => '1',
                 'title'              => 'Liquid Force Kite',
                 'url'                => 'en/By-manufacturer/Liquid-Force-Kite/',
-                'productDescription' => 'Proven quality in a new design'
+                'productDescription' => 'Proven quality in a new design',
             ],
         ];
     }
@@ -42,7 +41,7 @@ class ManufacturerMultilanguageTest extends TestCase
         string $title,
         string $seoUrl,
         string $productDescription
-    ) {
+    ): void {
         $query = 'query {
             manufacturer (id: "' . self::ACTIVE_MULTILANGUAGE_MANUFACTURER . '") {
                 id
@@ -81,19 +80,19 @@ class ManufacturerMultilanguageTest extends TestCase
         return [
             'de' => [
                 'languageId' => '0',
-                'count'      => 0
+                'count'      => 0,
             ],
             'en' => [
                 'languageId' => '1',
-                'count'      => 1
-            ]
+                'count'      => 1,
+            ],
         ];
     }
 
     /**
      * @dataProvider providerGetManufacturerListWithFilterMultilanguage
      */
-    public function testGetManufacturerListWithFilterMultilanguage(string $languageId, int $count)
+    public function testGetManufacturerListWithFilterMultilanguage(string $languageId, int $count): void
     {
         $query = 'query{
             manufacturers(filter: {

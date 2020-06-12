@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
 declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Unit\DataType;
@@ -7,7 +12,7 @@ namespace OxidEsales\GraphQL\Catalogue\Tests\Unit\DataType;
 use OxidEsales\Eshop\Application\Model\Category as EshopCategoryModel;
 use OxidEsales\Eshop\Core\Field;
 
-class CategoryStub extends EshopCategoryModel
+final class CategoryStub extends EshopCategoryModel
 {
     public function __construct(
         string $active = '1',

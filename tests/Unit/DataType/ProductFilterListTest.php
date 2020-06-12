@@ -1,11 +1,16 @@
 <?php
 
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
 declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\DataType;
 
 use OxidEsales\GraphQL\Base\DataType\IDFilter;
-use OxidEsales\GraphQL\Catalogue\DataType\ProductFilterList;
+use OxidEsales\GraphQL\Catalogue\Product\DataType\ProductFilterList;
 use PHPUnit\Framework\TestCase;
 use TheCodingMachine\GraphQLite\Types\ID;
 
@@ -19,11 +24,11 @@ final class ProductFilterListTest extends TestCase
         $filter = new ProductFilterList();
         $this->assertEquals(
             [
-                'oxtitle' => null,
-                'oxcatnid' => null,
+                'oxtitle'          => null,
+                'oxcatnid'         => null,
                 'oxmanufacturerid' => null,
-                'oxvendorid' => null,
-                'oxparentid' => new IDFilter(new ID(''))
+                'oxvendorid'       => null,
+                'oxparentid'       => new IDFilter(new ID('')),
             ],
             $filter->getFilters()
         );

@@ -13,15 +13,17 @@ use OxidEsales\Eshop\Application\Model\Groups;
 use OxidEsales\Eshop\Core\Model\BaseModel as ShopBaseModel;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\GraphQL\Base\Tests\Integration\EnterpriseTestCase;
-use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
-use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 
 final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
 {
     private const CATEGORY_ID = '30e44ab83fdee7564.23264141'; //Bekleidung
+
     private const USER_GROUP_ID = '_test_user_group';
+
     private const USER_TO_GROUP_ID = '_test_user_to_group';
+
     private const USER_ID = 'e7af1c3b786fd02906ccd75698f4e6b9'; //user@oxid-esales.com
+
     private const OXOBJECTRIGHTS_ID = '_test_object_rights';
 
     protected function setUp(): void
@@ -57,7 +59,7 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
      * Anonymus user requests the category.
      * He should be able to see it.
      */
-    public function testCategoryVisibleForAllAnonymusUserCanSeeIt()
+    public function testCategoryVisibleForAllAnonymusUserCanSeeIt(): void
     {
         $result = $this->query('query { category (id: "' . self::CATEGORY_ID . '"){id, title}}');
 
@@ -68,8 +70,8 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
 
         $this->assertEquals(
             [
-                'id' => self::CATEGORY_ID,
-                'title' => 'Bekleidung'
+                'id'    => self::CATEGORY_ID,
+                'title' => 'Bekleidung',
             ],
             $result['body']['data']['category']
         );
@@ -80,7 +82,7 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
      * Anonymus user requests the category.
      * He should be able to see it.
      */
-    public function testFilterForCategoryVisibleForAllAnonymusUserCanSeeIt()
+    public function testFilterForCategoryVisibleForAllAnonymusUserCanSeeIt(): void
     {
         $query = 'query {
             categories(filter: {
@@ -102,8 +104,8 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
 
         $this->assertEquals(
             [
-                'id' => self::CATEGORY_ID,
-                'title' => 'Bekleidung'
+                'id'    => self::CATEGORY_ID,
+                'title' => 'Bekleidung',
             ],
             $result['body']['data']['categories']['0']
         );
@@ -114,7 +116,7 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
      * Anonymus user requests the category.
      * He should not be able to see it.
      */
-    public function testCategoryRightsExclusivelyVisibleForGroupAnonymusUserCannotSeeIt()
+    public function testCategoryRightsExclusivelyVisibleForGroupAnonymusUserCannotSeeIt(): void
     {
         $this->createUserGroup();
         $this->setCategoryRightsExclusivelyVisibleForGroup();
@@ -132,7 +134,7 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
      * Anonymus user requests the category.
      * He should not be able to see it.
      */
-    public function testFilterCategoryRightsExclusivelyVisibleForGroupAnonymusUserCannotSeeIt()
+    public function testFilterCategoryRightsExclusivelyVisibleForGroupAnonymusUserCannotSeeIt(): void
     {
         $query = 'query {
             categories(filter: {
@@ -164,7 +166,7 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
      * Example user requests the category.
      * He should be able to see it as he is assigned to test group.
      */
-    public function testCategoryRightsExclusivelyVisibleForGroupAssignedUserCanSeeIt()
+    public function testCategoryRightsExclusivelyVisibleForGroupAssignedUserCanSeeIt(): void
     {
         $this->createUserGroup();
         $this->setCategoryRightsExclusivelyVisibleForGroup();
@@ -182,19 +184,19 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
 
         $this->assertEquals(
             [
-                'id' => self::CATEGORY_ID,
-                'title' => 'Bekleidung'
+                'id'    => self::CATEGORY_ID,
+                'title' => 'Bekleidung',
             ],
             $result['body']['data']['category']
         );
     }
 
     /*
-    * Test case that category is exclusively visible for user in group self::USER_GROUP_ID.
-    * Example user requests the category.
-    * He should be able to see it as he is assigned to test group.
-    */
-    public function testFilterCategoryRightsExclusivelyVisibleForGroupAssignedUserCanSeeIt()
+     * Test case that category is exclusively visible for user in group self::USER_GROUP_ID.
+     * Example user requests the category.
+     * He should be able to see it as he is assigned to test group.
+     */
+    public function testFilterCategoryRightsExclusivelyVisibleForGroupAssignedUserCanSeeIt(): void
     {
         $this->createUserGroup();
         $this->setCategoryRightsExclusivelyVisibleForGroup();
@@ -221,8 +223,8 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
 
         $this->assertEquals(
             [
-                'id' => self::CATEGORY_ID,
-                'title' => 'Bekleidung'
+                'id'    => self::CATEGORY_ID,
+                'title' => 'Bekleidung',
             ],
             $result['body']['data']['categories']['0']
         );
@@ -233,7 +235,7 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
      * Example user requests the category with a token.
      * He should not be able to see it as here he is not assigned to test group.
      */
-    public function testCategoryRightsExclusivelyVisibleForGroupTokenUserCannotSeeIt()
+    public function testCategoryRightsExclusivelyVisibleForGroupTokenUserCannotSeeIt(): void
     {
         $this->createUserGroup();
         $this->setCategoryRightsExclusivelyVisibleForGroup();
@@ -249,20 +251,20 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
         );
     }
 
-    private function createUserGroup()
+    private function createUserGroup(): void
     {
         $userGroup = oxNew(Groups::class);
         $userGroup->setId(self::USER_GROUP_ID);
         $userGroup->assign(
             [
                 'oxactice' => '1',
-                'oxtitle'  => 'test group'
+                'oxtitle'  => 'test group',
             ]
         );
         $userGroup->save();
     }
 
-    private function addUserToGroup(string $userId)
+    private function addUserToGroup(string $userId): void
     {
         $relation = oxNew(ShopBaseModel::class);
         $relation->init('oxobject2group');
@@ -271,18 +273,18 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
         $relation->assign(
             [
                 'oxobjectid' => $userId,
-                'oxgroupsid' => self::USER_GROUP_ID
+                'oxgroupsid' => self::USER_GROUP_ID,
             ]
         );
         $relation->save();
     }
 
-    private function setCategoryRightsExclusivelyVisibleForGroup()
+    private function setCategoryRightsExclusivelyVisibleForGroup(): void
     {
         $this->assignObjectRightsForGroup(self::CATEGORY_ID);
     }
 
-    private function assignObjectRightsForGroup(string $objectId)
+    private function assignObjectRightsForGroup(string $objectId): void
     {
         $objectRights = oxNew(ShopBaseModel::class);
         $objectRights->init('oxobjectrights');
@@ -292,7 +294,7 @@ final class CategoryEnterpriseAccessRightsTest extends EnterpriseTestCase
                 'oxobjectid' => $objectId,
                 'oxgroupidx' => 131072,
                 'oxoffset'   => 0,
-                'oxaction'   => 1
+                'oxaction'   => 1,
             ]
         );
         $objectRights->save();

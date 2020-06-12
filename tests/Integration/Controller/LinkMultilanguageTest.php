@@ -11,9 +11,8 @@ namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
 use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
-class LinkMultilanguageTest extends TestCase
+final class LinkMultilanguageTest extends TestCase
 {
-
     private const ACTIVE_MULTILANGUAGE_LINK = 'test_active';
 
     public function providerGetLinkMultilanguage()
@@ -33,7 +32,7 @@ class LinkMultilanguageTest extends TestCase
     /**
      * @dataProvider providerGetLinkMultilanguage
      */
-    public function testGetLinkMultilanguage(string $languageId, string $description)
+    public function testGetLinkMultilanguage(string $languageId, string $description): void
     {
         $query = 'query {
             link (id: "' . self::ACTIVE_MULTILANGUAGE_LINK . '") {
@@ -68,19 +67,19 @@ class LinkMultilanguageTest extends TestCase
         return [
             'de' => [
                 'languageId' => '0',
-                'count'      => 0
+                'count'      => 0,
             ],
             'en' => [
                 'languageId' => '1',
-                'count'      => 1
-            ]
+                'count'      => 1,
+            ],
         ];
     }
 
     /**
      * @dataProvider providerGetLinkListWithFilterMultilanguage
      */
-    public function testGetLinkListWithFilterMultilanguage(string $languageId, int $count)
+    public function testGetLinkListWithFilterMultilanguage(string $languageId, int $count): void
     {
         $query = 'query{
             links(filter: {

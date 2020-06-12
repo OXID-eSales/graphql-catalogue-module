@@ -1,41 +1,31 @@
 <?php
 
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
 declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\DataType;
 
 use OxidEsales\Eshop\Application\Model\Article as EshopArticle;
-use OxidEsales\GraphQL\Catalogue\DataType\Product;
-use OxidEsales\GraphQL\Catalogue\DataType\ProductImage;
-use OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService;
-use PHPUnit\Framework\TestCase;
-use OxidEsales\GraphQL\Catalogue\Service\Repository;
-use OxidEsales\GraphQL\Catalogue\Service\Product as ProductService;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\Service\Authorization;
+use OxidEsales\GraphQL\Catalogue\Product\DataType\Product;
+use OxidEsales\GraphQL\Catalogue\Product\DataType\ProductImage;
+use OxidEsales\GraphQL\Catalogue\Product\Service\Product as ProductService;
+use OxidEsales\GraphQL\Catalogue\Product\Service\RelationService;
+use OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\Repository;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \OxidEsales\GraphQL\Catalogue\DataType\ProductImageGallery
  * @covers \OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService
  */
-class ProductImageGalleryTest extends TestCase
+final class ProductImageGalleryTest extends TestCase
 {
-    private function productRelationService(): ProductRelationService
-    {
-        $repo = new Repository(
-            $this->createMock(QueryBuilderFactoryInterface::class)
-        );
-
-        return new ProductRelationService(
-            new ProductService(
-                $repo,
-                $this->createMock(Authorization::class)
-            )
-        );
-    }
-
-
-    public function testGetImageGalleryIconAndThumb()
+    public function testGetImageGalleryIconAndThumb(): void
     {
         $article = oxNew(EshopArticle::class);
         $article->load('058de8224773a1d5fd54d523f0c823e0');
@@ -47,17 +37,17 @@ class ProductImageGalleryTest extends TestCase
         $imageGallery = $productRelation->getImageGallery($product);
 
         $this->assertRegExp(
-            "@^http.*?/out/pictures/generated/product/1/390_245_75/cabrinha_caliber_2011.jpg$@msi",
+            '@^http.*?/out/pictures/generated/product/1/390_245_75/cabrinha_caliber_2011.jpg$@msi',
             $imageGallery->getThumb()
         );
 
         $this->assertRegExp(
-            "@^http.*?/out/pictures/generated/product/1/87_87_75/cabrinha_caliber_2011.jpg$@msi",
+            '@^http.*?/out/pictures/generated/product/1/87_87_75/cabrinha_caliber_2011.jpg$@msi',
             $imageGallery->getIcon()
         );
     }
 
-    public function testGetImageGalleryImagesTypeAndCount()
+    public function testGetImageGalleryImagesTypeAndCount(): void
     {
         $article = oxNew(EshopArticle::class);
         $article->load('058de8224773a1d5fd54d523f0c823e0');
@@ -84,7 +74,7 @@ class ProductImageGalleryTest extends TestCase
      *
      * @dataProvider getImageGalleryImagesContentDataProvider
      */
-    public function testGetImageGalleryImagesContent($key, $image, $icon, $zoom)
+    public function testGetImageGalleryImagesContent($key, $image, $icon, $zoom): void
     {
         $article = oxNew(EshopArticle::class);
         $article->load('058de8224773a1d5fd54d523f0c823e0');
@@ -110,20 +100,34 @@ class ProductImageGalleryTest extends TestCase
                 1,
                 '@^http.*?/out/pictures/generated/product/1/540_340_75/cabrinha_caliber_2011.jpg$@msi',
                 '@^http.*?/out/pictures/generated/product/1/87_87_75/cabrinha_caliber_2011.jpg$@msi',
-                '@^http.*?/out/pictures/generated/product/1/665_665_75/cabrinha_caliber_2011.jpg$@msi'
+                '@^http.*?/out/pictures/generated/product/1/665_665_75/cabrinha_caliber_2011.jpg$@msi',
             ],
             [
                 2,
                 '@^http.*?/out/pictures/generated/product/2/540_340_75/cabrinha_caliber_2011_deck.jpg$@msi',
                 '@^http.*?/out/pictures/generated/product/2/87_87_75/cabrinha_caliber_2011_deck.jpg$@msi',
-                '@^http.*?/out/pictures/generated/product/2/665_665_75/cabrinha_caliber_2011_deck.jpg$@msi'
+                '@^http.*?/out/pictures/generated/product/2/665_665_75/cabrinha_caliber_2011_deck.jpg$@msi',
             ],
             [
                 3,
                 '@^http.*?/out/pictures/generated/product/3/540_340_75/cabrinha_caliber_2011_bottom.jpg$@msi',
                 '@^http.*?/out/pictures/generated/product/3/87_87_75/cabrinha_caliber_2011_bottom.jpg$@msi',
-                '@^http.*?/out/pictures/generated/product/3/665_665_75/cabrinha_caliber_2011_bottom.jpg$@msi'
-            ]
+                '@^http.*?/out/pictures/generated/product/3/665_665_75/cabrinha_caliber_2011_bottom.jpg$@msi',
+            ],
         ];
+    }
+
+    private function productRelationService(): RelationService
+    {
+        $repo = new Repository(
+            $this->createMock(QueryBuilderFactoryInterface::class)
+        );
+
+        return new RelationService(
+            new ProductService(
+                $repo,
+                $this->createMock(Authorization::class)
+            )
+        );
     }
 }

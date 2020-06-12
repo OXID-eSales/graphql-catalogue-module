@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
+use DateTimeImmutable;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
@@ -16,11 +17,13 @@ use TheCodingMachine\GraphQLite\Types\DateTimeType;
 
 final class VendorTest extends TokenTestCase
 {
-    private const ACTIVE_VENDOR = "a57c56e3ba710eafb2225e98f058d989";
-    private const INACTIVE_VENDOR  = "05833e961f65616e55a2208c2ed7c6b8";
-    private const PRODUCT_RELATED_TO_ACTIVE_VENDOR  = "531b537118f5f4d7a427cdb825440922";
+    private const ACTIVE_VENDOR = 'a57c56e3ba710eafb2225e98f058d989';
 
-    public function testGetSingleActiveVendor()
+    private const INACTIVE_VENDOR  = '05833e961f65616e55a2208c2ed7c6b8';
+
+    private const PRODUCT_RELATED_TO_ACTIVE_VENDOR  = '531b537118f5f4d7a427cdb825440922';
+
+    public function testGetSingleActiveVendor(): void
     {
         $result = $this->query('query {
             vendor (id: "' . self::ACTIVE_VENDOR . '") {
@@ -59,7 +62,7 @@ final class VendorTest extends TokenTestCase
         $dateTimeType = DateTimeType::getInstance();
         //Fixture timestamp can have few seconds difference
         $this->assertLessThanOrEqual(
-            $dateTimeType->serialize(new \DateTimeImmutable('now')),
+            $dateTimeType->serialize(new DateTimeImmutable('now')),
             $vendor['timestamp']
         );
 
@@ -76,11 +79,11 @@ final class VendorTest extends TokenTestCase
             'shortdesc',
             'timestamp',
             'seo',
-            'products'
+            'products',
         ]));
     }
 
-    public function testGetSingleInactiveVendorWithoutToken()
+    public function testGetSingleInactiveVendorWithoutToken(): void
     {
         $result = $this->query('query {
             vendor (id: "' . self::INACTIVE_VENDOR . '") {
@@ -103,7 +106,7 @@ final class VendorTest extends TokenTestCase
         );
     }
 
-    public function testGetSingleInactiveVendorWithToken()
+    public function testGetSingleInactiveVendorWithToken(): void
     {
         $this->prepareToken();
 
@@ -122,7 +125,7 @@ final class VendorTest extends TokenTestCase
         );
     }
 
-    public function testGetSingleNonExistingVendor()
+    public function testGetSingleNonExistingVendor(): void
     {
         $result = $this->query('query {
             vendor (id: "DOES-NOT-EXIST") {
@@ -133,7 +136,7 @@ final class VendorTest extends TokenTestCase
         $this->assertEquals(404, $result['status']);
     }
 
-    public function testGetVendorListWithoutFilter()
+    public function testGetVendorListWithoutFilter(): void
     {
         $result = $this->query('query {
             vendors {
@@ -152,17 +155,17 @@ final class VendorTest extends TokenTestCase
         $this->assertSame(
             [
                 [
-                    "id"        => "a57c56e3ba710eafb2225e98f058d989"
+                    'id'        => 'a57c56e3ba710eafb2225e98f058d989',
                 ],
                 [
-                    "id"        => "fe07958b49de225bd1dbc7594fb9a6b0"
+                    'id'        => 'fe07958b49de225bd1dbc7594fb9a6b0',
                 ],
             ],
             $result['body']['data']['vendors']
         );
     }
 
-    public function testGetVendorListWithAdminToken()
+    public function testGetVendorListWithAdminToken(): void
     {
         $this->prepareToken();
 
@@ -176,20 +179,20 @@ final class VendorTest extends TokenTestCase
         $this->assertEquals(
             [
                 [
-                    "id" => "05833e961f65616e55a2208c2ed7c6b8",
+                    'id' => '05833e961f65616e55a2208c2ed7c6b8',
                 ],
                 [
-                    "id" => "a57c56e3ba710eafb2225e98f058d989",
+                    'id' => 'a57c56e3ba710eafb2225e98f058d989',
                 ],
                 [
-                    "id" => "fe07958b49de225bd1dbc7594fb9a6b0",
+                    'id' => 'fe07958b49de225bd1dbc7594fb9a6b0',
                 ],
             ],
             $result['body']['data']['vendors']
         );
     }
 
-    public function testGetVendorListWithExactFilter()
+    public function testGetVendorListWithExactFilter(): void
     {
         $result = $this->query('query {
             vendors (filter: {
@@ -205,14 +208,14 @@ final class VendorTest extends TokenTestCase
         $this->assertEquals(
             [
                 [
-                    "id" => "a57c56e3ba710eafb2225e98f058d989"
-                ]
+                    'id' => 'a57c56e3ba710eafb2225e98f058d989',
+                ],
             ],
             $result['body']['data']['vendors']
         );
     }
 
-    public function testGetVendorListWithPartialFilter()
+    public function testGetVendorListWithPartialFilter(): void
     {
         $result = $this->query('query {
             vendors (filter: {
@@ -228,14 +231,14 @@ final class VendorTest extends TokenTestCase
         $this->assertEquals(
             [
                 [
-                    "id" => "fe07958b49de225bd1dbc7594fb9a6b0"
-                ]
+                    'id' => 'fe07958b49de225bd1dbc7594fb9a6b0',
+                ],
             ],
             $result['body']['data']['vendors']
         );
     }
 
-    public function testGetEmptyVendorListWithFilter()
+    public function testGetEmptyVendorListWithFilter(): void
     {
         $result = $this->query('query {
             vendors (filter: {
@@ -254,7 +257,7 @@ final class VendorTest extends TokenTestCase
         );
     }
 
-    public function testVendorProductsWithOffsetAndLimit()
+    public function testVendorProductsWithOffsetAndLimit(): void
     {
         $result = $this->query('query {
             vendor (id: "' . self::ACTIVE_VENDOR . '") {
@@ -270,7 +273,7 @@ final class VendorTest extends TokenTestCase
 
         $this->assertEquals(
             [
-                ['title' => 'Kuyichi Jeans KYLE']
+                ['title' => 'Kuyichi Jeans KYLE'],
             ],
             $products
         );
@@ -287,14 +290,18 @@ final class VendorTest extends TokenTestCase
                 'withToken'             => true,
                 'expectedProductsCount' => 13,
                 'active'                => false,
-            ]
+            ],
         ];
     }
 
     /**
      * @dataProvider getVendorProductsDataProvider
+     *
+     * @param mixed $withToken
+     * @param mixed $productCount
+     * @param mixed $active
      */
-    public function testVendorProducts($withToken, $productCount, $active)
+    public function testVendorProducts($withToken, $productCount, $active): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -350,14 +357,18 @@ final class VendorTest extends TokenTestCase
                 'withToken'             => true,
                 'expectedProductsCount' => 13,
                 'active'                => false,
-            ]
+            ],
         ];
     }
 
     /**
      * @dataProvider getVendorsProductListWithToken
+     *
+     * @param mixed $withToken
+     * @param mixed $productCount
+     * @param mixed $active
      */
-    public function testVendorsProductList($withToken, $productCount, $active)
+    public function testVendorsProductList($withToken, $productCount, $active): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()

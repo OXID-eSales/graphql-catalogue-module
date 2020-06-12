@@ -11,10 +11,11 @@ namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
 use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
 
-class PromotionEnterpriseMultilanguageTest extends MultishopTestCase
+final class PromotionEnterpriseMultilanguageTest extends MultishopTestCase
 {
-    private const PROMOTION_ID = "test_active_promotion_1";
-    private const PROMOTION_SUB_SHOP_ID = "test_active_sub_shop_promotion_1";
+    private const PROMOTION_ID = 'test_active_promotion_1';
+
+    private const PROMOTION_SUB_SHOP_ID = 'test_active_sub_shop_promotion_1';
 
     /**
      * @return array
@@ -23,24 +24,24 @@ class PromotionEnterpriseMultilanguageTest extends MultishopTestCase
     {
         return [
             'shop_1_de' => [
-                'shopId' => '1',
+                'shopId'     => '1',
                 'languageId' => '0',
-                'title' => 'Current Promotion 1 DE'
+                'title'      => 'Current Promotion 1 DE',
             ],
             'shop_1_en' => [
-                'shopId' => '1',
+                'shopId'     => '1',
                 'languageId' => '1',
-                'title' => 'Current Promotion 1 EN'
+                'title'      => 'Current Promotion 1 EN',
             ],
             'shop_2_de' => [
-                'shopId' => '2',
+                'shopId'     => '2',
                 'languageId' => '0',
-                'title' => 'Current sub shop Promotion 1 DE'
+                'title'      => 'Current sub shop Promotion 1 DE',
             ],
             'shop_2_en' => [
-                'shopId' => '2',
+                'shopId'     => '2',
                 'languageId' => '1',
-                'title' => 'Current sub shop Promotion 1 EN'
+                'title'      => 'Current sub shop Promotion 1 EN',
             ],
         ];
     }
@@ -49,8 +50,12 @@ class PromotionEnterpriseMultilanguageTest extends MultishopTestCase
      * Check multishop multilanguage data is accessible
      *
      * @dataProvider providerGetPromotionMultilanguage
+     *
+     * @param mixed $shopId
+     * @param mixed $languageId
+     * @param mixed $title
      */
-    public function testGetSingleTranslatedSecondShopPromotion($shopId, $languageId, $title)
+    public function testGetSingleTranslatedSecondShopPromotion($shopId, $languageId, $title): void
     {
         $this->setGETRequestParameter('shp', $shopId);
         $this->setGETRequestParameter('lang', $languageId);
@@ -71,8 +76,8 @@ class PromotionEnterpriseMultilanguageTest extends MultishopTestCase
 
         $this->assertEquals(
             [
-                'id' => $promotionId,
-                'title' => $title
+                'id'    => $promotionId,
+                'title' => $title,
             ],
             $result['body']['data']['promotion']
         );
@@ -82,8 +87,12 @@ class PromotionEnterpriseMultilanguageTest extends MultishopTestCase
      * Check multishop multilanguage data is accessible
      *
      * @dataProvider providerGetPromotionMultilanguage
+     *
+     * @param mixed $shopId
+     * @param mixed $languageId
+     * @param mixed $title
      */
-    public function testGetListTranslatedSecondShopPromotions($shopId, $languageId, $title)
+    public function testGetListTranslatedSecondShopPromotions($shopId, $languageId, $title): void
     {
         $this->setGETRequestParameter('shp', $shopId);
         $this->setGETRequestParameter('lang', $languageId);
@@ -104,8 +113,8 @@ class PromotionEnterpriseMultilanguageTest extends MultishopTestCase
 
         $this->assertEquals(
             [
-                'id' => $promotionId,
-                'title' => $title
+                'id'    => $promotionId,
+                'title' => $title,
             ],
             $result['body']['data']['promotion']
         );

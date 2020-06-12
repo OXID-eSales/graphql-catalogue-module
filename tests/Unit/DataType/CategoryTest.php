@@ -1,11 +1,17 @@
 <?php
 
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
 declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Unit\DataType;
 
+use DateTimeImmutable;
+use OxidEsales\GraphQL\Catalogue\Category\DataType\Category;
 use PHPUnit\Framework\TestCase;
-use OxidEsales\GraphQL\Catalogue\DataType\Category;
 
 /**
  * @covers OxidEsales\GraphQL\Catalogue\DataType\Category
@@ -58,7 +64,7 @@ final class CategoryTest extends TestCase
             )
         );
         $this->assertTrue(
-            $category->isActive(new \DateTimeImmutable('2018-01-01 16:00:00'))
+            $category->isActive(new DateTimeImmutable('2018-01-01 16:00:00'))
         );
     }
 }

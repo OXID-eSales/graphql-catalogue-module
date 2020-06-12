@@ -14,15 +14,13 @@ use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 final class CategoryMultiLanguageTest extends TestCase
 {
     private const ACTIVE_CATEGORY = 'd86fdf0d67bf76dc427aabd2e53e0a97';
+
     private const CATEGORY_WITH_PRODUCTS = 'fad4d7e2b47d87bb6a2773d93d4ae9be';
 
     /**
      * @dataProvider providerGetCategoryMultiLanguage
-     *
-     * @param string $languageId
-     * @param string $title
      */
-    public function testGetCategoryMultiLanguage(string $languageId, string $title)
+    public function testGetCategoryMultiLanguage(string $languageId, string $title): void
     {
         $query = 'query {
             category (id: "' . self::ACTIVE_CATEGORY . '") {
@@ -45,8 +43,8 @@ final class CategoryMultiLanguageTest extends TestCase
 
         $this->assertEquals(
             [
-                'id' => self::ACTIVE_CATEGORY,
-                'title' => $title
+                'id'    => self::ACTIVE_CATEGORY,
+                'title' => $title,
             ],
             $result['body']['data']['category']
         );
@@ -57,22 +55,19 @@ final class CategoryMultiLanguageTest extends TestCase
         return [
             'de' => [
                 'languageId' => '0',
-                'title'      => 'Schuhe'
+                'title'      => 'Schuhe',
             ],
             'en' => [
                 'languageId' => '1',
-                'title'      => 'Shoes'
+                'title'      => 'Shoes',
             ],
         ];
     }
 
     /**
      * @dataProvider providerGetCategoryProductsMultiLanguage
-     *
-     * @param string $languageId
-     * @param array  $products
      */
-    public function testGetCategoryProductsMultiLanguage(string $languageId, array $products)
+    public function testGetCategoryProductsMultiLanguage(string $languageId, array $products): void
     {
         $this->setGETRequestParameter(
             'lang',
@@ -106,45 +101,41 @@ final class CategoryMultiLanguageTest extends TestCase
                 'languageId' => '0',
                 'products'   => [
                     [
-                        'title' => 'Kuyichi Gürtel JUNO'
+                        'title' => 'Kuyichi Gürtel JUNO',
                     ],
                     [
-                        'title' => 'Kuyichi Ledergürtel JEVER'
+                        'title' => 'Kuyichi Ledergürtel JEVER',
                     ],
                     [
-                        'title' => 'Sonnenbrille TRIGGERNAUT AGENT ORANGE'
-                    ]
-                ]
+                        'title' => 'Sonnenbrille TRIGGERNAUT AGENT ORANGE',
+                    ],
+                ],
             ],
             'en' => [
                 'languageId' => '1',
                 'products'   => [
                     [
-                        'title' => 'Kuyichi belt JUNO'
+                        'title' => 'Kuyichi belt JUNO',
                     ],
                     [
-                        'title' => 'Kuyichi leather belt JEVER'
+                        'title' => 'Kuyichi leather belt JEVER',
                     ],
                     [
-                        'title' => 'Sun glasses TRIGGERNAUT AGENT ORANGE'
-                    ]
-                ]
-            ]
+                        'title' => 'Sun glasses TRIGGERNAUT AGENT ORANGE',
+                    ],
+                ],
+            ],
         ];
     }
 
     /**
      * @dataProvider providerGetCategoryListWithFilterMultiLanguage
-     *
-     * @param string $languageId
-     * @param string $contains
-     * @param int    $count
      */
     public function testGetCategoryListWithFilterMultiLanguage(
         string $languageId,
         string $contains,
         int $count
-    ) {
+    ): void {
         $query = 'query{
             categories(filter: {
                 title: {
@@ -175,14 +166,14 @@ final class CategoryMultiLanguageTest extends TestCase
         return [
             'de' => [
                 'languageId' => '0',
-                'contains' => 'Sch',
-                'count' => 1
+                'contains'   => 'Sch',
+                'count'      => 1,
             ],
             'en' => [
                 'languageId' => '1',
-                'contains' => 'Sho',
-                'count' => 1
-            ]
+                'contains'   => 'Sho',
+                'count'      => 1,
+            ],
         ];
     }
 }

@@ -14,9 +14,10 @@ use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 final class BannerMultiLanguageTest extends TokenTestCase
 {
     private const ACTIVE_BANNER_WITH_PRODUCT = 'b5639c6431b26687321f6ce654878fa5';
+
     private const ACTIVE_BANNER_WITHOUT_PRODUCT = 'cb34f86f56162d0c95890b5985693710';
 
-    public function testGetSingleActiveBannerWithProductMultilanguage()
+    public function testGetSingleActiveBannerWithProductMultilanguage(): void
     {
         $query = 'query {
             banner(id: "' . self::ACTIVE_BANNER_WITH_PRODUCT . '") {
@@ -49,14 +50,14 @@ final class BannerMultiLanguageTest extends TokenTestCase
 
         $this->assertSame(
             [
-                'id' => 'f4fc98f99e3660bd2ecd7450f832c41a',
-                'title' => 'Wetsuit NPX ASSASSIN'
+                'id'    => 'f4fc98f99e3660bd2ecd7450f832c41a',
+                'title' => 'Wetsuit NPX ASSASSIN',
             ],
             $banner['product']
         );
     }
 
-    public function testGetSingleActiveBannerWithoutProductMultilanguage()
+    public function testGetSingleActiveBannerWithoutProductMultilanguage(): void
     {
         $query = 'query {
             banner(id: "' . self::ACTIVE_BANNER_WITHOUT_PRODUCT . '") {

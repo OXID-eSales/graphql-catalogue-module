@@ -17,8 +17,11 @@ use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 final class ContentRelationServiceTest extends TokenTestCase
 {
     private const ACTIVE_CONTENT_WITH_SEO = '1074279e67a85f5b1.96907412';
+
     private const ACTIVE_CONTENT_WITH_CATEGORY = 'e6fc3fe89d5da58da9bfcfba451fd365';
+
     private const ACTIVE_CONTENT_WITHOUT_CATEGORY_1 = '2e0f674a78622c5796f9bb36f13078e2';
+
     private const ACTIVE_CONTENT_WITHOUT_CATEGORY_2 = 'e3ab0a5f8598f24dbb3a56b30c472844';
 
     public function testGetContentSeoRelation(): void
@@ -68,7 +71,7 @@ final class ContentRelationServiceTest extends TokenTestCase
     /**
      * @dataProvider contentIdsWithoutCategoryProvider
      */
-    public function testGetContentCategoryRelationWithoutCategory(string $categoryId)
+    public function testGetContentCategoryRelationWithoutCategory(string $categoryId): void
     {
         $result = $this->query('query {
             content (id: "' . $categoryId . '") {

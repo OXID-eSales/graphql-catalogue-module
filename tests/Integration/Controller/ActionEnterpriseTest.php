@@ -13,7 +13,7 @@ use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
 
 final class ActionEnterpriseTest extends MultishopTestCase
 {
-    public function testGetActionsList()
+    public function testGetActionsList(): void
     {
         $this->setGETRequestParameter('shp', '2');
 
@@ -33,28 +33,28 @@ final class ActionEnterpriseTest extends MultishopTestCase
 
         $this->assertSame([
             [
-                'id' => 'oxbargain',
-                'title' => 'Angebot der Woche'
+                'id'    => 'oxbargain',
+                'title' => 'Angebot der Woche',
             ],
             [
-                'id' => 'oxcatoffer',
-                'title' => 'Kategorien-Topangebot'
+                'id'    => 'oxcatoffer',
+                'title' => 'Kategorien-Topangebot',
             ],
             [
-                'id' => 'oxnewest',
-                'title' => 'Frisch eingetroffen'
+                'id'    => 'oxnewest',
+                'title' => 'Frisch eingetroffen',
             ],
             [
-                'id' => 'oxnewsletter',
-                'title' => 'Newsletter'
+                'id'    => 'oxnewsletter',
+                'title' => 'Newsletter',
             ],
             [
-                'id' => 'oxtop5',
-                'title' => 'Topseller'
+                'id'    => 'oxtop5',
+                'title' => 'Topseller',
             ],
             [
-                'id' => 'oxtopstart',
-                'title' => 'Topangebot Startseite'
+                'id'    => 'oxtopstart',
+                'title' => 'Topangebot Startseite',
             ],
         ], $result['body']['data']['actions']);
     }

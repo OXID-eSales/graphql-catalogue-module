@@ -14,10 +14,8 @@ use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
 
 /**
  * Class VendorEnterpriseTest
- *
- * @package OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller
  */
-class VendorEnterpriseTest extends MultishopTestCase
+final class VendorEnterpriseTest extends MultishopTestCase
 {
     private const VENDOR_ID = 'fe07958b49de225bd1dbc7594fb9a6b0';
 
@@ -25,7 +23,7 @@ class VendorEnterpriseTest extends MultishopTestCase
      * Check if active vendor from shop 1 is not accessible for
      * shop 2 if its not yet related to shop 2
      */
-    public function testGetSingleNotInShopActiveVendorWillFail()
+    public function testGetSingleNotInShopActiveVendorWillFail(): void
     {
         $this->setGETRequestParameter('shp', '2');
 
@@ -44,7 +42,7 @@ class VendorEnterpriseTest extends MultishopTestCase
     /**
      * Check if no vendors available while they are not related to the shop 2
      */
-    public function testGetEmptyVendorListOfNotMainShop()
+    public function testGetEmptyVendorListOfNotMainShop(): void
     {
         $this->setGETRequestParameter('shp', '2');
 
@@ -68,7 +66,7 @@ class VendorEnterpriseTest extends MultishopTestCase
      * Check if active vendor from shop 1 is accessible for
      * shop 2 if its related to shop 2
      */
-    public function testGetSingleInShopActiveVendorWillWork()
+    public function testGetSingleInShopActiveVendorWillWork(): void
     {
         $this->setGETRequestParameter('shp', '2');
         $this->setGETRequestParameter('lang', '0');
@@ -91,9 +89,9 @@ class VendorEnterpriseTest extends MultishopTestCase
 
         $this->assertEquals(
             [
-                'id' => self::VENDOR_ID,
-                'title' => 'https://fashioncity.com/de',
-                'products' => []
+                'id'       => self::VENDOR_ID,
+                'title'    => 'https://fashioncity.com/de',
+                'products' => [],
             ],
             $result['body']['data']['vendor']
         );
@@ -102,7 +100,7 @@ class VendorEnterpriseTest extends MultishopTestCase
     /**
      * Check if only one, related to the shop 2 vendor is available in list
      */
-    public function testGetOneVendorInListOfNotMainShop()
+    public function testGetOneVendorInListOfNotMainShop(): void
     {
         $this->setGETRequestParameter('shp', '2');
         $this->addVendorToShops([2]);
@@ -130,24 +128,24 @@ class VendorEnterpriseTest extends MultishopTestCase
     {
         return [
             'shop_1_de' => [
-                'shopId' => '1',
+                'shopId'     => '1',
                 'languageId' => '0',
-                'title' => 'https://fashioncity.com/de'
+                'title'      => 'https://fashioncity.com/de',
             ],
             'shop_1_en' => [
-                'shopId' => '1',
+                'shopId'     => '1',
                 'languageId' => '1',
-                'title' => 'https://fashioncity.com/en'
+                'title'      => 'https://fashioncity.com/en',
             ],
             'shop_2_de' => [
-                'shopId' => '2',
+                'shopId'     => '2',
                 'languageId' => '0',
-                'title' => 'https://fashioncity.com/de'
+                'title'      => 'https://fashioncity.com/de',
             ],
             'shop_2_en' => [
-                'shopId' => '2',
+                'shopId'     => '2',
                 'languageId' => '1',
-                'title' => 'https://fashioncity.com/en'
+                'title'      => 'https://fashioncity.com/en',
             ],
         ];
     }
@@ -156,8 +154,12 @@ class VendorEnterpriseTest extends MultishopTestCase
      * Check multishop multilanguage data is accessible
      *
      * @dataProvider providerGetVendorMultilanguage
+     *
+     * @param mixed $shopId
+     * @param mixed $languageId
+     * @param mixed $title
      */
-    public function testGetSingleTranslatedSecondShopVendor($shopId, $languageId, $title)
+    public function testGetSingleTranslatedSecondShopVendor($shopId, $languageId, $title): void
     {
         $this->setGETRequestParameter('shp', $shopId);
         $this->setGETRequestParameter('lang', $languageId);
@@ -177,8 +179,8 @@ class VendorEnterpriseTest extends MultishopTestCase
 
         $this->assertEquals(
             [
-                'id' => self::VENDOR_ID,
-                'title' => $title
+                'id'    => self::VENDOR_ID,
+                'title' => $title,
             ],
             $result['body']['data']['vendor']
         );
@@ -188,8 +190,12 @@ class VendorEnterpriseTest extends MultishopTestCase
      * Check multishop multilanguage data is accessible
      *
      * @dataProvider providerGetVendorMultilanguage
+     *
+     * @param mixed $shopId
+     * @param mixed $languageId
+     * @param mixed $title
      */
-    public function testGetListTranslatedSecondShopVendors($shopId, $languageId, $title)
+    public function testGetListTranslatedSecondShopVendors($shopId, $languageId, $title): void
     {
         $this->setGETRequestParameter('shp', $shopId);
         $this->setGETRequestParameter('lang', $languageId);
@@ -213,16 +219,14 @@ class VendorEnterpriseTest extends MultishopTestCase
 
         $this->assertEquals(
             [
-                'id' => self::VENDOR_ID,
-                'title' => $title
+                'id'    => self::VENDOR_ID,
+                'title' => $title,
             ],
             $result['body']['data']['vendors'][0]
         );
     }
 
-
-
-    private function addVendorToShops($shops)
+    private function addVendorToShops($shops): void
     {
         $oElement2ShopRelations = oxNew(Element2ShopRelations::class, 'oxvendor');
         $oElement2ShopRelations->setShopIds($shops);

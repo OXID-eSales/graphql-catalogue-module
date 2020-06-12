@@ -4,24 +4,15 @@ services:
     public: false
     autowire: true
 
-  OxidEsales\GraphQL\Catalogue\Controller\:
-    resource: 'src/Controller/'
+  OxidEsales\GraphQL\Catalogue\:
+    resource: 'src/*'
+    exclude: 'src/**/DataType'
     public: true
 
-  OxidEsalesGraphQLCatalogueDataTypeServices:
-    namespace: OxidEsales\GraphQL\Catalogue\DataType\
-    resource: 'src/DataType/*Service.php'
-    public: true
-
-  OxidEsalesGraphQLCatalogueServices:
-    namespace: OxidEsales\GraphQL\Catalogue\Service\
-    resource: 'src/Service/*.php'
-    public: true
-
-  OxidEsales\GraphQL\Catalogue\Framework\NamespaceMapper:
-    class: OxidEsales\GraphQL\Catalogue\Framework\NamespaceMapper
+  OxidEsales\GraphQL\Catalogue\Shared\Service\NamespaceMapper:
+    class: OxidEsales\GraphQL\Catalogue\Shared\Service\NamespaceMapper
     tags: ['graphql_namespace_mapper']
 
-  OxidEsales\GraphQL\Catalogue\Service\PermissionProvider:
-    class: OxidEsales\GraphQL\Catalogue\Service\PermissionProvider
+  OxidEsales\GraphQL\Catalogue\Shared\Service\PermissionProvider:
+    class: OxidEsales\GraphQL\Catalogue\Shared\Service\PermissionProvider
     tags: ['graphql_permission_provider']

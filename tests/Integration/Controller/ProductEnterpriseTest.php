@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
 declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
@@ -9,20 +14,20 @@ use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
 
 /**
  * Class ProductEnterpriseTest
- * @package OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller
  */
-class ProductEnterpriseTest extends MultishopTestCase
+final class ProductEnterpriseTest extends MultishopTestCase
 {
     private const PRODUCT_ID = '058e613db53d782adfc9f2ccb43c45fe';
+
     private const ACTIVE_PRODUCT_WITH_VARIANTS = '531b537118f5f4d7a427cdb825440922';
 
     /**
      * Check if active product from shop 1 is not accessible for
      * shop 2 if its not yet related to shop 2
      */
-    public function testGetSingleNotInShopActiveProductWillFail()
+    public function testGetSingleNotInShopActiveProductWillFail(): void
     {
-        $this->setGETRequestParameter('shp', "2");
+        $this->setGETRequestParameter('shp', '2');
 
         $result = $this->query('query {
             product (id: "' . self::PRODUCT_ID . '") {
@@ -40,9 +45,9 @@ class ProductEnterpriseTest extends MultishopTestCase
      * Check if active product from shop 1 is accessible for
      * shop 2 if its related to shop 2
      */
-    public function testGetSingleInShopActiveProductWillWork()
+    public function testGetSingleInShopActiveProductWillWork(): void
     {
-        $this->setGETRequestParameter('shp', "2");
+        $this->setGETRequestParameter('shp', '2');
         $this->setGETRequestParameter('lang', '0');
         $this->addProductToShops([2], self::PRODUCT_ID);
 
@@ -60,8 +65,8 @@ class ProductEnterpriseTest extends MultishopTestCase
 
         $this->assertEquals(
             [
-                'id' => self::PRODUCT_ID,
-                'title' => 'Bindung O&#039;BRIEN DECADE CT 2010'
+                'id'    => self::PRODUCT_ID,
+                'title' => 'Bindung O&#039;BRIEN DECADE CT 2010',
             ],
             $result['body']['data']['product']
         );
@@ -74,24 +79,24 @@ class ProductEnterpriseTest extends MultishopTestCase
     {
         return [
             'shop_1_de' => [
-                'shopId' => '1',
+                'shopId'     => '1',
                 'languageId' => '0',
-                'title' => 'Bindung O&#039;BRIEN DECADE CT 2010'
+                'title'      => 'Bindung O&#039;BRIEN DECADE CT 2010',
             ],
             'shop_1_en' => [
-                'shopId' => '1',
+                'shopId'     => '1',
                 'languageId' => '1',
-                'title' => 'Binding O&#039;BRIEN DECADE CT 2010'
+                'title'      => 'Binding O&#039;BRIEN DECADE CT 2010',
             ],
             'shop_2_de' => [
-                'shopId' => '2',
+                'shopId'     => '2',
                 'languageId' => '0',
-                'title' => 'Bindung O&#039;BRIEN DECADE CT 2010'
+                'title'      => 'Bindung O&#039;BRIEN DECADE CT 2010',
             ],
             'shop_2_en' => [
-                'shopId' => '2',
+                'shopId'     => '2',
                 'languageId' => '1',
-                'title' => 'Binding O&#039;BRIEN DECADE CT 2010'
+                'title'      => 'Binding O&#039;BRIEN DECADE CT 2010',
             ],
         ];
     }
@@ -100,8 +105,12 @@ class ProductEnterpriseTest extends MultishopTestCase
      * Check multishop multilanguage data is accessible
      *
      * @dataProvider providerGetProductMultilanguage
+     *
+     * @param mixed $shopId
+     * @param mixed $languageId
+     * @param mixed $title
      */
-    public function testGetSingleTranslatedSecondShopProduct($shopId, $languageId, $title)
+    public function testGetSingleTranslatedSecondShopProduct($shopId, $languageId, $title): void
     {
         $this->setGETRequestParameter('shp', $shopId);
         $this->setGETRequestParameter('lang', $languageId);
@@ -121,8 +130,8 @@ class ProductEnterpriseTest extends MultishopTestCase
 
         $this->assertEquals(
             [
-                'id' => self::PRODUCT_ID,
-                'title' => $title
+                'id'    => self::PRODUCT_ID,
+                'title' => $title,
             ],
             $result['body']['data']['product']
         );
@@ -130,11 +139,6 @@ class ProductEnterpriseTest extends MultishopTestCase
 
     /**
      * @dataProvider providerGetProductVariantsSubshop
-     *
-     * @param string $shopId
-     * @param string $languageId
-     * @param array  $expectedLabels
-     * @param array  $expectedVariants
      */
     public function testGetProductVariantsSubshop(
         string $shopId,
@@ -180,14 +184,14 @@ class ProductEnterpriseTest extends MultishopTestCase
                 'languageId' => '0',
                 'labels'     => [
                     'Größe',
-                    'Farbe'
+                    'Farbe',
                 ],
                 'variants'   => [
                     'id'            => '6b6efaa522be53c3e86fdb41f0542a8a',
                     'variantValues' => [
                         'W 30/L 30',
                         'Blau',
-                    ]
+                    ],
                 ],
             ],
             'shop_1_en' => [
@@ -195,14 +199,14 @@ class ProductEnterpriseTest extends MultishopTestCase
                 'languageId' => '1',
                 'labels'     => [
                     'Size',
-                    'Color'
+                    'Color',
                 ],
                 'values'     => [
                     'id'            => '6b6efaa522be53c3e86fdb41f0542a8a',
                     'variantValues' => [
                         'W 30/L 30',
                         'Blue ',
-                    ]
+                    ],
                 ],
             ],
             'shop_2_de' => [
@@ -210,7 +214,7 @@ class ProductEnterpriseTest extends MultishopTestCase
                 'languageId' => '0',
                 'labels'     => [
                     'Größe',
-                    'Farbe'
+                    'Farbe',
                 ],
                 'variants'   => [],
             ],
@@ -219,18 +223,14 @@ class ProductEnterpriseTest extends MultishopTestCase
                 'languageId' => '1',
                 'labels'     => [
                     'Size',
-                    'Color'
+                    'Color',
                 ],
                 'variants'   => [],
-            ]
+            ],
         ];
     }
 
-    /**
-     * @param array  $shops
-     * @param string $productId
-     */
-    private function addProductToShops(array $shops, string $productId)
+    private function addProductToShops(array $shops, string $productId): void
     {
         $oElement2ShopRelations = oxNew(Element2ShopRelations::class, 'oxarticles');
         $oElement2ShopRelations->setShopIds($shops);

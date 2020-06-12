@@ -1,11 +1,16 @@
 <?php
 
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
 declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Unit\DataType;
 
+use OxidEsales\GraphQL\Catalogue\Product\DataType\ProductScalePrice;
 use PHPUnit\Framework\TestCase;
-use OxidEsales\GraphQL\Catalogue\DataType\ProductScalePrice;
 
 /**
  * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductScalePrice
@@ -16,10 +21,10 @@ final class ProductScalePriceTest extends TestCase
     {
         $productScalePrice = new ProductScalePrice(
             new ProductScalePriceModelStub(
-                "10.5",
-                "",
-                "10",
-                "19"
+                '10.5',
+                '',
+                '10',
+                '19'
             )
         );
 
@@ -47,10 +52,10 @@ final class ProductScalePriceTest extends TestCase
     {
         $productScalePrice = new ProductScalePrice(
             new ProductScalePriceModelStub(
-                "",
-                "10.5",
-                "10",
-                "19"
+                '',
+                '10.5',
+                '10',
+                '19'
             )
         );
 

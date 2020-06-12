@@ -1,21 +1,27 @@
 <?php
 
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
 declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Unit\Exception;
 
+use OxidEsales\GraphQL\Catalogue\Category\Exception\CategoryNotFound;
 use PHPUnit\Framework\TestCase;
-use OxidEsales\GraphQL\Catalogue\Exception\CategoryNotFound;
 
 /**
  * @covers OxidEsales\GraphQL\Catalogue\Exception\CategoryNotFound
  */
-class CategoryNotFoundTest extends TestCase
+final class CategoryNotFoundTest extends TestCase
 {
-    public function testExceptionById()
+    public function testExceptionById(): void
     {
         $this->expectException(CategoryNotFound::class);
         $this->expectExceptionMessage('CATID');
+
         throw CategoryNotFound::byId('CATID');
     }
 }

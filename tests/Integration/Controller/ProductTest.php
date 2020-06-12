@@ -14,21 +14,33 @@ use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
+use function version_compare;
+
 final class ProductTest extends TokenTestCase
 {
     private const ACTIVE_PRODUCT = '058e613db53d782adfc9f2ccb43c45fe';
+
     private const INACTIVE_PRODUCT  = '09602cddb5af0aba745293d08ae6bcf6';
+
     private const ACTIVE_PRODUCT_WITH_ACCESSORIES = '05848170643ab0deb9914566391c0c63';
+
     private const ACTIVE_PRODUCT_WITH_VARIANTS = '531b537118f5f4d7a427cdb825440922';
+
     private const ACTIVE_PRODUCT_MANUFACTURER = 'oiaf6ab7e12e86291e86dd3ff891fe40';
+
     private const VENDOR_OF_ACTIVE_PRODUCT = 'a57c56e3ba710eafb2225e98f058d989';
+
     private const ACTIVE_CROSSSOLD_FOR_ACTIVE_PRODUCT = 'b5685a5230f5050475f214b4bb0e239b';
+
     private const ACTIVE_PRODUCT_CATEGORY = '0f40c6a077b68c21f164767c4a903fd2';
+
     private const ACTIVE_PRODUCT_TITLE = 'DECADE';
+
     private const ACTIVE_PRODUCT_FULL_TITLE = 'Bindung O&#039;BRIEN DECADE CT 2010';
+
     private const ACTIVE_PRODUCT_WITH_VARIANTS_TITLE = 'Kuyichi Jeans ANNA';
 
-    public function testGetSingleActiveProduct()
+    public function testGetSingleActiveProduct(): void
     {
         $result = $this->query('query {
             product(id: "' . self::ACTIVE_PRODUCT . '") {
@@ -161,7 +173,8 @@ final class ProductTest extends TokenTestCase
         $this->assertSame(0.0, $dimensions['weight']);
 
         $deliveryTime = $product['deliveryTime'];
-        if (\version_compare(\PHPUnit\Runner\Version::id(), '7.0.0') >= 0) {
+
+        if (version_compare(\PHPUnit\Runner\Version::id(), '7.0.0') >= 0) {
             $this->assertIsInt($deliveryTime['minDeliveryTime']);
             $this->assertIsInt($deliveryTime['maxDeliveryTime']);
         } else {
@@ -172,7 +185,7 @@ final class ProductTest extends TokenTestCase
         $this->assertGreaterThan(0, $deliveryTime['maxDeliveryTime']);
         $this->assertContains(
             $deliveryTime['deliveryTimeUnit'],
-            ['DAY','WEEK'],
+            ['DAY', 'WEEK'],
             'deliveryTimeUnit must be one of DAY, WEEK, but is not'
         );
 
@@ -186,7 +199,7 @@ final class ProductTest extends TokenTestCase
         $this->assertNull($product['vendor']);
         $this->assertNull($product['bundle']);
 
-        $currency = $price['currency'];
+        $currency         = $price['currency'];
         $expectedCurrency = Registry::getConfig()->getActShopCurrencyObject();
         $this->assertSame($expectedCurrency->id, $currency['id']);
         $this->assertSame($expectedCurrency->name, $currency['name']);
@@ -210,7 +223,7 @@ final class ProductTest extends TokenTestCase
         );
 
         $imageGallery = $product['imageGallery'];
-        $images = $imageGallery['images'][0];
+        $images       = $imageGallery['images'][0];
         $this->assertRegExp(
             '@https?://.*/out/pictures/generated/product/1/540_340_75/obrien_decade_ct_boot_2010_1.jpg@',
             $images['image']
@@ -274,7 +287,7 @@ final class ProductTest extends TokenTestCase
         $this->assertTrue($product['wishedPriceEnabled']);
     }
 
-    public function testGetSingleInactiveProductWithoutToken()
+    public function testGetSingleInactiveProductWithoutToken(): void
     {
         $result = $this->query('query {
             product (id: "' . self::INACTIVE_PRODUCT . '") {
@@ -289,7 +302,7 @@ final class ProductTest extends TokenTestCase
         );
     }
 
-    public function testGetSingleInactiveProductWithToken()
+    public function testGetSingleInactiveProductWithToken(): void
     {
         $this->prepareToken();
 
@@ -303,14 +316,14 @@ final class ProductTest extends TokenTestCase
         $this->assertEquals(200, $result['status']);
         $this->assertEquals(
             [
-                'id' => self::INACTIVE_PRODUCT,
-                'active' => false
+                'id'     => self::INACTIVE_PRODUCT,
+                'active' => false,
             ],
             $result['body']['data']['product']
         );
     }
 
-    public function testGetSingleNonExistingProduct()
+    public function testGetSingleNonExistingProduct(): void
     {
         $result = $this->query('query {
             product (id: "DOES-NOT-EXIST") {
@@ -319,11 +332,6 @@ final class ProductTest extends TokenTestCase
         }');
 
         $this->assertEquals(404, $result['status']);
-    }
-
-    private function assertArraySameNonAssociative(array $expected, array $actual): void
-    {
-        $this->assertSame(sort($expected), sort($actual));
     }
 
     public function testGetProductVariants(): void
@@ -350,7 +358,7 @@ final class ProductTest extends TokenTestCase
             $result['body']['data']['product']['variantLabels'],
             [
                 'Größe',
-                'Farbe'
+                'Farbe',
             ]
         );
 
@@ -358,76 +366,76 @@ final class ProductTest extends TokenTestCase
 
         $expectedVariants = [
             [
-              "id" => "6b6efaa522be53c3e86fdb41f0542a8a",
-              "active" => true,
-              "variantValues" => [
-                  "W 30/L 30",
-                  "Blau",
-              ],
+                'id'            => '6b6efaa522be53c3e86fdb41f0542a8a',
+                'active'        => true,
+                'variantValues' => [
+                    'W 30/L 30',
+                    'Blau',
+                ],
             ],
             [
-              "id" => "6b65c82bfe8fa19865d560f8c1a905b4",
-              "active" => true,
-              "variantValues" => [
-                  "W 30/L 30",
-                  "Smoke Gray",
-              ],
+                'id'            => '6b65c82bfe8fa19865d560f8c1a905b4',
+                'active'        => true,
+                'variantValues' => [
+                    'W 30/L 30',
+                    'Smoke Gray',
+                ],
             ],
             [
-              "id" => "6b6ee4ad0a02a725a136ca139e226dd5",
-              "active" => true,
-              "variantValues" => [
-                  "W 30/L 30",
-                  "Super Blue",
-              ],
+                'id'            => '6b6ee4ad0a02a725a136ca139e226dd5',
+                'active'        => true,
+                'variantValues' => [
+                    'W 30/L 30',
+                    'Super Blue',
+                ],
             ],
             [
-              "id" => "6b628e6a8ffa98fea6f2ee9d708b1b23",
-              "active" => true,
-              "variantValues" => [
-                  "W 31/L 34",
-                  "Blau",
-              ],
+                'id'            => '6b628e6a8ffa98fea6f2ee9d708b1b23',
+                'active'        => true,
+                'variantValues' => [
+                    'W 31/L 34',
+                    'Blau',
+                ],
             ],
             [
-              "id" => "6b6e2c7af07fd2b9d82223ff35f4e08f",
-              "active" => true,
-              "variantValues" => [
-                  "W 31/L 34",
-                  "Smoke Gray",
-              ],
+                'id'            => '6b6e2c7af07fd2b9d82223ff35f4e08f',
+                'active'        => true,
+                'variantValues' => [
+                    'W 31/L 34',
+                    'Smoke Gray',
+                ],
             ],
             [
-              "id" => "6b6d187d3f648ab5d7875ce863244095",
-              "active" => true,
-              "variantValues" => [
-                  "W 31/L 34",
-                  "Super Blue",
-              ],
+                'id'            => '6b6d187d3f648ab5d7875ce863244095',
+                'active'        => true,
+                'variantValues' => [
+                    'W 31/L 34',
+                    'Super Blue',
+                ],
             ],
             [
-              "id" => "6b65295a7fe5fa6faaa2f0ac3f9b0f80",
-              "active" => true,
-              "variantValues" => [
-                  "W 34/L 34",
-                  "Blau",
-              ],
+                'id'            => '6b65295a7fe5fa6faaa2f0ac3f9b0f80',
+                'active'        => true,
+                'variantValues' => [
+                    'W 34/L 34',
+                    'Blau',
+                ],
             ],
             [
-              "id" => "6b6e0bb9f2b8b5f070f91593073b4555",
-              "active" => true,
-              "variantValues" => [
-                  "W 34/L 34",
-                  "Smoke Gray",
-              ],
+                'id'            => '6b6e0bb9f2b8b5f070f91593073b4555',
+                'active'        => true,
+                'variantValues' => [
+                    'W 34/L 34',
+                    'Smoke Gray',
+                ],
             ],
             [
-              "id" => "6b6cf1ed0c0b3e784b05b1c9c207d352",
-              "active" => true,
-              "variantValues" => [
-                  "W 34/L 34",
-                  "Super Blue",
-              ],
+                'id'            => '6b6cf1ed0c0b3e784b05b1c9c207d352',
+                'active'        => true,
+                'variantValues' => [
+                    'W 34/L 34',
+                    'Super Blue',
+                ],
             ],
         ];
 
@@ -457,7 +465,7 @@ final class ProductTest extends TokenTestCase
         );
     }
 
-    public function testProducts()
+    public function testProducts(): void
     {
         $result = $this->query('query {
             products {
@@ -478,12 +486,8 @@ final class ProductTest extends TokenTestCase
 
     /**
      * @dataProvider productsOffsetAndLimitDataProvider
-     *
-     * @param int $offset
-     * @param int $limit
-     * @param array $expectedProducts
      */
-    public function testProductsOffsetAndLimit(int $offset, int $limit, array $expectedProducts)
+    public function testProductsOffsetAndLimit(int $offset, int $limit, array $expectedProducts): void
     {
         $result = $this->query('query {
             products(pagination: {offset: ' . $offset . ', limit: ' . $limit . '}) {
@@ -509,8 +513,8 @@ final class ProductTest extends TokenTestCase
                 0,
                 1,
                 [
-                    ['id' => '05848170643ab0deb9914566391c0c63']
-                ]
+                    ['id' => '05848170643ab0deb9914566391c0c63'],
+                ],
             ],
             [
                 0,
@@ -520,7 +524,7 @@ final class ProductTest extends TokenTestCase
                     ['id' => '0584e8b766a4de2177f9ed11d1587f55'],
                     ['id' => '058de8224773a1d5fd54d523f0c823e0'],
                     ['id' => '058e613db53d782adfc9f2ccb43c45fe'],
-                ]
+                ],
             ],
             [
                 2,
@@ -530,18 +534,15 @@ final class ProductTest extends TokenTestCase
                     ['id' => '058e613db53d782adfc9f2ccb43c45fe'],
                     ['id' => '531b537118f5f4d7a427cdb825440922'],
                     ['id' => '531f91d4ab8bfb24c4d04e473d246d0b'],
-                ]
+                ],
             ],
         ];
     }
 
     /**
      * @dataProvider productsByManufacturerProvider
-     *
-     * @param string $manufacturerId
-     * @param int $expectedCount
      */
-    public function testProductsByManufacturer(string $manufacturerId, int $expectedCount)
+    public function testProductsByManufacturer(string $manufacturerId, int $expectedCount): void
     {
         $result = $this->query('query {
             products(filter: { manufacturer: { equals: "' . $manufacturerId . '" } }) {
@@ -579,17 +580,14 @@ final class ProductTest extends TokenTestCase
         return [
             ['9434afb379a46d6c141de9c9e5b94fcf', 10],
             ['adc6df0977329923a6330cc8f3c0a906', 7],
-            ['90a0b84564cde2394491df1c673b6aa0', 3]
+            ['90a0b84564cde2394491df1c673b6aa0', 3],
         ];
     }
 
     /**
      * @dataProvider productsByVendorProvider
-     *
-     * @param string $vendorId
-     * @param int $expectedCount
      */
-    public function testProductsByVendor(string $vendorId, int $expectedCount)
+    public function testProductsByVendor(string $vendorId, int $expectedCount): void
     {
         $result = $this->query('query {
             products(filter: { vendor: { equals: "' . $vendorId . '" } }) {
@@ -632,11 +630,8 @@ final class ProductTest extends TokenTestCase
 
     /**
      * @dataProvider productsByCategoryDataProvider
-     *
-     * @param string $categoryId
-     * @param int $expectedCount
      */
-    public function testProductsByCategory(string $categoryId, int $expectedCount)
+    public function testProductsByCategory(string $categoryId, int $expectedCount): void
     {
         $result = $this->query('query {
             products(filter: { category: { equals: "' . $categoryId . '" } }) {
@@ -655,7 +650,7 @@ final class ProductTest extends TokenTestCase
         );
     }
 
-    public function testProductsByCategoryWithToken()
+    public function testProductsByCategoryWithToken(): void
     {
         $queryBuilder = ContainerFactory::getInstance()
             ->getContainer()
@@ -668,7 +663,6 @@ final class ProductTest extends TokenTestCase
             ->where('OXID = :OXID')
             ->setParameter(':OXID', self::ACTIVE_PRODUCT_CATEGORY)
             ->execute();
-
 
         $this->prepareToken();
 
@@ -710,9 +704,9 @@ final class ProductTest extends TokenTestCase
         ];
     }
 
-    public function testDeliveryStatusHandling()
+    public function testDeliveryStatusHandling(): void
     {
-        $noStockProduct = 'fadc492a5807c56eb80b0507accd756b';
+        $noStockProduct      = 'fadc492a5807c56eb80b0507accd756b';
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
             ->get(QueryBuilderFactoryInterface::class);
@@ -768,7 +762,7 @@ final class ProductTest extends TokenTestCase
 
         $this->assertSame(
             [
-                ['id' => $noStockProduct]
+                ['id' => $noStockProduct],
             ],
             $result['body']['data']['products']
         );
@@ -779,13 +773,13 @@ final class ProductTest extends TokenTestCase
         return [
             [
                 'isVendorActive' => false,
-                'withToken' => false,
+                'withToken'      => false,
                 'expectedVendor' => null,
             ],
             [
                 'isVendorActive' => false,
-                'withToken' => true,
-                'expectedVendor' => null
+                'withToken'      => true,
+                'expectedVendor' => null,
                 // TODO: Using a valid token, this list should also contain inactive vendors
                 // [
                 //     'id' => self::VENDOR_OF_ACTIVE_PRODUCT,
@@ -794,17 +788,17 @@ final class ProductTest extends TokenTestCase
             ],
             [
                 'isVendorActive' => true,
-                'withToken' => false,
+                'withToken'      => false,
                 'expectedVendor' => [
-                    'id' => self::VENDOR_OF_ACTIVE_PRODUCT,
+                    'id'     => self::VENDOR_OF_ACTIVE_PRODUCT,
                     'active' => true,
                 ],
             ],
             [
                 'isVendorActive' => true,
-                'withToken' => true,
+                'withToken'      => true,
                 'expectedVendor' => [
-                    'id' => self::VENDOR_OF_ACTIVE_PRODUCT,
+                    'id'     => self::VENDOR_OF_ACTIVE_PRODUCT,
                     'active' => true,
                 ],
             ],
@@ -813,8 +807,12 @@ final class ProductTest extends TokenTestCase
 
     /**
      * @dataProvider productVendorWithTokenProvider
+     *
+     * @param mixed $isVendorActive
+     * @param mixed $withToken
+     * @param mixed $expectedVendor
      */
-    public function testGetProductVendor($isVendorActive, $withToken, $expectedVendor)
+    public function testGetProductVendor($isVendorActive, $withToken, $expectedVendor): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -856,13 +854,13 @@ final class ProductTest extends TokenTestCase
         return [
             [
                 'isManufacturerActive' => false,
-                'withToken' => false,
+                'withToken'            => false,
                 'expectedManufacturer' => null,
             ],
             [
                 'isManufacturerActive' => false,
-                'withToken' => true,
-                'expectedManufacturer' => null
+                'withToken'            => true,
+                'expectedManufacturer' => null,
                 // TODO: Using a valid token, this list should also contain inactive manufacturers
                 // [
                 //     'id' => self::ACTIVE_PRODUCT_MANUFACTURER,
@@ -871,17 +869,17 @@ final class ProductTest extends TokenTestCase
             ],
             [
                 'isManufacturerActive' => true,
-                'withToken' => false,
+                'withToken'            => false,
                 'expectedManufacturer' => [
-                    'id' => self::ACTIVE_PRODUCT_MANUFACTURER,
+                    'id'     => self::ACTIVE_PRODUCT_MANUFACTURER,
                     'active' => true,
                 ],
             ],
             [
                 'isManufacturerActive' => true,
-                'withToken' => true,
+                'withToken'            => true,
                 'expectedManufacturer' => [
-                    'id' => self::ACTIVE_PRODUCT_MANUFACTURER,
+                    'id'     => self::ACTIVE_PRODUCT_MANUFACTURER,
                     'active' => true,
                 ],
             ],
@@ -890,8 +888,12 @@ final class ProductTest extends TokenTestCase
 
     /**
      * @dataProvider productManufacturerWithTokenProvider
+     *
+     * @param mixed $isManufacturerActive
+     * @param mixed $withToken
+     * @param mixed $expectedManufacturer
      */
-    public function testGetProductManufacturer($isManufacturerActive, $withToken, $expectedManufacturer)
+    public function testGetProductManufacturer($isManufacturerActive, $withToken, $expectedManufacturer): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -932,13 +934,13 @@ final class ProductTest extends TokenTestCase
     {
         return [
             [
-                'isCSProductActive' => false,
-                'withToken' => false,
+                'isCSProductActive'    => false,
+                'withToken'            => false,
                 'expectedCrossSelling' => [],
             ],
             [
-                'isCSProductActive' => false,
-                'withToken' => true,
+                'isCSProductActive'    => false,
+                'withToken'            => true,
                 'expectedCrossSelling' => [
                     // TODO: Using a valid token, this list should also contain inactive products
                     // [
@@ -948,23 +950,23 @@ final class ProductTest extends TokenTestCase
                 ],
             ],
             [
-                'isCSProductActive' => true,
-                'withToken' => false,
+                'isCSProductActive'    => true,
+                'withToken'            => false,
                 'expectedCrossSelling' => [
                     [
-                        'id' => self::ACTIVE_CROSSSOLD_FOR_ACTIVE_PRODUCT,
+                        'id'     => self::ACTIVE_CROSSSOLD_FOR_ACTIVE_PRODUCT,
                         'active' => true,
-                    ]
+                    ],
                 ],
             ],
             [
-                'isCSProductActive' => true,
-                'withToken' => true,
+                'isCSProductActive'    => true,
+                'withToken'            => true,
                 'expectedCrossSelling' => [
                     [
-                        'id' => self::ACTIVE_CROSSSOLD_FOR_ACTIVE_PRODUCT,
+                        'id'     => self::ACTIVE_CROSSSOLD_FOR_ACTIVE_PRODUCT,
                         'active' => true,
-                    ]
+                    ],
                 ],
             ],
         ];
@@ -972,8 +974,12 @@ final class ProductTest extends TokenTestCase
 
     /**
      * @dataProvider productCrossSellingWithTokenProvider
+     *
+     * @param mixed $isCSProductActive
+     * @param mixed $withToken
+     * @param mixed $expectedCrossSelling
      */
-    public function testGetProductCrossSelling($isCSProductActive, $withToken, $expectedCrossSelling)
+    public function testGetProductCrossSelling($isCSProductActive, $withToken, $expectedCrossSelling): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -1022,13 +1028,13 @@ final class ProductTest extends TokenTestCase
         return [
             [
                 'isCategoryActive' => false,
-                'withToken' => false,
+                'withToken'        => false,
                 'expectedCategory' => null,
             ],
             [
                 'isCategoryActive' => false,
-                'withToken' => true,
-                'expectedCategory' => null
+                'withToken'        => true,
+                'expectedCategory' => null,
                 // TODO: Using a valid token, this list should also contain inactive categories
                 //'expectedCategory' => [
                 //    'id' => self::ACTIVE_PRODUCT_CATEGORY,
@@ -1037,17 +1043,17 @@ final class ProductTest extends TokenTestCase
             ],
             [
                 'isCategoryActive' => true,
-                'withToken' => false,
+                'withToken'        => false,
                 'expectedCategory' => [
-                    'id' => self::ACTIVE_PRODUCT_CATEGORY,
+                    'id'     => self::ACTIVE_PRODUCT_CATEGORY,
                     'active' => true,
                 ],
             ],
             [
                 'isCategoryActive' => true,
-                'withToken' => true,
+                'withToken'        => true,
                 'expectedCategory' => [
-                    'id' => self::ACTIVE_PRODUCT_CATEGORY,
+                    'id'     => self::ACTIVE_PRODUCT_CATEGORY,
                     'active' => true,
                 ],
             ],
@@ -1056,8 +1062,12 @@ final class ProductTest extends TokenTestCase
 
     /**
      * @dataProvider productCategoryWithTokenProvider
+     *
+     * @param mixed $isCategoryActive
+     * @param mixed $withToken
+     * @param mixed $expectedCategory
      */
-    public function testGetProductCategory($isCategoryActive, $withToken, $expectedCategory)
+    public function testGetProductCategory($isCategoryActive, $withToken, $expectedCategory): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -1100,20 +1110,20 @@ final class ProductTest extends TokenTestCase
         return [
             [
                 'isCategoryActive' => false,
-                'withToken' => false,
+                'withToken'        => false,
                 'expectedProducts' => [
                     [
-                        'id' => self::ACTIVE_PRODUCT,
-                        'category' => null
-                    ]
+                        'id'       => self::ACTIVE_PRODUCT,
+                        'category' => null,
+                    ],
                 ],
             ],
             [
                 'isCategoryActive' => false,
-                'withToken' => true,
+                'withToken'        => true,
                 'expectedProducts' => [
                     [
-                        'id' => self::ACTIVE_PRODUCT,
+                        'id'       => self::ACTIVE_PRODUCT,
                         'category' => null,
                         // TODO: Using a valid token, this list should also contain an inactive category
                         //       EshopModelArticle::getCategory() only returns active category
@@ -1126,12 +1136,12 @@ final class ProductTest extends TokenTestCase
             ],
             [
                 'isCategoryActive' => true,
-                'withToken' => false,
+                'withToken'        => false,
                 'expectedProducts' => [
                     [
-                        'id' => self::ACTIVE_PRODUCT,
+                        'id'       => self::ACTIVE_PRODUCT,
                         'category' => [
-                            'id' => self::ACTIVE_PRODUCT_CATEGORY,
+                            'id'     => self::ACTIVE_PRODUCT_CATEGORY,
                             'active' => true,
                         ],
                     ],
@@ -1139,12 +1149,12 @@ final class ProductTest extends TokenTestCase
             ],
             [
                 'isCategoryActive' => true,
-                'withToken' => true,
+                'withToken'        => true,
                 'expectedProducts' => [
                     [
-                        'id' => self::ACTIVE_PRODUCT,
+                        'id'       => self::ACTIVE_PRODUCT,
                         'category' => [
-                            'id' => self::ACTIVE_PRODUCT_CATEGORY,
+                            'id'     => self::ACTIVE_PRODUCT_CATEGORY,
                             'active' => true,
                         ],
                     ],
@@ -1155,8 +1165,12 @@ final class ProductTest extends TokenTestCase
 
     /**
      * @dataProvider filterProductsByCategoryProvider
+     *
+     * @param mixed $isCategoryActive
+     * @param mixed $withToken
+     * @param mixed $expectedProducts
      */
-    public function testFilterProductsByCategory($isCategoryActive, $withToken, $expectedProducts)
+    public function testFilterProductsByCategory($isCategoryActive, $withToken, $expectedProducts): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -1209,21 +1223,21 @@ final class ProductTest extends TokenTestCase
         return [
             [
                 'isManufacturerActive' => false,
-                'withToken' => false,
-                'expectedProducts' => [
+                'withToken'            => false,
+                'expectedProducts'     => [
                     [
-                        'id' => self::ACTIVE_PRODUCT,
-                        'manufacturer' => null
-                    ]
+                        'id'           => self::ACTIVE_PRODUCT,
+                        'manufacturer' => null,
+                    ],
                 ],
             ],
             [
                 'isManufacturerActive' => false,
-                'withToken' => true,
-                'expectedProducts' => [
+                'withToken'            => true,
+                'expectedProducts'     => [
                     [
-                        'id' => self::ACTIVE_PRODUCT,
-                        'manufacturer' => null
+                        'id'           => self::ACTIVE_PRODUCT,
+                        'manufacturer' => null,
                         // TODO: Using a valid token, this list should also contain an inactive manufacturer
                         //       EshopModelArticle::getManufacturer() only returns active manufacturer
                         // 'manufacturer' => [
@@ -1235,12 +1249,12 @@ final class ProductTest extends TokenTestCase
             ],
             [
                 'isManufacturerActive' => true,
-                'withToken' => false,
-                'expectedProducts' => [
+                'withToken'            => false,
+                'expectedProducts'     => [
                     [
-                        'id' => self::ACTIVE_PRODUCT,
+                        'id'           => self::ACTIVE_PRODUCT,
                         'manufacturer' => [
-                            'id' => self::ACTIVE_PRODUCT_MANUFACTURER,
+                            'id'     => self::ACTIVE_PRODUCT_MANUFACTURER,
                             'active' => true,
                         ],
                     ],
@@ -1248,12 +1262,12 @@ final class ProductTest extends TokenTestCase
             ],
             [
                 'isManufacturerActive' => true,
-                'withToken' => true,
-                'expectedProducts' => [
+                'withToken'            => true,
+                'expectedProducts'     => [
                     [
-                        'id' => self::ACTIVE_PRODUCT,
+                        'id'           => self::ACTIVE_PRODUCT,
                         'manufacturer' => [
-                            'id' => self::ACTIVE_PRODUCT_MANUFACTURER,
+                            'id'     => self::ACTIVE_PRODUCT_MANUFACTURER,
                             'active' => true,
                         ],
                     ],
@@ -1264,8 +1278,12 @@ final class ProductTest extends TokenTestCase
 
     /**
      * @dataProvider filterProductsByManufacturerProvider
+     *
+     * @param mixed $isManufacturerActive
+     * @param mixed $withToken
+     * @param mixed $expectedProducts
      */
-    public function testFilterProductsByManufacturer($isManufacturerActive, $withToken, $expectedProducts)
+    public function testFilterProductsByManufacturer($isManufacturerActive, $withToken, $expectedProducts): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -1317,22 +1335,22 @@ final class ProductTest extends TokenTestCase
     {
         return [
             [
-                'isVendorActive' => false,
-                'withToken' => false,
+                'isVendorActive'   => false,
+                'withToken'        => false,
                 'expectedProducts' => [
                     [
-                        'id' => self::ACTIVE_PRODUCT_WITH_VARIANTS,
-                        'vendor' => null
-                    ]
+                        'id'     => self::ACTIVE_PRODUCT_WITH_VARIANTS,
+                        'vendor' => null,
+                    ],
                 ],
             ],
             [
-                'isVendorActive' => false,
-                'withToken' => true,
+                'isVendorActive'   => false,
+                'withToken'        => true,
                 'expectedProducts' => [
                     [
-                        'id' => self::ACTIVE_PRODUCT_WITH_VARIANTS,
-                        'vendor' => null
+                        'id'     => self::ACTIVE_PRODUCT_WITH_VARIANTS,
+                        'vendor' => null,
                         // TODO: Using a valid token, this list should also contain an inactive vendor
                         //       EshopModelArticle::getVendor() only returns active vendor
                         //'vendor' => [
@@ -1343,26 +1361,26 @@ final class ProductTest extends TokenTestCase
                 ],
             ],
             [
-                'isVendorActive' => true,
-                'withToken' => false,
+                'isVendorActive'   => true,
+                'withToken'        => false,
                 'expectedProducts' => [
                     [
-                        'id' => self::ACTIVE_PRODUCT_WITH_VARIANTS,
+                        'id'     => self::ACTIVE_PRODUCT_WITH_VARIANTS,
                         'vendor' => [
-                            'id' => self::VENDOR_OF_ACTIVE_PRODUCT,
+                            'id'     => self::VENDOR_OF_ACTIVE_PRODUCT,
                             'active' => true,
                         ],
                     ],
                 ],
             ],
             [
-                'isVendorActive' => true,
-                'withToken' => true,
+                'isVendorActive'   => true,
+                'withToken'        => true,
                 'expectedProducts' => [
                     [
-                        'id' => self::ACTIVE_PRODUCT_WITH_VARIANTS,
+                        'id'     => self::ACTIVE_PRODUCT_WITH_VARIANTS,
                         'vendor' => [
-                            'id' => self::VENDOR_OF_ACTIVE_PRODUCT,
+                            'id'     => self::VENDOR_OF_ACTIVE_PRODUCT,
                             'active' => true,
                         ],
                     ],
@@ -1373,8 +1391,12 @@ final class ProductTest extends TokenTestCase
 
     /**
      * @dataProvider filterProductsByVendorProvider
+     *
+     * @param mixed $isVendorActive
+     * @param mixed $withToken
+     * @param mixed $expectedProducts
      */
-    public function testFilterProductsByVendor($isVendorActive, $withToken, $expectedProducts)
+    public function testFilterProductsByVendor($isVendorActive, $withToken, $expectedProducts): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -1421,7 +1443,7 @@ final class ProductTest extends TokenTestCase
         $this->assertEquals($expectedProducts, $actualProducts);
     }
 
-    public function testProductExistsInListFilteredByCategory()
+    public function testProductExistsInListFilteredByCategory(): void
     {
         $productResult = $this->query('query {
             product(id: "' . self::ACTIVE_PRODUCT . '") {
@@ -1438,11 +1460,11 @@ final class ProductTest extends TokenTestCase
         $this->assertResponseStatus(200, $productResult);
 
         $expectedProduct = [
-            'id' => self::ACTIVE_PRODUCT,
-            'active' => true,
-            'title' => self::ACTIVE_PRODUCT_FULL_TITLE,
+            'id'       => self::ACTIVE_PRODUCT,
+            'active'   => true,
+            'title'    => self::ACTIVE_PRODUCT_FULL_TITLE,
             'category' => [
-                'id' => self::ACTIVE_PRODUCT_CATEGORY,
+                'id'     => self::ACTIVE_PRODUCT_CATEGORY,
                 'active' => true,
             ],
         ];
@@ -1468,5 +1490,10 @@ final class ProductTest extends TokenTestCase
 
         $actualProducts = $productListResult['body']['data']['products'];
         $this->assertEquals([$actualProduct], $actualProducts);
+    }
+
+    private function assertArraySameNonAssociative(array $expected, array $actual): void
+    {
+        $this->assertSame(sort($expected), sort($actual));
     }
 }

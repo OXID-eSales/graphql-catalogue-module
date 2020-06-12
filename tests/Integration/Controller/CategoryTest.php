@@ -9,21 +9,29 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
 final class CategoryTest extends TokenTestCase
 {
-    private const ACTIVE_CATEGORY = "d86fdf0d67bf76dc427aabd2e53e0a97";
-    private const INACTIVE_CATEGORY  = "d8665fef35f4d528e92c3d664f4a00c0";
-    private const CATEGORY_WITHOUT_CHILDREN  = "0f4270b89fbef1481958381410a0dbca";
-    private const CATEGORY_WITH_CHILDREN  = "943173edecf6d6870a0f357b8ac84d32";
-    private const CATEGORY_WITH_PRODUCTS  = "0f4fb00809cec9aa0910aa9c8fe36751";
-    private const CATEGORY_WITH_PARENT = "0f41a4463b227c437f6e6bf57b1697c4";
+    private const ACTIVE_CATEGORY = 'd86fdf0d67bf76dc427aabd2e53e0a97';
+
+    private const INACTIVE_CATEGORY  = 'd8665fef35f4d528e92c3d664f4a00c0';
+
+    private const CATEGORY_WITHOUT_CHILDREN  = '0f4270b89fbef1481958381410a0dbca';
+
+    private const CATEGORY_WITH_CHILDREN  = '943173edecf6d6870a0f357b8ac84d32';
+
+    private const CATEGORY_WITH_PRODUCTS  = '0f4fb00809cec9aa0910aa9c8fe36751';
+
+    private const CATEGORY_WITH_PARENT = '0f41a4463b227c437f6e6bf57b1697c4';
+
     private const PRODUCT_RELATED_TO_ACTIVE_CATEGORY = 'b56369b1fc9d7b97f9c5fc343b349ece';
 
-    public function testGetSingleActiveCategory()
+    public function testGetSingleActiveCategory(): void
     {
         $result = $this->query('query {
             category (id: "' . self::ACTIVE_CATEGORY . '") {
@@ -84,15 +92,15 @@ final class CategoryTest extends TokenTestCase
         $this->assertTrue($category['showSuffix']);
         $this->assertRegExp('@https?://.*/Bekleidung/Sportswear/Neopren/Schuhe/@', $category['seo']['url']);
         $this->assertInstanceOf(
-            \DateTimeInterface::class,
-            new \DateTimeImmutable($category['timestamp'])
+            DateTimeInterface::class,
+            new DateTimeImmutable($category['timestamp'])
         );
 
         $this->assertNotFalse(parse_url($result['body']['data']['category']['seo']['url']));
         $this->assertNotFalse(parse_url($result['body']['data']['category']['icon']));
     }
 
-    public function testGetSingleInactiveCategoryWithoutToken()
+    public function testGetSingleInactiveCategoryWithoutToken(): void
     {
         $result = $this->query('query {
             category (id: "' . self::INACTIVE_CATEGORY . '") {
@@ -107,7 +115,7 @@ final class CategoryTest extends TokenTestCase
         );
     }
 
-    public function testGetSingleInactiveCategoryWithToken()
+    public function testGetSingleInactiveCategoryWithToken(): void
     {
         $this->prepareToken();
 
@@ -121,14 +129,14 @@ final class CategoryTest extends TokenTestCase
         $this->assertEquals(200, $result['status']);
         $this->assertEquals(
             [
-                'id' => self::INACTIVE_CATEGORY,
-                'active' => false
+                'id'     => self::INACTIVE_CATEGORY,
+                'active' => false,
             ],
             $result['body']['data']['category']
         );
     }
 
-    public function testGetSingleNonExistingCategory()
+    public function testGetSingleNonExistingCategory(): void
     {
         $result = $this->query('query {
             category (id: "DOES-NOT-EXIST") {
@@ -139,7 +147,7 @@ final class CategoryTest extends TokenTestCase
         $this->assertEquals(404, $result['status']);
     }
 
-    public function testGetCategoryRelations()
+    public function testGetCategoryRelations(): void
     {
         $result = $this->query('query {
             category (id: "' . self::ACTIVE_CATEGORY . '") {
@@ -164,12 +172,12 @@ final class CategoryTest extends TokenTestCase
         $category = $result['body']['data']['category'];
 
         $this->assertSame(
-            "fad2d80baf7aca6ac54e819e066f24aa",
+            'fad2d80baf7aca6ac54e819e066f24aa',
             $category['parent']['id']
         );
 
         $this->assertSame(
-            "30e44ab83fdee7564.23264141",
+            '30e44ab83fdee7564.23264141',
             $category['root']['id']
         );
 
@@ -178,7 +186,7 @@ final class CategoryTest extends TokenTestCase
         );
     }
 
-    public function testGetChildrenWhenThereAreNoChildren()
+    public function testGetChildrenWhenThereAreNoChildren(): void
     {
         $result = $this->query('query{
             category(id: "' . self::CATEGORY_WITHOUT_CHILDREN . '"){
@@ -200,7 +208,7 @@ final class CategoryTest extends TokenTestCase
         );
     }
 
-    public function testGetChildren()
+    public function testGetChildren(): void
     {
         $result = $this->query('query{
             category(id: "' . self::CATEGORY_WITH_CHILDREN . '"){
@@ -230,7 +238,7 @@ final class CategoryTest extends TokenTestCase
         );
     }
 
-    public function testGetAllFieldsOfSingleActiveChildCategory()
+    public function testGetAllFieldsOfSingleActiveChildCategory(): void
     {
         $result = $this->query('query {
             category(id: "' . self::CATEGORY_WITH_CHILDREN . '") {
@@ -293,12 +301,12 @@ final class CategoryTest extends TokenTestCase
         $this->assertTrue($child['showSuffix']);
         $this->assertRegExp('@https?://.*/Wakeboarding/Bindungen/@', $child['seo']['url']);
         $this->assertInstanceOf(
-            \DateTimeInterface::class,
-            new \DateTimeImmutable($child['timestamp'])
+            DateTimeInterface::class,
+            new DateTimeImmutable($child['timestamp'])
         );
     }
 
-    public function testGetCategoryListWithoutFilter()
+    public function testGetCategoryListWithoutFilter(): void
     {
         $result = $this->query('query {
             categories {
@@ -334,7 +342,7 @@ final class CategoryTest extends TokenTestCase
         );
     }
 
-    public function testGetCategoryListWithPartialFilter()
+    public function testGetCategoryListWithPartialFilter(): void
     {
         $result = $this->query('query {
             categories(filter: {
@@ -352,14 +360,14 @@ final class CategoryTest extends TokenTestCase
         );
         $this->assertEquals(
             [
-                ["id" => "30e44ab83fdee7564.23264141"],
-                ["id" => "oia9ff5c96f1f29d527b61202ece0829"]
+                ['id' => '30e44ab83fdee7564.23264141'],
+                ['id' => 'oia9ff5c96f1f29d527b61202ece0829'],
             ],
             $result['body']['data']['categories']
         );
     }
 
-    public function testGetCategoryListWithExactFilter()
+    public function testGetCategoryListWithExactFilter(): void
     {
         $result = $this->query('query {
             categories(filter: {
@@ -379,15 +387,15 @@ final class CategoryTest extends TokenTestCase
         $this->assertSame(
             [
                 [
-                    'id' => 'd863b76c6bb90a970a5577adf890e8cd',
-                    'title' => 'Jeans'
-                ]
+                    'id'    => 'd863b76c6bb90a970a5577adf890e8cd',
+                    'title' => 'Jeans',
+                ],
             ],
             $result['body']['data']['categories']
         );
     }
 
-    public function testGetEmptyCategoryListWithFilter()
+    public function testGetEmptyCategoryListWithFilter(): void
     {
         $result = $this->query('query {
             categories(filter: {
@@ -409,7 +417,7 @@ final class CategoryTest extends TokenTestCase
         );
     }
 
-    public function testGetSeoData()
+    public function testGetSeoData(): void
     {
         $this->setGETRequestParameter(
             'lang',
@@ -450,7 +458,7 @@ final class CategoryTest extends TokenTestCase
         );
     }
 
-    public function testCategoryProductListWithoutToken()
+    public function testCategoryProductListWithoutToken(): void
     {
         $result = $this->query('query {
             category (id: "' . self::CATEGORY_WITH_PRODUCTS . '") {
@@ -486,14 +494,18 @@ final class CategoryTest extends TokenTestCase
                 'withToken'             => true,
                 'expectedProductsCount' => 12,
                 'active'                => false,
-            ]
+            ],
         ];
     }
 
     /**
      * @dataProvider getCategoryProductListDataProvider
+     *
+     * @param mixed $withToken
+     * @param mixed $productCount
+     * @param mixed $active
      */
-    public function testCategoryProductList($withToken, $productCount, $active)
+    public function testCategoryProductList($withToken, $productCount, $active): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -548,12 +560,8 @@ final class CategoryTest extends TokenTestCase
 
     /**
      * @dataProvider productsOffsetAndLimitDataProvider
-     *
-     * @param int $offset
-     * @param int $limit
-     * @param array $expectedProducts
      */
-    public function testCategoryProductListOffsetAndLimit(int $offset, int $limit, array $expectedProducts)
+    public function testCategoryProductListOffsetAndLimit(int $offset, int $limit, array $expectedProducts): void
     {
         $result = $this->query('query {
             category (id: "' . self::CATEGORY_WITH_PRODUCTS . '") {
@@ -591,13 +599,13 @@ final class CategoryTest extends TokenTestCase
                 [
                     [
                         'id'    => 'b56369b1fc9d7b97f9c5fc343b349ece',
-                        'title' => 'Kite CORE GTS'
+                        'title' => 'Kite CORE GTS',
                     ],
                     [
                         'id'    => 'b56597806428de2f58b1c6c7d3e0e093',
-                        'title' => 'Kite NBK EVO 2010'
+                        'title' => 'Kite NBK EVO 2010',
                     ],
-                ]
+                ],
             ],
             [
                 4,
@@ -605,17 +613,17 @@ final class CategoryTest extends TokenTestCase
                 [
                     [
                         'id'    => 'b56c560872da93602ff88c7267eb4774',
-                        'title' => 'Kite NAISH PARK 2011'
+                        'title' => 'Kite NAISH PARK 2011',
                     ],
                     [
                         'id'    => 'dc5480c47d8cd5a9eab9da5db9159cc6',
-                        'title' => 'Kite RRD PASSION 2009'
+                        'title' => 'Kite RRD PASSION 2009',
                     ],
                     [
                         'id'    => 'dc57391739360d306c8dfcb3a4295e19',
-                        'title' => 'Kite RRD PASSION 2010'
+                        'title' => 'Kite RRD PASSION 2010',
                     ],
-                ]
+                ],
             ],
             [
                 8,
@@ -623,21 +631,21 @@ final class CategoryTest extends TokenTestCase
                 [
                     [
                         'id'    => 'f4f0cb3606e231c3fdb34fcaee2d6d04',
-                        'title' => 'Kite LIQUID FORCE ENVY'
+                        'title' => 'Kite LIQUID FORCE ENVY',
                     ],
                     [
                         'id'    => 'f4fe052346b4ec271011e25c052682c5',
-                        'title' => 'Kite CORE GT'
+                        'title' => 'Kite CORE GT',
                     ],
                     [
                         'id'    => 'fad21eb148918c8f4d9f0077fedff1ba',
-                        'title' => 'Kite LIQUID FORCE HAVOC'
+                        'title' => 'Kite LIQUID FORCE HAVOC',
                     ],
                     [
                         'id'    => 'fadc492a5807c56eb80b0507accd756b',
-                        'title' => 'Kite SPLEENE SP-X 2010'
+                        'title' => 'Kite SPLEENE SP-X 2010',
                     ],
-                ]
+                ],
             ],
         ];
     }
@@ -646,49 +654,49 @@ final class CategoryTest extends TokenTestCase
     {
         return [
             [
-                'isParentActive' => false,
-                'withToken' => false,
+                'isParentActive'     => false,
+                'withToken'          => false,
                 'expectedCategories' => [
                     [
                         'id'     => '0f40c6a077b68c21f164767c4a903fd2',
-                        'parent' => null
-                    ]
+                        'parent' => null,
+                    ],
                 ],
             ],
             [
-                'isParentActive' => false,
-                'withToken' => true,
+                'isParentActive'     => false,
+                'withToken'          => true,
                 'expectedCategories' => [
                     [
-                        'id' => '0f40c6a077b68c21f164767c4a903fd2',
+                        'id'     => '0f40c6a077b68c21f164767c4a903fd2',
                         'parent' => [
-                            'id' => self::CATEGORY_WITH_CHILDREN,
+                            'id'     => self::CATEGORY_WITH_CHILDREN,
                             'active' => false,
                         ],
                     ],
                 ],
             ],
             [
-                'isParentActive' => true,
-                'withToken' => false,
+                'isParentActive'     => true,
+                'withToken'          => false,
                 'expectedCategories' => [
                     [
-                        'id' => '0f40c6a077b68c21f164767c4a903fd2',
+                        'id'     => '0f40c6a077b68c21f164767c4a903fd2',
                         'parent' => [
-                            'id' => self::CATEGORY_WITH_CHILDREN,
+                            'id'     => self::CATEGORY_WITH_CHILDREN,
                             'active' => true,
                         ],
                     ],
                 ],
             ],
             [
-                'isParentActive' => true,
-                'withToken' => true,
+                'isParentActive'     => true,
+                'withToken'          => true,
                 'expectedCategories' => [
                     [
-                        'id' => '0f40c6a077b68c21f164767c4a903fd2',
+                        'id'     => '0f40c6a077b68c21f164767c4a903fd2',
                         'parent' => [
-                            'id' => self::CATEGORY_WITH_CHILDREN,
+                            'id'     => self::CATEGORY_WITH_CHILDREN,
                             'active' => true,
                         ],
                     ],
@@ -699,8 +707,12 @@ final class CategoryTest extends TokenTestCase
 
     /**
      * @dataProvider filterCategoriesByParentProvider
+     *
+     * @param mixed $isParentActive
+     * @param mixed $withToken
+     * @param mixed $expectedCategories
      */
-    public function testFilterCategoriesByParent($isParentActive, $withToken, $expectedCategories)
+    public function testFilterCategoriesByParent($isParentActive, $withToken, $expectedCategories): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()

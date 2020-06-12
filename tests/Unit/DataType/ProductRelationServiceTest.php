@@ -1,43 +1,32 @@
 <?php
 
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
 declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Unit\DataType;
 
-use PHPUnit\Framework\TestCase;
-use OxidEsales\GraphQL\Catalogue\DataType\Category;
-use OxidEsales\GraphQL\Catalogue\DataType\Product;
 use OxidEsales\Eshop\Application\Model\Article as EshopArticleModel;
 use OxidEsales\Eshop\Application\Model\Category as EshopCategoryModel;
-use OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService;
-use OxidEsales\GraphQL\Catalogue\Service\Repository;
-use OxidEsales\GraphQL\Catalogue\Service\Product as ProductService;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\Service\Authorization;
+use OxidEsales\GraphQL\Catalogue\Product\DataType\Product;
+use OxidEsales\GraphQL\Catalogue\Product\Service\Product as ProductService;
+use OxidEsales\GraphQL\Catalogue\Product\Service\RelationService;
+use OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\Repository;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService
  */
 final class ProductRelationServiceTest extends TestCase
 {
-
-    private function productRelationService(): ProductRelationService
-    {
-        $repo = new Repository(
-            $this->createMock(QueryBuilderFactoryInterface::class)
-        );
-
-        return new ProductRelationService(
-            new ProductService(
-                $repo,
-                $this->createMock(Authorization::class)
-            )
-        );
-    }
-
     public function testGetNoCategoryIfNotAssignedToProduct(): void
     {
-        $noCategoryProductModelStub = new class extends EshopArticleModel {
+        $noCategoryProductModelStub = new class() extends EshopArticleModel {
             public function __construct()
             {
             }
@@ -59,15 +48,14 @@ final class ProductRelationServiceTest extends TestCase
 
     public function testGetNoCategoryIfEmptyCategoryAssignedToProduct(): void
     {
-        $emptyCategoryProductModelStub = new class extends EshopArticleModel {
+        $emptyCategoryProductModelStub = new class() extends EshopArticleModel {
             public function __construct()
             {
             }
 
             public function getCategory()
             {
-                return new class extends EshopCategoryModel
-                    {
+                return new class() extends EshopCategoryModel {
                     public function __construct()
                     {
                     }
@@ -85,6 +73,20 @@ final class ProductRelationServiceTest extends TestCase
                 new Product(
                     $emptyCategoryProductModelStub
                 )
+            )
+        );
+    }
+
+    private function productRelationService(): RelationService
+    {
+        $repo = new Repository(
+            $this->createMock(QueryBuilderFactoryInterface::class)
+        );
+
+        return new RelationService(
+            new ProductService(
+                $repo,
+                $this->createMock(Authorization::class)
             )
         );
     }

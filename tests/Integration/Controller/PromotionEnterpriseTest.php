@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
 declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
@@ -8,18 +13,17 @@ use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
 
 /**
  * Class PromotionEnterpriseTest
- * @package OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller
  */
-class PromotionEnterpriseTest extends MultishopTestCase
+final class PromotionEnterpriseTest extends MultishopTestCase
 {
-    private const PROMOTION_SUB_SHOP_ID = "test_active_sub_shop_promotion_1";
+    private const PROMOTION_SUB_SHOP_ID = 'test_active_sub_shop_promotion_1';
 
     /**
      * Get single active promotion from sub shop
      */
-    public function testGetPromotionFromSubShop()
+    public function testGetPromotionFromSubShop(): void
     {
-        $this->setGETRequestParameter('shp', "2");
+        $this->setGETRequestParameter('shp', '2');
 
         $result = $this->query('query {
             promotion (id: "' . self::PROMOTION_SUB_SHOP_ID . '") {
@@ -46,16 +50,16 @@ class PromotionEnterpriseTest extends MultishopTestCase
             'id',
             'active',
             'title',
-            'text'
+            'text',
         ]));
     }
 
     /**
      * Check if both promotion related to the shop 2 are available in list
      */
-    public function testGetPromotionListFromSubShop()
+    public function testGetPromotionListFromSubShop(): void
     {
-        $this->setGETRequestParameter('shp', "2");
+        $this->setGETRequestParameter('shp', '2');
 
         $result = $this->query('query{
             promotions {

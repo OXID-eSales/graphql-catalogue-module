@@ -9,16 +9,17 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
+use DateTimeImmutable;
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 use TheCodingMachine\GraphQLite\Types\DateTimeType;
 
 final class ManufacturerWithTokenTest extends TokenTestCase
 {
     //Kuyichi
-    private const ACTIVE_MANUFACTURER = "9434afb379a46d6c141de9c9e5b94fcf";
+    private const ACTIVE_MANUFACTURER = '9434afb379a46d6c141de9c9e5b94fcf';
 
     //RRD
-    private const INACTIVE_MANUFACTURER  = "adca51c88a3caa1c7b939fd6a229ae3a";
+    private const INACTIVE_MANUFACTURER  = 'adca51c88a3caa1c7b939fd6a229ae3a';
 
     protected function setUp(): void
     {
@@ -27,7 +28,7 @@ final class ManufacturerWithTokenTest extends TokenTestCase
         $this->prepareToken();
     }
 
-    public function testGetSingleActiveManufacturer()
+    public function testGetSingleActiveManufacturer(): void
     {
         $result = $this->query('query {
             manufacturer (id: "' . self::ACTIVE_MANUFACTURER . '") {
@@ -57,7 +58,7 @@ final class ManufacturerWithTokenTest extends TokenTestCase
         $dateTimeType = DateTimeType::getInstance();
         //Fixture timestamp can have few seconds difference
         $this->assertLessThanOrEqual(
-            $dateTimeType->serialize(new \DateTimeImmutable('now')),
+            $dateTimeType->serialize(new DateTimeImmutable('now')),
             $result['body']['data']['manufacturer']['timestamp']
         );
 
@@ -68,11 +69,11 @@ final class ManufacturerWithTokenTest extends TokenTestCase
             'title',
             'shortdesc',
             'timestamp',
-            'seo'
+            'seo',
         ]));
     }
 
-    public function testGetSingleInactiveManufacturer()
+    public function testGetSingleInactiveManufacturer(): void
     {
         $result = $this->query('query {
             manufacturer (id: "' . self::INACTIVE_MANUFACTURER . '") {
@@ -90,7 +91,7 @@ final class ManufacturerWithTokenTest extends TokenTestCase
         );
     }
 
-    public function testGetSingleNonExistingManufacturer()
+    public function testGetSingleNonExistingManufacturer(): void
     {
         $result = $this->query('query {
             manufacturer (id: "DOES-NOT-EXIST") {
@@ -101,7 +102,7 @@ final class ManufacturerWithTokenTest extends TokenTestCase
         $this->assertEquals(404, $result['status']);
     }
 
-    public function testGetManufacturerListWithoutFilter()
+    public function testGetManufacturerListWithoutFilter(): void
     {
         $result = $this->query('query {
             manufacturers {
@@ -118,7 +119,7 @@ final class ManufacturerWithTokenTest extends TokenTestCase
         );
     }
 
-    public function testGetManufacturerListWithPartialFilter()
+    public function testGetManufacturerListWithPartialFilter(): void
     {
         $result = $this->query('query {
             manufacturers(filter: {
@@ -134,17 +135,17 @@ final class ManufacturerWithTokenTest extends TokenTestCase
         $this->assertEquals(
             [
                 [
-                    "id" => "dc50589ad69b6ec71721b25bdd403171"
+                    'id' => 'dc50589ad69b6ec71721b25bdd403171',
                 ],
                 [
-                    "id" => "dc59459d4d67189182c53ed0e4e777bc"
-                ]
+                    'id' => 'dc59459d4d67189182c53ed0e4e777bc',
+                ],
             ],
             $result['body']['data']['manufacturers']
         );
     }
 
-    public function testGetEmptyManufacturerListWithExactMatchFilter()
+    public function testGetEmptyManufacturerListWithExactMatchFilter(): void
     {
         $result = $this->query('query {
             manufacturers(filter: {
@@ -160,8 +161,8 @@ final class ManufacturerWithTokenTest extends TokenTestCase
         $this->assertEquals(
             [
                 [
-                    "id" => "dc50589ad69b6ec71721b25bdd403171"
-                ]
+                    'id' => 'dc50589ad69b6ec71721b25bdd403171',
+                ],
             ],
             $result['body']['data']['manufacturers']
         );

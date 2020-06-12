@@ -1,11 +1,16 @@
 <?php
 
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
 declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Unit\DataType;
 
+use OxidEsales\GraphQL\Catalogue\Shared\DataType\Seo;
 use PHPUnit\Framework\TestCase;
-use OxidEsales\GraphQL\Catalogue\DataType\Seo;
 
 /**
  * @covers OxidEsales\GraphQL\Catalogue\DataType\Seo

@@ -9,27 +9,21 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
-use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
 final class VendorMultiLanguageTest extends TestCase
 {
-    private const ACTIVE_VENDOR = "a57c56e3ba710eafb2225e98f058d989";
+    private const ACTIVE_VENDOR = 'a57c56e3ba710eafb2225e98f058d989';
 
     /**
      * @dataProvider providerGetVendorListWithFilterMultiLanguage
-     *
-     * @param string $languageId
-     * @param string $contains
-     * @param int    $count
-     * @param array  $expectedVendors
      */
     public function testGetVendorListWithFilterMultiLanguage(
         string $languageId,
         string $contains,
         int $count,
         array $expectedVendors
-    ) {
+    ): void {
         $query = 'query{
             vendors(filter: {
                 title: {
@@ -56,7 +50,7 @@ final class VendorMultiLanguageTest extends TestCase
         );
 
         $expectedVendor = $expectedVendors[0];
-        $vendor = $vendors[0];
+        $vendor         = $vendors[0];
 
         $this->assertNotFalse(
             parse_url($vendor['seo']['url'])
@@ -78,37 +72,33 @@ final class VendorMultiLanguageTest extends TestCase
         return [
             'de' => [
                 'languageId' => '0',
-                'contains' => 'de',
-                'count' => 1,
-                'result' => [
+                'contains'   => 'de',
+                'count'      => 1,
+                'result'     => [
                     [
                         'title' => 'https://fashioncity.com/de',
-                        'url' => '/Nach-Lieferant/https-fashioncity-com-de/',
-                    ]
-                ]
+                        'url'   => '/Nach-Lieferant/https-fashioncity-com-de/',
+                    ],
+                ],
             ],
             'en' => [
                 'languageId' => '1',
-                'contains' => 'en',
-                'count' => 1,
-                'result' => [
+                'contains'   => 'en',
+                'count'      => 1,
+                'result'     => [
                     [
                         'title' => 'https://fashioncity.com/en',
-                        'url' => '/en/By-distributor/https-fashioncity-com-en/',
-                    ]
-                ]
-            ]
+                        'url'   => '/en/By-distributor/https-fashioncity-com-en/',
+                    ],
+                ],
+            ],
         ];
     }
 
     /**
      * @dataProvider providerGetVendorMultiLanguage
-     *
-     * @param string $languageId
-     * @param string $title
-     * @param string $productShortDescription
      */
-    public function testGetVendorMultiLanguage(string $languageId, string $title, string $productShortDescription)
+    public function testGetVendorMultiLanguage(string $languageId, string $title, string $productShortDescription): void
     {
         $query = 'query {
             vendor (id: "' . self::ACTIVE_VENDOR . '") {
@@ -130,11 +120,11 @@ final class VendorMultiLanguageTest extends TestCase
 
         $this->assertEquals(
             [
-                'id' => self::ACTIVE_VENDOR,
-                'title' => $title,
+                'id'       => self::ACTIVE_VENDOR,
+                'title'    => $title,
                 'products' => [
-                    ['shortDescription' => $productShortDescription]
-                ]
+                    ['shortDescription' => $productShortDescription],
+                ],
             ],
             $result['body']['data']['vendor']
         );
@@ -144,14 +134,14 @@ final class VendorMultiLanguageTest extends TestCase
     {
         return [
             'de' => [
-                'languageId' => '0',
-                'title'      => 'www.true-fashion.com',
-                'productShortDescription' => 'Lässige Damenjeans von Kuyichi'
+                'languageId'              => '0',
+                'title'                   => 'www.true-fashion.com',
+                'productShortDescription' => 'Lässige Damenjeans von Kuyichi',
             ],
             'en' => [
-                'languageId' => '1',
-                'title'      => 'www.true-fashion.com',
-                'productShortDescription' => 'Cool lady jeans by Kuyichi'
+                'languageId'              => '1',
+                'title'                   => 'www.true-fashion.com',
+                'productShortDescription' => 'Cool lady jeans by Kuyichi',
             ],
         ];
     }

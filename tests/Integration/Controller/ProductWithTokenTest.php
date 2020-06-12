@@ -9,14 +9,15 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
+use DateTimeImmutable;
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 use TheCodingMachine\GraphQLite\Types\DateTimeType;
 
 final class ProductWithTokenTest extends TokenTestCase
 {
+    private const ACTIVE_PRODUCT = '058e613db53d782adfc9f2ccb43c45fe';
 
-    private const ACTIVE_PRODUCT = "058e613db53d782adfc9f2ccb43c45fe";
-    private const INACTIVE_PRODUCT  = "09602cddb5af0aba745293d08ae6bcf6";
+    private const INACTIVE_PRODUCT  = '09602cddb5af0aba745293d08ae6bcf6';
 
     protected function setUp(): void
     {
@@ -25,7 +26,7 @@ final class ProductWithTokenTest extends TokenTestCase
         $this->prepareToken();
     }
 
-    public function testGetSingleActiveProduct()
+    public function testGetSingleActiveProduct(): void
     {
         $result = $this->query('query {
             product (id: "' . self::ACTIVE_PRODUCT . '") {
@@ -45,18 +46,18 @@ final class ProductWithTokenTest extends TokenTestCase
         $dateTimeType = DateTimeType::getInstance();
         //Fixture timestamp can have few seconds difference
         $this->assertLessThanOrEqual(
-            $dateTimeType->serialize(new \DateTimeImmutable('now')),
+            $dateTimeType->serialize(new DateTimeImmutable('now')),
             $result['body']['data']['product']['timestamp']
         );
 
         $this->assertEmpty(array_diff(array_keys($product), [
             'id',
             'active',
-            'title'
+            'title',
         ]));
     }
 
-    public function testGetInactiveProduct()
+    public function testGetInactiveProduct(): void
     {
         $result = $this->query('query {
             product (id: "' . self::INACTIVE_PRODUCT . '") {
@@ -74,7 +75,7 @@ final class ProductWithTokenTest extends TokenTestCase
         );
     }
 
-    public function testGetSingleNonExistingProduct()
+    public function testGetSingleNonExistingProduct(): void
     {
         $result = $this->query('query {
             product (id: "DOES-NOT-EXIST") {
@@ -85,7 +86,7 @@ final class ProductWithTokenTest extends TokenTestCase
         $this->assertEquals(404, $result['status']);
     }
 
-    public function testGetAllProducts()
+    public function testGetAllProducts(): void
     {
         $result = $this->query('query {
             products {

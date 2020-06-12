@@ -9,13 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\DataType;
 
-use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 use OxidEsales\Eshop\Application\Model\Article as EshopProduct;
-use OxidEsales\Eshop\Application\Model\User as EshopUser;
-use OxidEsales\GraphQL\Catalogue\DataType\Seo;
-use OxidEsales\Eshop\Core\Registry as EshopRegistry;
-use OxidEsales\Eshop\Core\Utils as EshopUtils;
 use OxidEsales\Eshop\Core\Language as EshopLanguage;
+use OxidEsales\Eshop\Core\Registry as EshopRegistry;
+use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
+use OxidEsales\GraphQL\Catalogue\Shared\DataType\Seo;
 
 /**
  * @covers \OxidEsales\GraphQL\Catalogue\DataType\Seo
@@ -45,14 +43,19 @@ final class SeoTest extends TestCase
                 'description' => 'english seo description',
                 'keywords'    => 'english seo keywords',
                 'url'         => 'Kiteboarding/Kiteboards/Kiteboard-CABRINHA-CALIBER-2011.html',
-            ]
+            ],
         ];
     }
 
     /**
      * @dataProvider providerProductSeo
+     *
+     * @param mixed $languageId
+     * @param mixed $description
+     * @param mixed $keywords
+     * @param mixed $url
      */
-    public function testProductSeo($languageId, $description, $keywords, $url)
+    public function testProductSeo($languageId, $description, $keywords, $url): void
     {
         $this->setGETRequestParameter(
             'lang',

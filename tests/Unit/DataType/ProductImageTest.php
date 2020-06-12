@@ -1,10 +1,15 @@
 <?php
 
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
 declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\DataType;
 
-use OxidEsales\GraphQL\Catalogue\DataType\ProductImage;
+use OxidEsales\GraphQL\Catalogue\Product\DataType\ProductImage;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,9 +19,9 @@ final class ProductImageTest extends TestCase
 {
     public function testProductImage(): void
     {
-        $imageValue = "image value";
-        $iconValue = "icon value";
-        $zoomValue = "zoom value";
+        $imageValue = 'image value';
+        $iconValue  = 'icon value';
+        $zoomValue  = 'zoom value';
 
         $productImage = new ProductImage($imageValue, $iconValue, $zoomValue);
 

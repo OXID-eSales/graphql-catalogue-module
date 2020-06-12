@@ -14,25 +14,25 @@ use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
 
 /**
  * Class CategoryEnterpriseTest
- *
- * @package OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller
  */
-class CategoryEnterpriseTest extends MultishopTestCase
+final class CategoryEnterpriseTest extends MultishopTestCase
 {
     private const CATEGORY_IDS = [
-        'shoes-active' => 'd86fdf0d67bf76dc427aabd2e53e0a97',
-        'jeans-active' => 'd863b76c6bb90a970a5577adf890e8cd',
-        'jeans-inactive' => 'd8665fef35f4d528e92c3d664f4a00c0',
+        'shoes-active'    => 'd86fdf0d67bf76dc427aabd2e53e0a97',
+        'jeans-active'    => 'd863b76c6bb90a970a5577adf890e8cd',
+        'jeans-inactive'  => 'd8665fef35f4d528e92c3d664f4a00c0',
         'supplies-active' => 'fc7e7bd8403448f00a363f60f44da8f2',
     ];
+
     private const PRODUCT_ID = 'd86236918e1533cccb679208628eda32';
+
     private const CATEGORY_PRODUCT_RELATION = 'd8677dff861fb6b83f29f3558e7394c4';
 
     /**
      * Check if active category from shop 1 is not accessible for
      * shop 2 if its not yet related to shop 2
      */
-    public function testGetSingleNotInShopActiveCategoryWillFail()
+    public function testGetSingleNotInShopActiveCategoryWillFail(): void
     {
         $this->setGETRequestParameter('shp', '2');
 
@@ -52,7 +52,7 @@ class CategoryEnterpriseTest extends MultishopTestCase
      * Check if active category from shop 1 is accessible for
      * shop 2 if its related to shop 2
      */
-    public function testGetSingleInShopActiveCategoryWillWork()
+    public function testGetSingleInShopActiveCategoryWillWork(): void
     {
         $this->setGETRequestParameter('shp', '2');
         $this->setGETRequestParameter('lang', '0');
@@ -72,8 +72,8 @@ class CategoryEnterpriseTest extends MultishopTestCase
 
         $this->assertEquals(
             [
-                'id' => self::CATEGORY_IDS['shoes-active'],
-                'title' => 'Schuhe'
+                'id'    => self::CATEGORY_IDS['shoes-active'],
+                'title' => 'Schuhe',
             ],
             $result['body']['data']['category']
         );
@@ -86,24 +86,24 @@ class CategoryEnterpriseTest extends MultishopTestCase
     {
         return [
             'shop_1_de' => [
-                'shopId' => '1',
+                'shopId'     => '1',
                 'languageId' => '0',
-                'title' => 'Schuhe'
+                'title'      => 'Schuhe',
             ],
             'shop_1_en' => [
-                'shopId' => '1',
+                'shopId'     => '1',
                 'languageId' => '1',
-                'title' => 'Shoes'
+                'title'      => 'Shoes',
             ],
             'shop_2_de' => [
-                'shopId' => '2',
+                'shopId'     => '2',
                 'languageId' => '0',
-                'title' => 'Schuhe'
+                'title'      => 'Schuhe',
             ],
             'shop_2_en' => [
-                'shopId' => '2',
+                'shopId'     => '2',
                 'languageId' => '1',
-                'title' => 'Shoes'
+                'title'      => 'Shoes',
             ],
         ];
     }
@@ -112,8 +112,12 @@ class CategoryEnterpriseTest extends MultishopTestCase
      * Check multishop multilanguage data is accessible
      *
      * @dataProvider providerGetCategoryMultilanguage
+     *
+     * @param mixed $shopId
+     * @param mixed $languageId
+     * @param mixed $title
      */
-    public function testGetSingleTranslatedSecondShopCategory($shopId, $languageId, $title)
+    public function testGetSingleTranslatedSecondShopCategory($shopId, $languageId, $title): void
     {
         $this->setGETRequestParameter('shp', $shopId);
         $this->setGETRequestParameter('lang', $languageId);
@@ -132,8 +136,8 @@ class CategoryEnterpriseTest extends MultishopTestCase
 
         $this->assertEquals(
             [
-                'id' => self::CATEGORY_IDS['shoes-active'],
-                'title' => $title
+                'id'    => self::CATEGORY_IDS['shoes-active'],
+                'title' => $title,
             ],
             $result['body']['data']['category']
         );
@@ -142,9 +146,9 @@ class CategoryEnterpriseTest extends MultishopTestCase
     /**
      * Check if only one, related to the shop 2 category is available in list
      */
-    public function testGetOneCategoryInListOfNotMainShop()
+    public function testGetOneCategoryInListOfNotMainShop(): void
     {
-        $this->setGETRequestParameter('shp', "2");
+        $this->setGETRequestParameter('shp', '2');
 
         $result = $this->query('query{
             categories {
@@ -166,8 +170,12 @@ class CategoryEnterpriseTest extends MultishopTestCase
      * Check multishop multilanguage data is accessible
      *
      * @dataProvider providerGetCategoryMultilanguage
+     *
+     * @param mixed $shopId
+     * @param mixed $languageId
+     * @param mixed $title
      */
-    public function testGetListTranslatedSecondShopCategories($shopId, $languageId, $title)
+    public function testGetListTranslatedSecondShopCategories($shopId, $languageId, $title): void
     {
         $this->setGETRequestParameter('shp', $shopId);
         $this->setGETRequestParameter('lang', $languageId);
@@ -190,14 +198,14 @@ class CategoryEnterpriseTest extends MultishopTestCase
 
         $this->assertEquals(
             [
-                'id' => self::CATEGORY_IDS['shoes-active'],
-                'title' => $title
+                'id'    => self::CATEGORY_IDS['shoes-active'],
+                'title' => $title,
             ],
             $result['body']['data']['categories'][0]
         );
     }
 
-    public function testGetListByFilterNotInShopActiveCategoryWillReturnEmpty()
+    public function testGetListByFilterNotInShopActiveCategoryWillReturnEmpty(): void
     {
         $this->setGETRequestParameter('shp', '2');
 
@@ -219,7 +227,7 @@ class CategoryEnterpriseTest extends MultishopTestCase
         $this->assertEmpty($result['body']['data']['categories']);
     }
 
-    public function testGetListAllActiveInSecondShop()
+    public function testGetListAllActiveInSecondShop(): void
     {
         $this->setGETRequestParameter('shp', '2');
         $this->setGETRequestParameter('lang', '0');
@@ -248,7 +256,7 @@ class CategoryEnterpriseTest extends MultishopTestCase
         );
     }
 
-    public function testSingleCategoryProductsInSecondShop()
+    public function testSingleCategoryProductsInSecondShop(): void
     {
         $this->setGETRequestParameter('shp', '2');
         $this->setGETRequestParameter('lang', '0');
@@ -274,14 +282,14 @@ class CategoryEnterpriseTest extends MultishopTestCase
         $this->assertEquals(
             [
                 [
-                    'title' => 'Smart Loop NAISH'
-                ]
+                    'title' => 'Smart Loop NAISH',
+                ],
             ],
             $result['body']['data']['category']['products']
         );
     }
 
-    public function testCategoryListProductsInSecondShop()
+    public function testCategoryListProductsInSecondShop(): void
     {
         $this->addCategoryToShops(self::CATEGORY_IDS['shoes-active'], [2]);
         $this->addCategoryToShops(self::CATEGORY_IDS['jeans-active'], [2]);
@@ -320,36 +328,28 @@ class CategoryEnterpriseTest extends MultishopTestCase
         $this->assertEquals(
             [
                 [
-                    'title' => 'Smart Loop NAISH'
-                ]
+                    'title' => 'Smart Loop NAISH',
+                ],
             ],
             $result['body']['data']['categories'][2]['products']
         );
     }
 
-    /**
-     * @param string $categoryId
-     * @param array $shops
-     */
-    private function addCategoryToShops(string $categoryId, array $shops)
+    private function addCategoryToShops(string $categoryId, array $shops): void
     {
         $oElement2ShopRelations = oxNew(Element2ShopRelations::class, 'oxcategories');
         $oElement2ShopRelations->setShopIds($shops);
         $oElement2ShopRelations->addToShop($categoryId);
     }
 
-    /**
-     * @param string $productId
-     * @param array  $shops
-     */
-    private function addProductToShops(string $productId, array $shops)
+    private function addProductToShops(string $productId, array $shops): void
     {
         $oElement2ShopRelations = oxNew(Element2ShopRelations::class, 'oxarticles');
         $oElement2ShopRelations->setShopIds($shops);
         $oElement2ShopRelations->addToShop($productId);
     }
 
-    private function addProductToCategory(string $relationId, array $shops)
+    private function addProductToCategory(string $relationId, array $shops): void
     {
         $element2ShopRelations = oxNew(Element2ShopRelations::class, 'oxobject2category');
         $element2ShopRelations->setShopIds($shops);

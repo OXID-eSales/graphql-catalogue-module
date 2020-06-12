@@ -13,9 +13,9 @@ use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
 
 final class BannerEnterpriseTest extends MultishopTestCase
 {
-    public function testGetBannersList()
+    public function testGetBannersList(): void
     {
-        $this->setGETRequestParameter('shp', "2");
+        $this->setGETRequestParameter('shp', '2');
 
         $result = $this->query('query {
             banners {
@@ -34,14 +34,14 @@ final class BannerEnterpriseTest extends MultishopTestCase
 
         $this->assertSame([
             [
-                'id' => '_test_second_shop_banner_2',
-                'title' => 'subshop banner 2',
-                'sorting' => 1
+                'id'      => '_test_second_shop_banner_2',
+                'title'   => 'subshop banner 2',
+                'sorting' => 1,
             ],
             [
-                'id' => '_test_second_shop_banner_1',
-                'title' => 'subshop banner 1',
-                'sorting' => 2
+                'id'      => '_test_second_shop_banner_1',
+                'title'   => 'subshop banner 1',
+                'sorting' => 2,
             ],
         ], $result['body']['data']['banners']);
     }

@@ -11,10 +11,11 @@ namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
-class PromotionTest extends TokenTestCase
+final class PromotionTest extends TokenTestCase
 {
-    private const ACTIVE_PROMOTION = "test_active_promotion_1";
-    private const INACTIVE_PROMOTION  = "test_inactive_promotion_1";
+    private const ACTIVE_PROMOTION = 'test_active_promotion_1';
+
+    private const INACTIVE_PROMOTION  = 'test_inactive_promotion_1';
 
     protected function setUp(): void
     {
@@ -26,7 +27,7 @@ class PromotionTest extends TokenTestCase
         );
     }
 
-    public function testGetSingleActivePromotion()
+    public function testGetSingleActivePromotion(): void
     {
         $result = $this->query('query {
             promotion (id: "' . self::ACTIVE_PROMOTION . '") {
@@ -53,11 +54,11 @@ class PromotionTest extends TokenTestCase
             'id',
             'active',
             'title',
-            'text'
+            'text',
         ]));
     }
 
-    public function testGet401ForSingleInactivePromotion()
+    public function testGet401ForSingleInactivePromotion(): void
     {
         $result = $this->query('query {
             promotion (id: "' . self::INACTIVE_PROMOTION . '") {
@@ -73,7 +74,7 @@ class PromotionTest extends TokenTestCase
         );
     }
 
-    public function testGetSingleInactivePromotionWithToken()
+    public function testGetSingleInactivePromotionWithToken(): void
     {
         $this->prepareToken();
 
@@ -89,16 +90,16 @@ class PromotionTest extends TokenTestCase
         $this->assertResponseStatus(200, $result);
         $this->assertEquals(
             [
-                'id' => self::INACTIVE_PROMOTION,
+                'id'     => self::INACTIVE_PROMOTION,
                 'active' => false,
-                'title' => 'Upcoming promotion EN',
-                'text' => 'Long description 3 EN',
+                'title'  => 'Upcoming promotion EN',
+                'text'   => 'Long description 3 EN',
             ],
             $result['body']['data']['promotion']
         );
     }
 
-    public function testGet404ForSingleNonExistingPromotion()
+    public function testGet404ForSingleNonExistingPromotion(): void
     {
         $result = $this->query('query {
             promotion (id: "DOES-NOT-EXIST") {
@@ -114,7 +115,7 @@ class PromotionTest extends TokenTestCase
         );
     }
 
-    public function testGetPromotionListWithoutFilter()
+    public function testGetPromotionListWithoutFilter(): void
     {
         $result = $this->query('query{
             promotions {
@@ -135,7 +136,7 @@ class PromotionTest extends TokenTestCase
         );
     }
 
-    public function testGetPromotionListWithToken()
+    public function testGetPromotionListWithToken(): void
     {
         $this->prepareToken();
 
@@ -163,11 +164,11 @@ class PromotionTest extends TokenTestCase
         return [
             'de' => [
                 'languageId'  => '0',
-                'title' => 'Current Promotion 1 DE'
+                'title'       => 'Current Promotion 1 DE',
             ],
             'en' => [
                 'languageId'  => '1',
-                'title' => 'Current Promotion 1 EN'
+                'title'       => 'Current Promotion 1 EN',
             ],
         ];
     }
@@ -175,7 +176,7 @@ class PromotionTest extends TokenTestCase
     /**
      * @dataProvider providerGetPromotionMultilanguage
      */
-    public function testGetPromotionMultilanguage(string $languageId, string $title)
+    public function testGetPromotionMultilanguage(string $languageId, string $title): void
     {
         $query = 'query {
             promotion (id: "' . self::ACTIVE_PROMOTION . '") {
@@ -197,8 +198,8 @@ class PromotionTest extends TokenTestCase
 
         $this->assertEquals(
             [
-                'id' => self::ACTIVE_PROMOTION,
-                'title' => $title
+                'id'    => self::ACTIVE_PROMOTION,
+                'title' => $title,
             ],
             $result['body']['data']['promotion']
         );

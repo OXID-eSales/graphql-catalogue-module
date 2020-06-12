@@ -9,13 +9,15 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
-class LinkTest extends TokenTestCase
+final class LinkTest extends TokenTestCase
 {
+    private const ACTIVE_LINK = 'test_active';
 
-    private const ACTIVE_LINK = "test_active";
-    private const INACTIVE_LINK  = "test_inactive";
+    private const INACTIVE_LINK  = 'test_inactive';
 
     protected function setUp(): void
     {
@@ -27,7 +29,7 @@ class LinkTest extends TokenTestCase
         );
     }
 
-    public function testGetSingleActiveLink()
+    public function testGetSingleActiveLink(): void
     {
         $result = $this->query('query {
             link (id: "' . self::ACTIVE_LINK . '") {
@@ -50,8 +52,8 @@ class LinkTest extends TokenTestCase
         $this->assertSame(self::ACTIVE_LINK, $link['id']);
         $this->assertSame(true, $link['active']);
         $this->assertInstanceOf(
-            \DateTimeInterface::class,
-            new \DateTimeImmutable($link['timestamp'])
+            DateTimeInterface::class,
+            new DateTimeImmutable($link['timestamp'])
         );
         $this->assertSame('<p>English Description active</p>', $link['description']);
         $this->assertSame('http://www.oxid-esales.com', $link['url']);
@@ -63,11 +65,11 @@ class LinkTest extends TokenTestCase
             'timestamp',
             'description',
             'url',
-            'creationDate'
+            'creationDate',
         ]));
     }
 
-    public function testInactiveLink()
+    public function testInactiveLink(): void
     {
         $result = $this->query('query {
             link (id: "' . self::INACTIVE_LINK . '") {
@@ -81,7 +83,7 @@ class LinkTest extends TokenTestCase
         );
     }
 
-    public function testInactiveLinkWithToken()
+    public function testInactiveLinkWithToken(): void
     {
         $this->prepareToken();
 
@@ -99,14 +101,14 @@ class LinkTest extends TokenTestCase
 
         $this->assertEquals(
             [
-                'id' => 'test_inactive',
-                'active' => false
+                'id'     => 'test_inactive',
+                'active' => false,
             ],
             $result['body']['data']['link']
         );
     }
 
-    public function testGet404ForSingleNonExistingLink()
+    public function testGet404ForSingleNonExistingLink(): void
     {
         $result = $this->query('query {
             link (id: "DOES-NOT-EXIST") {
@@ -124,7 +126,7 @@ class LinkTest extends TokenTestCase
         );
     }
 
-    public function testGetLinkListWithoutFilter()
+    public function testGetLinkListWithoutFilter(): void
     {
         $result = $this->query('query{
             links {
@@ -147,7 +149,7 @@ class LinkTest extends TokenTestCase
         );
     }
 
-    public function testGetLinkListWithFilter()
+    public function testGetLinkListWithFilter(): void
     {
         $result = $this->query('query{
             links(filter: {
@@ -169,7 +171,7 @@ class LinkTest extends TokenTestCase
         );
     }
 
-    public function testGetEmptyLinkListWithFilter()
+    public function testGetEmptyLinkListWithFilter(): void
     {
         $result = $this->query('query{
             links(filter: {
@@ -191,7 +193,7 @@ class LinkTest extends TokenTestCase
         );
     }
 
-    public function testGetEmptyLinkListWithExactMatchFilter()
+    public function testGetEmptyLinkListWithExactMatchFilter(): void
     {
         $result = $this->query('query{
             links(filter: {
@@ -213,17 +215,16 @@ class LinkTest extends TokenTestCase
         );
     }
 
-
     public function providerGetLinkMultilanguage()
     {
         return [
             'de' => [
                 'languageId'  => '0',
-                'description' => '<p>Deutsche Beschreibung aktiv</p>'
+                'description' => '<p>Deutsche Beschreibung aktiv</p>',
             ],
             'en' => [
                 'languageId'  => '1',
-                'description' => '<p>English Description active</p>'
+                'description' => '<p>English Description active</p>',
             ],
         ];
     }
@@ -231,7 +232,7 @@ class LinkTest extends TokenTestCase
     /**
      * @dataProvider providerGetLinkMultilanguage
      */
-    public function testGetLinkMultilanguage(string $languageId, string $title)
+    public function testGetLinkMultilanguage(string $languageId, string $title): void
     {
         $query = 'query {
             link (id: "' . self::ACTIVE_LINK . '") {
@@ -253,8 +254,8 @@ class LinkTest extends TokenTestCase
 
         $this->assertEquals(
             [
-                'id' => self::ACTIVE_LINK,
-                'description' => $title
+                'id'          => self::ACTIVE_LINK,
+                'description' => $title,
             ],
             $result['body']['data']['link']
         );
@@ -265,19 +266,19 @@ class LinkTest extends TokenTestCase
         return [
             'de' => [
                 'languageId' => '0',
-                'count'      => 0
+                'count'      => 0,
             ],
             'en' => [
                 'languageId' => '1',
-                'count'      => 1
-            ]
+                'count'      => 1,
+            ],
         ];
     }
 
     /**
      * @dataProvider providerGetLinkListWithFilterMultilanguage
      */
-    public function testGetLinkListWithFilterMultilanguage(string $languageId, int $count)
+    public function testGetLinkListWithFilterMultilanguage(string $languageId, int $count): void
     {
         $query = 'query{
             links(filter: {
@@ -306,7 +307,7 @@ class LinkTest extends TokenTestCase
         );
     }
 
-    public function testGetLinkListForAdminGroupUser()
+    public function testGetLinkListForAdminGroupUser(): void
     {
         $this->prepareToken();
 
@@ -325,24 +326,24 @@ class LinkTest extends TokenTestCase
         $this->assertEquals(
             [
                 [
-                    'id' => 'ce342e8acb69f1748.25672556',
-                    'active' => false
+                    'id'     => 'ce342e8acb69f1748.25672556',
+                    'active' => false,
                 ],
                 [
-                    'id' => 'test_active',
-                    'active' => true
+                    'id'     => 'test_active',
+                    'active' => true,
                 ],
                 [
-                    'id' => 'test_active_2',
-                    'active' => true
+                    'id'     => 'test_active_2',
+                    'active' => true,
                 ],
                 [
-                    'id' => 'test_inactive',
-                    'active' => false
+                    'id'     => 'test_inactive',
+                    'active' => false,
                 ],
                 [
-                    'id' => 'test_inactive_2',
-                    'active' => false
+                    'id'     => 'test_inactive_2',
+                    'active' => false,
                 ],
             ],
             $result['body']['data']['links']

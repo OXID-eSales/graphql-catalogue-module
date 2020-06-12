@@ -13,12 +13,16 @@ use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
-class ManufacturerTest extends TokenTestCase
+final class ManufacturerTest extends TokenTestCase
 {
-    private const ACTIVE_MANUFACTURER = "oiaf6ab7e12e86291e86dd3ff891fe40";
-    private const ACTIVE_MANUFACTURER_WITHOUT_PRODUCTS = "3a909e7c886063857e86982c7a3c5b84";
-    private const INACTIVE_MANUFACTURER  = "dc50589ad69b6ec71721b25bdd403171";
+    private const ACTIVE_MANUFACTURER = 'oiaf6ab7e12e86291e86dd3ff891fe40';
+
+    private const ACTIVE_MANUFACTURER_WITHOUT_PRODUCTS = '3a909e7c886063857e86982c7a3c5b84';
+
+    private const INACTIVE_MANUFACTURER  = 'dc50589ad69b6ec71721b25bdd403171';
+
     private const ACTIVE_MULTILANGUAGE_MANUFACTURER = 'adc6df0977329923a6330cc8f3c0a906';
+
     private const PRODUCT_RELATED_TO_ACTIVE_MANUFACTURER = '058e613db53d782adfc9f2ccb43c45fe';
 
     protected function setUp(): void
@@ -31,7 +35,7 @@ class ManufacturerTest extends TokenTestCase
         );
     }
 
-    public function testGetSingleActiveManufacturer()
+    public function testGetSingleActiveManufacturer(): void
     {
         $result = $this->query('query {
             manufacturer (id: "' . self::ACTIVE_MANUFACTURER . '") {
@@ -71,11 +75,11 @@ class ManufacturerTest extends TokenTestCase
             'title',
             'shortdesc',
             'timestamp',
-            'seo'
+            'seo',
         ]));
     }
 
-    public function testGet401ForSingleInactiveManufacturer()
+    public function testGet401ForSingleInactiveManufacturer(): void
     {
         $result = $this->query('query {
             manufacturer (id: "' . self::INACTIVE_MANUFACTURER . '") {
@@ -93,7 +97,7 @@ class ManufacturerTest extends TokenTestCase
         );
     }
 
-    public function testGet404ForSingleNonExistingManufacturer()
+    public function testGet404ForSingleNonExistingManufacturer(): void
     {
         $result = $this->query('query {
             manufacturer (id: "DOES-NOT-EXIST") {
@@ -111,7 +115,7 @@ class ManufacturerTest extends TokenTestCase
         );
     }
 
-    public function testGetManufacturerListWithoutFilter()
+    public function testGetManufacturerListWithoutFilter(): void
     {
         $result = $this->query('query{
             manufacturers {
@@ -134,7 +138,7 @@ class ManufacturerTest extends TokenTestCase
         );
     }
 
-    public function testGetManufacturerListWithFilter()
+    public function testGetManufacturerListWithFilter(): void
     {
         $result = $this->query('query{
             manufacturers(filter: {
@@ -156,7 +160,7 @@ class ManufacturerTest extends TokenTestCase
         );
     }
 
-    public function testGetEmptyManufacturerListWithFilter()
+    public function testGetEmptyManufacturerListWithFilter(): void
     {
         $result = $this->query('query{
             manufacturers(filter: {
@@ -178,7 +182,7 @@ class ManufacturerTest extends TokenTestCase
         );
     }
 
-    public function testGetEmptyManufacturerListWithExactMatchFilter()
+    public function testGetEmptyManufacturerListWithExactMatchFilter(): void
     {
         $result = $this->query('query{
             manufacturers(filter: {
@@ -205,11 +209,11 @@ class ManufacturerTest extends TokenTestCase
         return [
             'de' => [
                 'languageId' => '0',
-                'title'      => 'Liquid Force'
+                'title'      => 'Liquid Force',
             ],
             'en' => [
                 'languageId' => '1',
-                'title'      => 'Liquid Force Kite'
+                'title'      => 'Liquid Force Kite',
             ],
         ];
     }
@@ -217,7 +221,7 @@ class ManufacturerTest extends TokenTestCase
     /**
      * @dataProvider providerGetManufacturerMultilanguage
      */
-    public function testGetManufacturerMultilanguage(string $languageId, string $title)
+    public function testGetManufacturerMultilanguage(string $languageId, string $title): void
     {
         $query = 'query {
             manufacturer (id: "' . self::ACTIVE_MULTILANGUAGE_MANUFACTURER . '") {
@@ -239,8 +243,8 @@ class ManufacturerTest extends TokenTestCase
 
         $this->assertEquals(
             [
-                'id' => self::ACTIVE_MULTILANGUAGE_MANUFACTURER,
-                'title' => $title
+                'id'    => self::ACTIVE_MULTILANGUAGE_MANUFACTURER,
+                'title' => $title,
             ],
             $result['body']['data']['manufacturer']
         );
@@ -251,19 +255,19 @@ class ManufacturerTest extends TokenTestCase
         return [
             'de' => [
                 'languageId' => '0',
-                'count'      => 0
+                'count'      => 0,
             ],
             'en' => [
                 'languageId' => '1',
-                'count'      => 1
-            ]
+                'count'      => 1,
+            ],
         ];
     }
 
     /**
      * @dataProvider providerGetManufacturerListWithFilterMultilanguage
      */
-    public function testGetManufacturerListWithFilterMultilanguage(string $languageId, int $count)
+    public function testGetManufacturerListWithFilterMultilanguage(string $languageId, int $count): void
     {
         $query = 'query{
             manufacturers(filter: {
@@ -292,7 +296,7 @@ class ManufacturerTest extends TokenTestCase
         );
     }
 
-    public function testGetManufacturerWithoutProducts()
+    public function testGetManufacturerWithoutProducts(): void
     {
         $result = $this->query('query {
             manufacturer (id: "' . self::ACTIVE_MANUFACTURER_WITHOUT_PRODUCTS . '") {
@@ -311,7 +315,7 @@ class ManufacturerTest extends TokenTestCase
         );
     }
 
-    public function testGetManuacturerWithProducts()
+    public function testGetManuacturerWithProducts(): void
     {
         $result = $this->query('query {
             manufacturer (id: "' . self::ACTIVE_MANUFACTURER . '") {
@@ -326,7 +330,7 @@ class ManufacturerTest extends TokenTestCase
         $this->assertResponseStatus(200, $result);
         $this->assertEquals(
             [
-                'id' => self::PRODUCT_RELATED_TO_ACTIVE_MANUFACTURER
+                'id' => self::PRODUCT_RELATED_TO_ACTIVE_MANUFACTURER,
             ],
             $result['body']['data']['manufacturer']['products'][0]
         );
@@ -343,14 +347,18 @@ class ManufacturerTest extends TokenTestCase
                 'withToken'             => true,
                 'expectedProductsCount' => 2,
                 'active'                => false,
-            ]
+            ],
         ];
     }
 
     /**
      * @dataProvider getManufacturerProductDataProvider
+     *
+     * @param mixed $withToken
+     * @param mixed $productCount
+     * @param mixed $active
      */
-    public function testManufacturerProducts($withToken, $productCount, $active)
+    public function testManufacturerProducts($withToken, $productCount, $active): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -399,37 +407,37 @@ class ManufacturerTest extends TokenTestCase
     {
         return [
             [
-                'offset' => 1,
-                'limit' => null,
-                '$numberOfExpectedProducts' => 6
+                'offset'                    => 1,
+                'limit'                     => null,
+                '$numberOfExpectedProducts' => 6,
             ],
             [
-                'offset' => 5,
-                'limit' => null,
-                '$numberOfExpectedProducts' => 2
+                'offset'                    => 5,
+                'limit'                     => null,
+                '$numberOfExpectedProducts' => 2,
             ],
             [
-                'offset' => null,
-                'limit' => 1,
-                '$numberOfExpectedProducts' => 1
+                'offset'                    => null,
+                'limit'                     => 1,
+                '$numberOfExpectedProducts' => 1,
             ],
             [
-                'offset' => 1,
-                'limit' => 2,
-                '$numberOfExpectedProducts' => 2
+                'offset'                    => 1,
+                'limit'                     => 2,
+                '$numberOfExpectedProducts' => 2,
             ],
             [
-                'offset' => 9,
-                'limit' => 9,
-                '$numberOfExpectedProducts' => 0
-            ]
+                'offset'                    => 9,
+                'limit'                     => 9,
+                '$numberOfExpectedProducts' => 0,
+            ],
         ];
     }
 
     /**
      * @dataProvider providerGetManufacturerProducts
      */
-    public function testGetManufacturerProducts(?int $offset, ?int $limit, ?int $numberOfExpectedProducts)
+    public function testGetManufacturerProducts(?int $offset, ?int $limit, ?int $numberOfExpectedProducts): void
     {
         $result = $this->query('query ($offset: Int, $limit: Int) {
             manufacturer (id: "' . self::ACTIVE_MULTILANGUAGE_MANUFACTURER . '") {
@@ -441,13 +449,13 @@ class ManufacturerTest extends TokenTestCase
             }
         }', [
             'offset' => $offset,
-            'limit' => $limit,
+            'limit'  => $limit,
         ]);
 
         $this->assertResponseStatus(200, $result);
         $this->assertEquals(
             $numberOfExpectedProducts,
-            sizeof($result['body']['data']['manufacturer']['products'])
+            count($result['body']['data']['manufacturer']['products'])
         );
     }
 }

@@ -17,14 +17,13 @@ final class ContentMultiLanguageTest extends TestCase
 
     /**
      * @dataProvider providerGetContentMultiLanguage
-     *
-     * @param string $languageId
-     * @param string $title
-     * @param string $categoryTitle
-     * @param string $seo
      */
-    public function testGetContentMultiLanguage(string $languageId, string $title, string $categoryTitle, string $seo)
-    {
+    public function testGetContentMultiLanguage(
+        string $languageId,
+        string $title,
+        string $categoryTitle,
+        string $seo
+    ): void {
         $query = 'query {
             content (id: "' . self::ACTIVE_CONTENT . '") {
                 id
@@ -57,16 +56,16 @@ final class ContentMultiLanguageTest extends TestCase
     {
         return [
             'de' => [
-                'languageId' => '0',
-                'title' => 'GraphQL content with category DE',
+                'languageId'    => '0',
+                'title'         => 'GraphQL content with category DE',
                 'categoryTitle' => 'Kites',
-                'seo' => 'GraphQL-content-with-category-DE'
+                'seo'           => 'GraphQL-content-with-category-DE',
             ],
             'en' => [
-                'languageId' => '1',
-                'title' => 'GraphQL content with category EN',
+                'languageId'    => '1',
+                'title'         => 'GraphQL content with category EN',
                 'categoryTitle' => 'Kites',
-                'seo' => 'GraphQL-content-with-category-EN'
+                'seo'           => 'GraphQL-content-with-category-EN',
             ],
         ];
     }

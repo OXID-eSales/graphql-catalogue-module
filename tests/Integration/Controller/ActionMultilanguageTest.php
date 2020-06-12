@@ -21,7 +21,7 @@ final class ActionMultiLanguageTest extends TokenTestCase
      * @param string $languageId
      * @param array  $action
      */
-    public function testGetSingleActiveActionMultilanguage($languageId, $action)
+    public function testGetSingleActiveActionMultilanguage($languageId, $action): void
     {
         $query = 'query {
             action(id: "' . self::ACTIVE_ACTION_WITH_PRODUCTS . '") {
@@ -56,26 +56,26 @@ final class ActionMultiLanguageTest extends TokenTestCase
         return [
             'de' => [
                 'languageId' => '0',
-                'result' => [
-                    'title' => 'Angebot der Woche',
+                'result'     => [
+                    'title'    => 'Angebot der Woche',
                     'products' => [
                         [
-                            'title' => 'Kuyichi Ledergürtel JEVER'
-                        ]
-                    ]
-                ]
+                            'title' => 'Kuyichi Ledergürtel JEVER',
+                        ],
+                    ],
+                ],
             ],
             'en' => [
                 'languageId' => '1',
-                'result' => [
-                    'title' => 'Week&#039;s Special',
+                'result'     => [
+                    'title'    => 'Week&#039;s Special',
                     'products' => [
                         [
-                            'title' => 'Kuyichi leather belt JEVER'
-                        ]
-                    ]
-                ]
-            ]
+                            'title' => 'Kuyichi leather belt JEVER',
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 }

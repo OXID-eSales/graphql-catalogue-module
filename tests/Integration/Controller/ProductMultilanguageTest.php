@@ -11,9 +11,10 @@ namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
 use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
-class ProductMultilanguageTest extends TestCase
+final class ProductMultilanguageTest extends TestCase
 {
     private const ACTIVE_MULTILANGUAGE_PRODUCT = '058e613db53d782adfc9f2ccb43c45fe';
+
     private const ACTIVE_PRODUCT_WITH_VARIANTS = '531b537118f5f4d7a427cdb825440922';
 
     public function providerGetProductMultilanguage()
@@ -22,12 +23,12 @@ class ProductMultilanguageTest extends TestCase
             'de' => [
                 'languageId' => '0',
                 'title'      => 'Bindung O&#039;BRIEN DECADE CT 2010',
-                'url'        => 'Wakeboarding/Bindungen/'
+                'url'        => 'Wakeboarding/Bindungen/',
             ],
             'en' => [
                 'languageId' => '1',
                 'title'      => 'Binding O&#039;BRIEN DECADE CT 2010',
-                'url'        => 'en/Wakeboarding/Bindings'
+                'url'        => 'en/Wakeboarding/Bindings',
             ],
         ];
     }
@@ -35,7 +36,7 @@ class ProductMultilanguageTest extends TestCase
     /**
      * @dataProvider providerGetProductMultilanguage
      */
-    public function testGetProductMultilanguage(string $languageId, string $title, string $seoUrl)
+    public function testGetProductMultilanguage(string $languageId, string $title, string $seoUrl): void
     {
         $query = 'query {
             product (id: "' . self::ACTIVE_MULTILANGUAGE_PRODUCT . '") {
@@ -70,21 +71,17 @@ class ProductMultilanguageTest extends TestCase
         return [
             'de' => [
                 'languageId' => '0',
-                'count'      => 0
+                'count'      => 0,
             ],
             'en' => [
                 'languageId' => '1',
-                'count'      => 1
-            ]
+                'count'      => 1,
+            ],
         ];
     }
 
     /**
      *  @dataProvider providerGetProductVariantsMultilanguage
-     *
-     * @param string $languageId
-     * @param array  $expectedLabels
-     * @param array  $expectedVariants
      */
     public function testGetProductVariantsMultilanguage(
         string $languageId,
@@ -129,33 +126,33 @@ class ProductMultilanguageTest extends TestCase
     {
         return [
             'de' => [
-                'languageId' => '0',
+                'languageId'    => '0',
                 'labels'        => [
                     'Größe',
-                    'Farbe'
+                    'Farbe',
                 ],
                 'variants' => [
-                    'id' => '6b6efaa522be53c3e86fdb41f0542a8a',
+                    'id'            => '6b6efaa522be53c3e86fdb41f0542a8a',
                     'variantValues' => [
                         'W 30/L 30',
                         'Blau',
-                    ]
+                    ],
                 ],
             ],
             'en' => [
                 'languageId' => '1',
                 'labels'     => [
                     'Size',
-                    'Color'
+                    'Color',
                 ],
                 'values' => [
-                    'id' => '6b6efaa522be53c3e86fdb41f0542a8a',
+                    'id'            => '6b6efaa522be53c3e86fdb41f0542a8a',
                     'variantValues' => [
                         'W 30/L 30',
                         'Blue ',
-                    ]
+                    ],
                 ],
-            ]
+            ],
         ];
     }
 }

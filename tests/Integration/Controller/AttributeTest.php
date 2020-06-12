@@ -13,13 +13,10 @@ use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
 /**
  * Class AttributeTest
- *
- * @package OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller
  */
 final class AttributeTest extends TestCase
 {
-
-    private const ATTRIBUTE_ID = "6cf89d2d73e666457d167cebfc3eb492";
+    private const ATTRIBUTE_ID = '6cf89d2d73e666457d167cebfc3eb492';
 
     protected function setUp(): void
     {
@@ -31,7 +28,7 @@ final class AttributeTest extends TestCase
         );
     }
 
-    public function testGetSingleAttribute()
+    public function testGetSingleAttribute(): void
     {
         $result = $this->query('query {
             attribute (id: "' . self::ATTRIBUTE_ID . '") {
@@ -52,7 +49,7 @@ final class AttributeTest extends TestCase
         );
     }
 
-    public function testGet404ForSingleNonExistingAttribute()
+    public function testGet404ForSingleNonExistingAttribute(): void
     {
         $result = $this->query('query {
             attribute (id: "DOES-NOT-EXIST") {
@@ -66,30 +63,24 @@ final class AttributeTest extends TestCase
         );
     }
 
-    /**
-     * @return array
-     */
     public function providerGetAttributeMultilanguage(): array
     {
         return [
             'de' => [
                 'languageId' => '0',
-                'title'      => 'Lieferumfang'
+                'title'      => 'Lieferumfang',
             ],
             'en' => [
                 'languageId' => '1',
-                'title'      => 'Included in delivery'
+                'title'      => 'Included in delivery',
             ],
         ];
     }
 
     /**
      * @dataProvider providerGetAttributeMultilanguage
-     *
-     * @param string $languageId
-     * @param string $title
      */
-    public function testGetAttributeMultilanguage(string $languageId, string $title)
+    public function testGetAttributeMultilanguage(string $languageId, string $title): void
     {
         $query = 'query {
             attribute (id: "' . self::ATTRIBUTE_ID . '") {
@@ -110,13 +101,13 @@ final class AttributeTest extends TestCase
 
         $this->assertEquals(
             [
-                'title' => $title
+                'title' => $title,
             ],
             $result['body']['data']['attribute']
         );
     }
 
-    public function testAttributeList()
+    public function testAttributeList(): void
     {
         $result = $this->query('query {
             attributes {
@@ -134,7 +125,7 @@ final class AttributeTest extends TestCase
         );
     }
 
-    public function testAttributeListWithFilter()
+    public function testAttributeListWithFilter(): void
     {
         $result = $this->query('query {
             attributes(filter: {
@@ -160,9 +151,9 @@ final class AttributeTest extends TestCase
      * @dataProvider providerGetAttributesMultilanguage
      *
      * @param string $languageId
-     * @param array $attributes
+     * @param array  $attributes
      */
-    public function testAttributeListMultilanguage($languageId, $attributes)
+    public function testAttributeListMultilanguage($languageId, $attributes): void
     {
         $this->setGETRequestParameter('lang', $languageId);
 
@@ -176,6 +167,7 @@ final class AttributeTest extends TestCase
             200,
             $result
         );
+
         foreach ($attributes as $key => $attribute) {
             $this->assertSame(
                 $attribute,
@@ -184,9 +176,6 @@ final class AttributeTest extends TestCase
         }
     }
 
-    /**
-     * @return array
-     */
     public function providerGetAttributesMultilanguage(): array
     {
         return [
@@ -195,16 +184,16 @@ final class AttributeTest extends TestCase
                 'attributes' => [
                     'EU-Größe',
                     'Washing',
-                    'Lieferumfang'
-                ]
+                    'Lieferumfang',
+                ],
             ],
             'en' => [
                 'languageId' => '1',
                 'attributes' => [
                     'EU-Size',
                     'Washing',
-                    'Included in delivery'
-                ]
+                    'Included in delivery',
+                ],
             ],
         ];
     }

@@ -16,13 +16,18 @@ use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 final class ActionTest extends TokenTestCase
 {
     private const ACTIVE_ACTION_WITH_PRODUCTS = 'oxtop5';
+
     private const ACTIVE_ACTION_WITH_INACTIVE_PRODUCT = 'oxcatoffer';
+
     private const ACTIVE_ACTION_WITHOUT_PRODUCTS = 'oxnewsletter';
+
     private const INACTIVE_ACTION = 'oxstart';
+
     private const WRONG_TYPE_ACTION = 'b5639c6431b26687321f6ce654878fa5';
+
     private const PRODUCT_RELATED_TO_ACTIVE_ACTION = 'ed6a4182ae58874e4fdaa4775566af6c';
 
-    public function testGetSingleActiveActionWithoutProducts()
+    public function testGetSingleActiveActionWithoutProducts(): void
     {
         $result = $this->query('query {
             action(id: "' . self::ACTIVE_ACTION_WITHOUT_PRODUCTS . '") {
@@ -43,14 +48,14 @@ final class ActionTest extends TokenTestCase
         $action = $result['body']['data']['action'];
 
         $this->assertEquals([
-            'id' => self::ACTIVE_ACTION_WITHOUT_PRODUCTS,
-            'active' => true,
-            'title' => 'Newsletter',
-            'products' => []
+            'id'       => self::ACTIVE_ACTION_WITHOUT_PRODUCTS,
+            'active'   => true,
+            'title'    => 'Newsletter',
+            'products' => [],
         ], $action);
     }
 
-    public function testGetSingleActiveActionWithProducts()
+    public function testGetSingleActiveActionWithProducts(): void
     {
         $result = $this->query('query {
             action(id: "' . self::ACTIVE_ACTION_WITH_PRODUCTS . '") {
@@ -72,21 +77,21 @@ final class ActionTest extends TokenTestCase
 
         $this->assertEquals([
             [
-                'id' => 'fadc492a5807c56eb80b0507accd756b'
+                'id' => 'fadc492a5807c56eb80b0507accd756b',
             ],
             [
-                'id' => 'f4fc98f99e3660bd2ecd7450f832c41a'
+                'id' => 'f4fc98f99e3660bd2ecd7450f832c41a',
             ],
             [
-                'id' => 'f4f73033cf5045525644042325355732'
+                'id' => 'f4f73033cf5045525644042325355732',
             ],
             [
-                'id' => '058de8224773a1d5fd54d523f0c823e0'
-            ]
+                'id' => '058de8224773a1d5fd54d523f0c823e0',
+            ],
         ], $products);
     }
 
-    public function testGetSingleInactiveAction()
+    public function testGetSingleInactiveAction(): void
     {
         $result = $this->query('query {
             action (id: "' . self::INACTIVE_ACTION . '") {
@@ -101,7 +106,7 @@ final class ActionTest extends TokenTestCase
         );
     }
 
-    public function testGetSingleNonExistingAction()
+    public function testGetSingleNonExistingAction(): void
     {
         $result = $this->query('query {
             action (id: "non_existing_id") {
@@ -116,7 +121,7 @@ final class ActionTest extends TokenTestCase
         );
     }
 
-    public function testGetSingleWrongTypeAction()
+    public function testGetSingleWrongTypeAction(): void
     {
         $result = $this->query('query {
             action (id: "' . self::WRONG_TYPE_ACTION . '") {
@@ -131,7 +136,7 @@ final class ActionTest extends TokenTestCase
         );
     }
 
-    public function testGetSingleInactiveActionForAdminGroupUser()
+    public function testGetSingleInactiveActionForAdminGroupUser(): void
     {
         $this->prepareToken();
 
@@ -149,13 +154,13 @@ final class ActionTest extends TokenTestCase
         );
 
         $this->assertEquals([
-            'id' => self::INACTIVE_ACTION,
-            'title' => 'Startseite unten',
-            'active' => false
+            'id'     => self::INACTIVE_ACTION,
+            'title'  => 'Startseite unten',
+            'active' => false,
         ], $result['body']['data']['action']);
     }
 
-    public function testGetActionsList()
+    public function testGetActionsList(): void
     {
         $result = $this->query('query {
             actions {
@@ -173,33 +178,33 @@ final class ActionTest extends TokenTestCase
 
         $this->assertSame([
             [
-                'id' => 'oxbargain',
-                'title' => 'Angebot der Woche'
+                'id'    => 'oxbargain',
+                'title' => 'Angebot der Woche',
             ],
             [
-                'id' => 'oxcatoffer',
-                'title' => 'Kategorien-Topangebot'
+                'id'    => 'oxcatoffer',
+                'title' => 'Kategorien-Topangebot',
             ],
             [
-                'id' => 'oxnewest',
-                'title' => 'Frisch eingetroffen'
+                'id'    => 'oxnewest',
+                'title' => 'Frisch eingetroffen',
             ],
             [
-                'id' => 'oxnewsletter',
-                'title' => 'Newsletter'
+                'id'    => 'oxnewsletter',
+                'title' => 'Newsletter',
             ],
             [
-                'id' => 'oxtop5',
-                'title' => 'Topseller'
+                'id'    => 'oxtop5',
+                'title' => 'Topseller',
             ],
             [
-                'id' => 'oxtopstart',
-                'title' => 'Topangebot Startseite'
+                'id'    => 'oxtopstart',
+                'title' => 'Topangebot Startseite',
             ],
         ], $result['body']['data']['actions']);
     }
 
-    public function testGetActionsListForAdminGroupUser()
+    public function testGetActionsListForAdminGroupUser(): void
     {
         $this->prepareToken();
 
@@ -220,38 +225,38 @@ final class ActionTest extends TokenTestCase
 
         $this->assertEquals([
             [
-                'id' => 'oxbargain',
-                'title' => 'Angebot der Woche',
+                'id'     => 'oxbargain',
+                'title'  => 'Angebot der Woche',
                 'active' => true,
             ],
             [
-                'id' => 'oxcatoffer',
-                'title' => 'Kategorien-Topangebot',
+                'id'     => 'oxcatoffer',
+                'title'  => 'Kategorien-Topangebot',
                 'active' => true,
             ],
             [
-                'id' => 'oxnewest',
-                'title' => 'Frisch eingetroffen',
+                'id'     => 'oxnewest',
+                'title'  => 'Frisch eingetroffen',
                 'active' => true,
             ],
             [
-                'id' => 'oxnewsletter',
-                'title' => 'Newsletter',
+                'id'     => 'oxnewsletter',
+                'title'  => 'Newsletter',
                 'active' => true,
             ],
             [
-                'id' => 'oxstart',
-                'title' => 'Startseite unten',
+                'id'     => 'oxstart',
+                'title'  => 'Startseite unten',
                 'active' => false,
             ],
             [
-                'id' => 'oxtop5',
-                'title' => 'Topseller',
+                'id'     => 'oxtop5',
+                'title'  => 'Topseller',
                 'active' => true,
             ],
             [
-                'id' => 'oxtopstart',
-                'title' => 'Topangebot Startseite',
+                'id'     => 'oxtopstart',
+                'title'  => 'Topangebot Startseite',
                 'active' => true,
             ],
         ], $result['body']['data']['actions']);
@@ -283,7 +288,7 @@ final class ActionTest extends TokenTestCase
                 'new',
                 [
                     [
-                        'id' => 'oxnewest',
+                        'id'       => 'oxnewest',
                         'products' => [
                             [
                                 'id' => 'f4f73033cf5045525644042325355732',
@@ -308,11 +313,11 @@ final class ActionTest extends TokenTestCase
                             ],
                             [
                                 'id' => 'b563ab240dc19b89fc0349866b2be9c0',
-                            ]
+                            ],
                         ],
                     ],
                     [
-                        'id' => 'oxnewsletter',
+                        'id'       => 'oxnewsletter',
                         'products' => [],
                     ],
                 ],
@@ -321,13 +326,13 @@ final class ActionTest extends TokenTestCase
                 'bar',
                 [
                     [
-                        'id' => 'oxbargain',
+                        'id'       => 'oxbargain',
                         'products' => [
                             [
                                 'id' => 'dc5ffdf380e15674b56dd562a7cb6aec',
-                            ]
+                            ],
                         ],
-                    ]
+                    ],
                 ],
             ],
             [
@@ -345,21 +350,21 @@ final class ActionTest extends TokenTestCase
                 'expectedProducts'      => [
                     [
                         'id'     => 'd86e244c8114c8214fbf83da8d6336b3',
-                        'active' => true
+                        'active' => true,
                     ], [
                         'id'     => 'ed6573c0259d6a6fb641d106dcb2faec',
-                        'active' => true
-                    ]
+                        'active' => true,
+                    ],
                 ],
             ], [
                 'withToken'             => true,
                 'expectedProducts'      => [
                     [
                         'id'     => 'd86e244c8114c8214fbf83da8d6336b3',
-                        'active' => true
+                        'active' => true,
                     ], [
                         'id'     => 'ed6573c0259d6a6fb641d106dcb2faec',
-                        'active' => true
+                        'active' => true,
                     ],
                     // TODO: Using a valid token, this list should also contain inactive products
                     // [
@@ -367,14 +372,17 @@ final class ActionTest extends TokenTestCase
                     //     'active' => false
                     // ],
                 ],
-            ]
+            ],
         ];
     }
 
     /**
      * @dataProvider getActionProductListWithToken
+     *
+     * @param mixed $withToken
+     * @param mixed $expectedProducts
      */
-    public function testActionsProductList($withToken, $expectedProducts)
+    public function testActionsProductList($withToken, $expectedProducts): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -425,8 +433,11 @@ final class ActionTest extends TokenTestCase
 
     /**
      * @dataProvider getActionProductListWithToken
+     *
+     * @param mixed $withToken
+     * @param mixed $expectedProducts
      */
-    public function testActionProductList($withToken, $expectedProducts)
+    public function testActionProductList($withToken, $expectedProducts): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -475,37 +486,37 @@ final class ActionTest extends TokenTestCase
     {
         return [
             [
-                'withToken' => false,
+                'withToken'      => false,
                 'isActionActive' => false,
-                'expected' => [],
+                'expected'       => [],
             ],
             [
-                'withToken' => true,
+                'withToken'      => true,
                 'isActionActive' => false,
-                'expected' => [
+                'expected'       => [
                     [
-                        'id' => self::INACTIVE_ACTION,
+                        'id'     => self::INACTIVE_ACTION,
                         'active' => false,
                     ],
                 ],
             ],
             [
-                'withToken' => false,
+                'withToken'      => false,
                 'isActionActive' => true,
-                'expected' => [
+                'expected'       => [
                     [
-                        'id' => self::ACTIVE_ACTION_WITH_PRODUCTS,
-                        'active' => true
+                        'id'     => self::ACTIVE_ACTION_WITH_PRODUCTS,
+                        'active' => true,
                     ],
                 ],
             ],
             [
-                'withToken' => false,
+                'withToken'      => false,
                 'isActionActive' => true,
-                'expected' => [
+                'expected'       => [
                     [
-                        'id' => self::ACTIVE_ACTION_WITH_PRODUCTS,
-                        'active' => true
+                        'id'     => self::ACTIVE_ACTION_WITH_PRODUCTS,
+                        'active' => true,
                     ],
                 ],
             ],

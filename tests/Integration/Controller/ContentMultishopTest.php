@@ -15,12 +15,11 @@ use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
 
 /**
  * Class ContentEnterpriseTest
- *
- * @package OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller
  */
-class ContentMultishopTest extends MultishopTestCase
+final class ContentMultishopTest extends MultishopTestCase
 {
     private const CONTENT_ID = '1074279e67a85f5b1.96907412';
+
     private const CONTENT_ID_FOR_SHOP_2 = '_subshop_2';
 
     protected function tearDown(): void
@@ -34,7 +33,7 @@ class ContentMultishopTest extends MultishopTestCase
      * Active content from shop 2 isaccessible for shop 2
      * We are in shop 2.
      */
-    public function testGetActiveContentFromSameSubshopIsOk()
+    public function testGetActiveContentFromSameSubshopIsOk(): void
     {
         $this->addContentToShops([2]);
         $this->setGETRequestParameter('shp', '2');
@@ -52,7 +51,7 @@ class ContentMultishopTest extends MultishopTestCase
      * Active content from shop 1 is not accessible for shop 2
      * We are in shop 2.
      */
-    public function testGetActiveContentFromOtherShopWillFail()
+    public function testGetActiveContentFromOtherShopWillFail(): void
     {
         $this->setGETRequestParameter('shp', '2');
 
@@ -68,7 +67,7 @@ class ContentMultishopTest extends MultishopTestCase
     /**
      * Check if no contents available while they are not related to the shop 2
      */
-    public function testGetEmptyContentListOfNotMainShop()
+    public function testGetEmptyContentListOfNotMainShop(): void
     {
         $this->setGETRequestParameter('shp', '2');
 
@@ -89,7 +88,7 @@ class ContentMultishopTest extends MultishopTestCase
      * Check if active content from shop 1 is accessible for
      * shop 2 if its related to shop 2
      */
-    public function testGetSingleInShopActiveContentWillWork()
+    public function testGetSingleInShopActiveContentWillWork(): void
     {
         $this->setGETRequestParameter('shp', '2');
         $this->setGETRequestParameter('lang', '0');
@@ -105,7 +104,7 @@ class ContentMultishopTest extends MultishopTestCase
         $this->assertResponseStatus(200, $result);
         $this->assertEquals(
             [
-                'id' => self::CONTENT_ID_FOR_SHOP_2,
+                'id'    => self::CONTENT_ID_FOR_SHOP_2,
                 'title' => 'Wie bestellen?',
             ],
             $result['body']['data']['content']
@@ -115,7 +114,7 @@ class ContentMultishopTest extends MultishopTestCase
     /**
      * Check if only one, related to the shop 2 content is available in list
      */
-    public function testGetOneContentInListOfNotMainShop()
+    public function testGetOneContentInListOfNotMainShop(): void
     {
         $this->setGETRequestParameter('shp', '2');
         $this->addContentToShops([2]);
@@ -140,29 +139,29 @@ class ContentMultishopTest extends MultishopTestCase
     {
         return [
             'shop_2_de' => [
-                'shopId' => '2',
+                'shopId'     => '2',
                 'languageId' => '0',
-                'title' => 'Wie bestellen?',
-                'id' => self::CONTENT_ID_FOR_SHOP_2,
+                'title'      => 'Wie bestellen?',
+                'id'         => self::CONTENT_ID_FOR_SHOP_2,
             ],
             'shop_2_en' => [
-                'shopId' => '2',
+                'shopId'     => '2',
                 'languageId' => '1',
-                'title' => 'How to order?',
-                'id' => self::CONTENT_ID_FOR_SHOP_2,
+                'title'      => 'How to order?',
+                'id'         => self::CONTENT_ID_FOR_SHOP_2,
             ],
             'shop_1_de' => [
-                'shopId' => '1',
+                'shopId'     => '1',
                 'languageId' => '0',
-                'title' => 'Wie bestellen?',
-                'id' => self::CONTENT_ID,
+                'title'      => 'Wie bestellen?',
+                'id'         => self::CONTENT_ID,
             ],
             'shop_1_en' => [
-                'shopId' => '1',
+                'shopId'     => '1',
                 'languageId' => '1',
-                'title' => 'How to order?',
-                'id' => self::CONTENT_ID,
-            ]
+                'title'      => 'How to order?',
+                'id'         => self::CONTENT_ID,
+            ],
         ];
     }
 
@@ -170,8 +169,13 @@ class ContentMultishopTest extends MultishopTestCase
      * Check multishop multilanguage data is accessible
      *
      * @dataProvider providerGetContentMultilanguage
+     *
+     * @param mixed $shopId
+     * @param mixed $languageId
+     * @param mixed $title
+     * @param mixed $id
      */
-    public function testGetSingleTranslatedSecondShopContent($shopId, $languageId, $title, $id)
+    public function testGetSingleTranslatedSecondShopContent($shopId, $languageId, $title, $id): void
     {
         EshopRegistry::getConfig()->setShopId($shopId);
         $this->setGETRequestParameter('shp', $shopId);
@@ -189,8 +193,8 @@ class ContentMultishopTest extends MultishopTestCase
 
         $this->assertEquals(
             [
-                'id' => $id,
-                'title' => $title
+                'id'    => $id,
+                'title' => $title,
             ],
             $result['body']['data']['content']
         );
@@ -200,8 +204,13 @@ class ContentMultishopTest extends MultishopTestCase
      * Check multishop multilanguage data is accessible
      *
      * @dataProvider providerGetContentMultilanguage
+     *
+     * @param mixed $shopId
+     * @param mixed $languageId
+     * @param mixed $title
+     * @param mixed $id
      */
-    public function testGetListTranslatedSecondShopContents($shopId, $languageId, $title, $id)
+    public function testGetListTranslatedSecondShopContents($shopId, $languageId, $title, $id): void
     {
         EshopRegistry::getConfig()->setShopId($shopId);
         $this->setGETRequestParameter('shp', $shopId);
@@ -223,17 +232,18 @@ class ContentMultishopTest extends MultishopTestCase
 
         $this->assertEquals(
             [
-                'id' => $id,
-                'title' => $title
+                'id'    => $id,
+                'title' => $title,
             ],
             $result['body']['data']['contents'][0]
         );
     }
 
-    private function addContentToShops($shops)
+    private function addContentToShops($shops): void
     {
         $content = oxNew(EshopContent::class);
         $content->load(self::CONTENT_ID);
+
         foreach ($shops as $shopId) {
             $content->setId(self::CONTENT_ID_FOR_SHOP_2);
             $content->assign([

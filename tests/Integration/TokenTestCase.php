@@ -19,7 +19,7 @@ abstract class TokenTestCase extends TestCase
     /** @var string */
     protected const ADMIN_PASS = 'admin';
 
-    public function prepareToken(string $username = null, string $password = null): void
+    public function prepareToken(?string $username = null, ?string $password = null): void
     {
         $result = $this->query('query {
             token (

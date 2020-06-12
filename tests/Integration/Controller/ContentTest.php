@@ -15,12 +15,15 @@ use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
 
 final class ContentTest extends TokenTestCase
 {
-    private const ACTIVE_CONTENT = "e6fc3fe89d5da58da9bfcfba451fd365";
-    private const INACTIVE_CONTENT  = "67c5bcf75ee346bd9566bce6c8"; // credits
-    private const ACTIVE_CONTENT_AGB = "2eb4676806a3d2e87.06076523"; //agb
-    private const CATEGORY_RELATED_TO_ACTIVE_CONTENT  = "0f4fb00809cec9aa0910aa9c8fe36751";
+    private const ACTIVE_CONTENT = 'e6fc3fe89d5da58da9bfcfba451fd365';
 
-    public function testGetSingleActiveContent()
+    private const INACTIVE_CONTENT  = '67c5bcf75ee346bd9566bce6c8'; // credits
+
+    private const ACTIVE_CONTENT_AGB = '2eb4676806a3d2e87.06076523'; //agb
+
+    private const CATEGORY_RELATED_TO_ACTIVE_CONTENT  = '0f4fb00809cec9aa0910aa9c8fe36751';
+
+    public function testGetSingleActiveContent(): void
     {
         $result = $this->query('query {
             content (id: "' . self::ACTIVE_CONTENT . '") {
@@ -64,11 +67,11 @@ final class ContentTest extends TokenTestCase
             'folder',
             'version',
             'seo',
-            'category'
+            'category',
         ]));
     }
 
-    public function testGetSingleActiveContentWithVersion()
+    public function testGetSingleActiveContentWithVersion(): void
     {
         $result = $this->query('query {
             content (id: "' . self::ACTIVE_CONTENT_AGB . '") {
@@ -88,11 +91,11 @@ final class ContentTest extends TokenTestCase
 
         $this->assertEmpty(array_diff(array_keys($content), [
             'id',
-            'version'
+            'version',
         ]));
     }
 
-    public function testGetSingleInactiveContentWithoutToken()
+    public function testGetSingleInactiveContentWithoutToken(): void
     {
         $result = $this->query('query {
             content (id: "' . self::INACTIVE_CONTENT . '") {
@@ -118,7 +121,7 @@ final class ContentTest extends TokenTestCase
         );
     }
 
-    public function testGetSingleInactiveContentWithToken()
+    public function testGetSingleInactiveContentWithToken(): void
     {
         $this->prepareToken();
 
@@ -137,7 +140,7 @@ final class ContentTest extends TokenTestCase
         );
     }
 
-    public function testGetSingleNonExistingContent()
+    public function testGetSingleNonExistingContent(): void
     {
         $result = $this->query('query {
             content (id: "DOES-NOT-EXIST") {
@@ -148,7 +151,7 @@ final class ContentTest extends TokenTestCase
         $this->assertEquals(404, $result['status']);
     }
 
-    public function testGetContentListWithoutFilter()
+    public function testGetContentListWithoutFilter(): void
     {
         $result = $this->query('query {
             contents {
@@ -166,7 +169,7 @@ final class ContentTest extends TokenTestCase
         );
     }
 
-    public function testGetContentListWithAdminToken()
+    public function testGetContentListWithAdminToken(): void
     {
         $this->prepareToken();
 
@@ -183,7 +186,7 @@ final class ContentTest extends TokenTestCase
         ); //for admin token we get the inactive one as well
     }
 
-    public function testGetContentListWithExactFilter()
+    public function testGetContentListWithExactFilter(): void
     {
         $result = $this->query('query {
             contents (filter: {
@@ -202,7 +205,7 @@ final class ContentTest extends TokenTestCase
         );
     }
 
-    public function testGetContentListWithPartialFilter()
+    public function testGetContentListWithPartialFilter(): void
     {
         $result = $this->query('query {
             contents (filter: {
@@ -221,7 +224,7 @@ final class ContentTest extends TokenTestCase
         );
     }
 
-    public function testGetEmptyContentListWithFilter()
+    public function testGetEmptyContentListWithFilter(): void
     {
         $result = $this->query('query {
             contents (filter: {
@@ -244,14 +247,16 @@ final class ContentTest extends TokenTestCase
     {
         return [
             ['withToken' => false],
-            ['withToken' => true]
+            ['withToken' => true],
         ];
     }
 
     /**
      * @dataProvider useTokenDataProvider
+     *
+     * @param mixed $withToken
      */
-    public function testContentCategory($withToken)
+    public function testContentCategory($withToken): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -285,12 +290,13 @@ final class ContentTest extends TokenTestCase
         );
 
         $category = $result['body']['data']['content']['category'];
+
         if (!$withToken) {
             $this->assertNull($category);
         } else {
             $this->assertSame(
                 [
-                    'active' => false
+                    'active' => false,
                 ],
                 $category
             );
@@ -299,8 +305,10 @@ final class ContentTest extends TokenTestCase
 
     /**
      * @dataProvider useTokenDataProvider
+     *
+     * @param mixed $withToken
      */
-    public function testContentsCategory($withToken)
+    public function testContentsCategory($withToken): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -339,13 +347,14 @@ final class ContentTest extends TokenTestCase
         );
 
         $contentCategory = $result['body']['data']['contents'][0]['category'];
+
         if (!$withToken) {
             $this->assertNull($contentCategory);
         } else {
             $this->assertSame(
                 [
                     'id'     => self::CATEGORY_RELATED_TO_ACTIVE_CONTENT,
-                    'active' => false
+                    'active' => false,
                 ],
                 $contentCategory
             );
