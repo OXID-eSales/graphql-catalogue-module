@@ -26,11 +26,6 @@ final class Currency
         $this->currency = $currencyObject;
     }
 
-    public function getEshopModel(): stdClass
-    {
-        return $this->currency;
-    }
-
     /**
      * @Field()
      */
@@ -61,5 +56,10 @@ final class Currency
     public function getSign(): string
     {
         return $this->currency->sign;
+    }
+
+    public function getPrecision(): int
+    {
+        return (int) $this->currency->decimal;
     }
 }

@@ -36,5 +36,6 @@ final class CurrencyTest extends TestCase
         $this->assertSame($currencyObject->rate, $currency->getRate());
         $this->assertSame($currencyObject->name, $currency->getName());
         $this->assertSame($currencyObject->sign, $currency->getSign());
+        $this->assertSame((int) $currencyObject->decimal, $currency->getPrecision());
     }
 }
