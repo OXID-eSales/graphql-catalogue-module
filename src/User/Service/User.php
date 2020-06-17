@@ -44,7 +44,10 @@ final class User
      */
     public function user(string $id): UserDataType
     {
-        if (!$this->authorizationService->isAllowed('VIEW_USER')) {
+        if (
+            $this->authenticationService->getUserId() !== $id &&
+            !$this->authorizationService->isAllowed('VIEW_USER')
+        ) {
             throw new InvalidLogin('Unauthorized');
         }
 

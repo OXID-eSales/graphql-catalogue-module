@@ -370,7 +370,7 @@ final class ReviewTest extends TokenTestCase
                 'isUserActive' => false,
                 'withToken'    => false,
                 'expectedUser' => null,
-                'expected'     => 401,
+                'expected'     => 403,
             ],
             [
                 'isUserActive' => false,
@@ -384,7 +384,7 @@ final class ReviewTest extends TokenTestCase
                 'isUserActive' => true,
                 'withToken'    => false,
                 'expectedUser' => null,
-                'expected'     => 401,
+                'expected'     => 403,
             ],
             [
                 'isUserActive' => true,
