@@ -13,7 +13,7 @@ use OxidEsales\GraphQL\Catalogue\Product\DataType\Product;
 use OxidEsales\GraphQL\Catalogue\Product\Service\Product as ProductService;
 use OxidEsales\GraphQL\Catalogue\Review\DataType\Review;
 use OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\Repository;
-use OxidEsales\GraphQL\Catalogue\User\DataType\User;
+use OxidEsales\GraphQL\Catalogue\User\DataType\Reviewer;
 use OxidEsales\GraphQL\Catalogue\User\Service\User as UserService;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
@@ -45,21 +45,11 @@ final class RelationService
     /**
      * @Field()
      */
-    public function getUser(Review $review): ?User
+    public function getReviewer(Review $review): Reviewer
     {
         $userId = (string) $review->getUserId();
 
-        return $this->userService->user($userId);
-    }
-
-    /**
-     * @Field()
-     */
-    public function getUserFirstName(Review $review): string
-    {
-        $userId = (string) $review->getUserId();
-
-        return $this->userService->userFirstName($userId);
+        return $this->userService->reviewer($userId);
     }
 
     /**
