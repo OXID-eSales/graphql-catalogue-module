@@ -53,9 +53,9 @@ final class Repository
         }
         $type = new $type($model);
 
-        if (!($type instanceof DataType)) {
-            throw new InvalidArgumentException();
-        }
+//        if (!($type instanceof DataType)) {
+//            throw new InvalidArgumentException();
+//        }
 
         return $type;
     }

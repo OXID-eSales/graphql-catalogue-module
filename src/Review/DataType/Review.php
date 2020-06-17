@@ -12,7 +12,6 @@ namespace OxidEsales\GraphQL\Catalogue\Review\DataType;
 use DateTimeImmutable;
 use DateTimeInterface;
 use OxidEsales\Eshop\Application\Model\Review as EshopReviewModel;
-use OxidEsales\GraphQL\Catalogue\Shared\DataType\DataType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 use TheCodingMachine\GraphQLite\Types\ID;
@@ -20,7 +19,7 @@ use TheCodingMachine\GraphQLite\Types\ID;
 /**
  * @Type()
  */
-final class Review implements DataType
+final class Review
 {
     /** @var EshopReviewModel */
     private $review;
