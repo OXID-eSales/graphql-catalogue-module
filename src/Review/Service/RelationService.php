@@ -55,16 +55,6 @@ final class RelationService
     /**
      * @Field()
      */
-    public function getUserFirstName(Review $review): string
-    {
-        $userId = (string) $review->getUserId();
-
-        return $this->userService->userFirstName($userId);
-    }
-
-    /**
-     * @Field()
-     */
     public function getProduct(Review $review): ?Product
     {
         if (!$review->isArticleType()) {

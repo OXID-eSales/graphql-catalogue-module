@@ -12,6 +12,8 @@ namespace OxidEsales\GraphQL\Catalogue\User\DataType;
 use OxidEsales\Eshop\Application\Model\User as EshopUserModel;
 use OxidEsales\GraphQL\Catalogue\Shared\DataType\DataType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
+use TheCodingMachine\GraphQLite\Annotations\Logged;
+use TheCodingMachine\GraphQLite\Annotations\Right;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 use TheCodingMachine\GraphQLite\Types\ID;
 
@@ -30,6 +32,8 @@ final class User implements DataType
 
     /**
      * @Field()
+     * @Logged()
+     * @Right("VIEW_USER")
      */
     public function getId(): ID
     {
@@ -46,6 +50,8 @@ final class User implements DataType
 
     /**
      * @Field()
+     * @Logged()
+     * @Right("VIEW_USER")
      */
     public function getLastName(): string
     {
@@ -54,6 +60,8 @@ final class User implements DataType
 
     /**
      * @Field()
+     * @Logged()
+     * @Right("VIEW_USER")
      */
     public function getUserName(): string
     {
