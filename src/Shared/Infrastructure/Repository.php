@@ -124,6 +124,8 @@ final class Repository
      * @param class-string<T> $type
      *
      * @throws NotFound
+     *
+     * @return true
      */
     public function delete(string $id, string $type, bool $disableSubShop = true): bool
     {
