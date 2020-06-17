@@ -14,6 +14,7 @@ use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\Repository;
+use OxidEsales\GraphQL\Catalogue\User\DataType\Reviewer;
 use OxidEsales\GraphQL\Catalogue\User\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Catalogue\User\Exception\UserNotFound;
 
@@ -61,20 +62,15 @@ final class User
         return $user;
     }
 
-    /**
-     * @throws UserNotFound
-     * @throws InvalidLogin
-     */
-    public function userFirstName(string $id): string
+    public function reviewer(string $id): Reviewer
     {
         try {
-            /** @var UserDataType $user */
-            $user = $this->repository->getById($id, UserDataType::class);
+            /** @var Reviewer $reviewer */
+            $reviewer = $this->repository->getById($id, Reviewer::class);
         } catch (NotFound $e) {
-            //TODO: maybe better throw new InvalidLogin("Unauthorized"); ?
             throw UserNotFound::byId($id);
         }
 
-        return $user->getFirstName();
+        return $reviewer;
     }
 }
