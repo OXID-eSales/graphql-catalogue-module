@@ -28,6 +28,11 @@ final class User implements DataType
         $this->user = $user;
     }
 
+    public function getEshopModel(): EshopUserModel
+    {
+        return $this->user;
+    }
+
     /**
      * @Field()
      */
