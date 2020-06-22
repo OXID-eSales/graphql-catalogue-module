@@ -38,7 +38,9 @@ final class ReviewTest extends TokenTestCase
                 text
                 rating
                 createAt
-                userFirstName
+                reviewer {
+                    firstName
+                }
                 product {
                     id
                     title
@@ -59,7 +61,9 @@ final class ReviewTest extends TokenTestCase
             'text'          => 'Fantastic kite with great performance!',
             'rating'        => 5,
             'createAt'      => '2011-03-25T16:51:05+01:00',
-            'userFirstName' => 'Marc',
+            'reviewer'      => [
+                'firstName' => 'Marc',
+            ],
             'product'       => [
                 'id'    => self::REVIEW_PRODUCT,
                 'title' => 'Kite NBK EVO 2010',
@@ -78,11 +82,8 @@ final class ReviewTest extends TokenTestCase
                 text
                 rating
                 createAt
-                userFirstName
-                user {
-                    id
+                reviewer {
                     firstName
-                    lastName
                 }
                 product {
                     id
@@ -104,11 +105,8 @@ final class ReviewTest extends TokenTestCase
             'text'          => 'Fantastic kite with great performance!',
             'rating'        => 5,
             'createAt'      => '2011-03-25T16:51:05+01:00',
-            'userFirstName' => 'Marc',
-            'user'          => [
-                'id'        => 'e7af1c3b786fd02906ccd75698f4e6b9',
+            'reviewer'      => [
                 'firstName' => 'Marc',
-                'lastName'  => 'Muster',
             ],
             'product' => [
                 'id'    => self::REVIEW_PRODUCT,
@@ -197,18 +195,16 @@ final class ReviewTest extends TokenTestCase
         $this->assertEquals(404, $result['status']);
     }
 
-    public function providerGetReviewFromNotExistingUser()
+    public function providerGetReviewFromNotExistingReviewer()
     {
         return [
             'admin' => [
                 'username' => 'admin',
                 'password' => 'admin',
-                'expected' => 404,
             ],
             'user'  => [
                 'username' => 'user@oxid-esales.com',
                 'password' => 'useruser',
-                'expected' => 401,
             ],
         ];
     }
@@ -217,24 +213,23 @@ final class ReviewTest extends TokenTestCase
      * Case that the user related to review does not exist (inconsistent data).
      * Normal user is not allowed to query user data.
      *
-     * @dataProvider providerGetReviewFromNotExistingUser
+     * @dataProvider providerGetReviewFromNotExistingReviewer
      */
-    public function testGetReviewFromNotExistingUser(string $username, string $password, int $expected): void
+    public function testGetReviewFromNotExistingReviewer(string $username, string $password): void
     {
         $this->prepareToken($username, $password);
 
         $result = $this->query('query {
             review(id: "' . self::WRONG_USER . '") {
                 id
-                user {
-                    id
+                reviewer {
+                    firstName
                 }
             }
         }');
 
-        $this->assertResponseStatus(
-            $expected,
-            $result
+        $this->assertNull(
+            $response['body']['data']['review']['reviewer']
         );
     }
 
@@ -361,83 +356,5 @@ final class ReviewTest extends TokenTestCase
                 'expected' => 200,
             ],
         ];
-    }
-
-    public function getReviewUserProvider()
-    {
-        return [
-            [
-                'isUserActive' => false,
-                'withToken'    => false,
-                'expectedUser' => null,
-                'expected'     => 403,
-            ],
-            [
-                'isUserActive' => false,
-                'withToken'    => true,
-                'expectedUser' => [
-                    'id' => self::REVIEW_USER,
-                ],
-                'expected'     => 200,
-            ],
-            [
-                'isUserActive' => true,
-                'withToken'    => false,
-                'expectedUser' => null,
-                'expected'     => 403,
-            ],
-            [
-                'isUserActive' => true,
-                'withToken'    => true,
-                'expectedUser' => [
-                    'id' => self::REVIEW_USER,
-                ],
-                'expected'     => 200,
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider getReviewUserProvider
-     *
-     * @param mixed $isUserActive
-     * @param mixed $withToken
-     * @param mixed $expectedUser
-     * @param mixed $expected
-     */
-    public function testReviewUser($isUserActive, $withToken, $expectedUser, $expected): void
-    {
-        $queryBuilderFactory = ContainerFactory::getInstance()
-            ->getContainer()
-            ->get(QueryBuilderFactoryInterface::class);
-        $queryBuilder = $queryBuilderFactory->create();
-
-        $oxactive = $isUserActive ? 1 : 0;
-        $queryBuilder
-            ->update('oxuser')
-            ->set('oxactive', $oxactive)
-            ->where('OXID = :OXID')
-            ->setParameter(':OXID', self::REVIEW_USER)
-            ->execute();
-
-        if ($withToken) {
-            $this->prepareToken();
-        }
-
-        $result = $this->query('query {
-            review(id: "' . self::ACTIVE_REVIEW . '") {
-                id
-                user {
-                    id
-                }
-            }
-        }');
-
-        $this->assertResponseStatus(
-            $expected,
-            $result
-        );
-
-        $this->assertSame($expectedUser, $result['body']['data']['review']['user']);
     }
 }

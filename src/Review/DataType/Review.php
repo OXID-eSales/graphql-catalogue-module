@@ -69,7 +69,7 @@ final class Review implements DataType
         );
     }
 
-    public function getUserId(): string
+    public function getReviewerId(): string
     {
         return (string) $this->review->getFieldData('oxuserid');
     }

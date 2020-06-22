@@ -7,16 +7,16 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Catalogue\User\Exception;
+namespace OxidEsales\GraphQL\Catalogue\Review\Exception;
 
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 
 use function sprintf;
 
-final class UserNotFound extends NotFound
+final class ReviewerNotFound extends NotFound
 {
     public static function byId(string $id): self
     {
-        return new self(sprintf('User was not found by id: %s', $id));
+        return new self(sprintf('Reviewer was not found by id: %s', $id));
     }
 }
