@@ -26,7 +26,7 @@ $aModule = [
     'thumbnail'   => 'out/pictures/logo.png',
     'version'     => '0.1.0',
     'author'      => 'OXID eSales',
-    'url'         => 'www.oxid-esales.com',
+    'url'         => 'https://github.com/OXID-eSales/graphql-catalogue-module',
     'email'       => 'info@oxid-esales.com',
     'extend'      => [
     ],
