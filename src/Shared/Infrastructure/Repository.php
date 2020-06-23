@@ -148,6 +148,8 @@ final class Repository
     }
 
     /**
+     * @param class-string $modelClass
+     *
      * @throws InvalidArgumentException if model in $type is not instance of BaseModel
      */
     private function getModel(string $modelClass, bool $disableSubShop): BaseModel
