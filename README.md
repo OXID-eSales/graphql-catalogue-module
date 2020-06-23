@@ -4,12 +4,7 @@
 [![PHP Version](https://flat.badgen.net/packagist/php/OXID-eSales/graphql-catalogue/?cache=300&scale=1.1)](https://github.com/oxid-esales/graphql-catalogue-module)
 [![Stable Version](https://flat.badgen.net/packagist/v/OXID-eSales/graphql-catalogue/latest/?label=latest&cache=300&scale=1.1)](https://packagist.org/packages/oxid-esales/graphql-catalogue)
 
-This module provides [GraphQL](https://www.graphql.org) queries and mutations for the [OXID eShop](https://www.oxid-esales.com/) allowing access to:
-- Manufacturers and vendors
-- Categories
-- Products and their attributes
-- Reviews
-- Ratings
+This module provides [GraphQL](https://www.graphql.org) queries and mutations for the [OXID eShop](https://www.oxid-esales.com/) allowing access the catalogue view.
 
 ## Usage
 
@@ -18,10 +13,16 @@ This assumes you have OXID eShop (at least `oxid-esales/oxideshop_ce: v6.5.0` co
 ### Install
 
 ```bash
-$ composer require oxid-esales/graphql-catalogue
+$ composer require oxid-esales/graphql-catalogue --no-update
+$ composer update
 ```
 
-After requiring the module, you need to head over to the OXID eShop admin and activate the GraphQL Catalogue module. If you did not had the `oxid-esales/graphql-base` module already installed, composer will do that for you, but don't forget to also activate this in the OXID eShop admin.
+After requiring the module, you need to head over to the OXID eShop admin and activate the GraphQL Catalogue module. If you did not had the `oxid-esales/graphql-base` module already installed, composer will do that for you, but don't forget to also activate the modules.
+
+```bash
+$ ./bin/oe-console oe:module:activate oe/graphql-base
+$ ./bin/oe-console oe:module:activate oe/graphql-catalogue
+```
 
 ### How to use
 
