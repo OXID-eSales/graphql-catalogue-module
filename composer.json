@@ -16,15 +16,14 @@
     "require": {
         "php": "^7.1",
         "doctrine/dbal": "^v2.7",
-        "oxid-esales/graphql-base": "dev-master"
+        "oxid-esales/graphql-base": "^3.1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.5.20|^8.5|^9",
         "friendsofphp/php-cs-fixer": "^2.16.1",
-        "phpcompatibility/php-compatibility": "*",
         "php-parallel-lint/php-parallel-lint": "^1.1",
         "phpstan/phpstan": "^0.12.26",
-        "oxid-esales/oxideshop-ce": "6.5",
+        "oxid-esales/oxideshop-ce": "^6.5",
         "oxid-esales/oxideshop-unified-namespace-generator": "^2.0"
     },
     "prefer-stable": true,
