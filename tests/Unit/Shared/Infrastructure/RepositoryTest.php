@@ -12,7 +12,6 @@ namespace OxidEsales\GraphQL\Catalogue\Tests\Unit\Shared\Infrastructure;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\Repository;
 use PHPUnit\Framework\TestCase;
-use function OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\oxNew;
 
 /**
  * @covers OxidEsales\GraphQL\Catalogue\Service\Repository
@@ -73,7 +72,7 @@ final class RepositoryTest extends TestCase
         $repository = new Repository(
             $this->createMock(QueryBuilderFactoryInterface::class)
         );
-        $repository->delete(oxNew(CorrectModel::class));
+        $repository->delete(new CorrectModel());
     }
 
     public function testModelSave(): void
