@@ -17,7 +17,9 @@ $ composer require oxid-esales/graphql-catalogue --no-update
 $ composer update
 ```
 
-After requiring the module, you need to head over to the OXID eShop admin and activate the GraphQL Catalogue module. If you did not had the `oxid-esales/graphql-base` module already installed, composer will do that for you, but don't forget to also activate the modules.
+If you didn't have the `oxid-esales/graphql-base` module installed, composer will do that for you.
+
+After requiring the module, you need to activate it, either via OXID eShop admin or CLI.
 
 ```bash
 $ ./bin/oe-console oe:module:activate oe/graphql-base
