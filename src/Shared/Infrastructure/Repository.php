@@ -138,6 +138,9 @@ final class Repository
         return true;
     }
 
+    /**
+     * @return true
+     */
     public function saveModel(BaseModel $item): bool
     {
         if (!$item->save()) {
