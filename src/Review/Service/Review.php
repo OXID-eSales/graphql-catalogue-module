@@ -61,10 +61,13 @@ final class Review
         return $review;
     }
 
+    /**
+     * @return true
+     */
     public function save(ReviewDataType $review): bool
     {
-        $modelItem = $review->getEshopModel();
-
-        return $this->repository->saveModel($modelItem);
+        return $this->repository->saveModel(
+            $review->getEshopModel()
+        );
     }
 }
