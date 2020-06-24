@@ -333,9 +333,9 @@ final class RelationService
         $reviews = $product->getEshopModel()->getReviews();
 
         if ($reviews !== null) {
-            /** @var \OxidEsales\Eshop\Application\Model\Review $oneReview */
-            foreach ($reviews as $oneReview) {
-                $result[] = new Review($oneReview);
+            /** @var \OxidEsales\Eshop\Application\Model\Review $review */
+            foreach ($reviews as $review) {
+                $result[] = new Review($review);
             }
         }
 
