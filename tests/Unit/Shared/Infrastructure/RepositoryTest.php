@@ -72,7 +72,7 @@ final class RepositoryTest extends TestCase
         $repository = new Repository(
             $this->createMock(QueryBuilderFactoryInterface::class)
         );
-        $repository->delete('does_not_exist', AlsoWrongType::class);
+        $repository->delete(oxNew(CorrectModel::class));
     }
 
     public function testModelSave(): void
