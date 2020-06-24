@@ -119,19 +119,13 @@ final class Repository
     }
 
     /**
-     * @template T
-     *
-     * @param class-string<T> $type
-     *
      * @throws NotFound
      *
      * @return true
      */
-    public function delete(string $id, string $type, bool $disableSubShop = true): bool
+    public function delete(BaseModel $item): bool
     {
-        $model = $this->getModel($type::getModelClass(), $disableSubShop);
-
-        if (!$model->delete($id)) {
+        if (!$item->delete()) {
             throw new RuntimeException('Failed deleting object');
         }
 
