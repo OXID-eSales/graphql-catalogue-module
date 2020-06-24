@@ -6,14 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-### Added
-
-- `OxidEsales\GraphQL\Catalogue\Review\Service::save` method to save reviews
-
 ### Changed
 
 - Repository::delete() takes loaded BaseModel as argument.
-
 
 ## [0.1.0] 2020-06-23
 
