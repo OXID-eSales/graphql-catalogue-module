@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\DataType;
 
-use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
+use OxidEsales\GraphQL\Base\Tests\Integration\TokenTestCase;
 
 /**
  * @covers OxidEsales\GraphQL\Catalogue\DataType\ContentRelationService

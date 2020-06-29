@@ -13,7 +13,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
-use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
+use OxidEsales\GraphQL\Base\Tests\Integration\TokenTestCase;
 
 final class CategoryTest extends TokenTestCase
 {

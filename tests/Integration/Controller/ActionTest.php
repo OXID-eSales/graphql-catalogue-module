@@ -11,7 +11,7 @@ namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
-use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
+use OxidEsales\GraphQL\Base\Tests\Integration\TokenTestCase;
 
 final class ActionTest extends TokenTestCase
 {

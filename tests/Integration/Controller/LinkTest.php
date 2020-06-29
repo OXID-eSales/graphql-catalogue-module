@@ -11,7 +11,7 @@ namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
 use DateTimeImmutable;
 use DateTimeInterface;
-use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
+use OxidEsales\GraphQL\Base\Tests\Integration\TokenTestCase;
 
 final class LinkTest extends TokenTestCase
 {

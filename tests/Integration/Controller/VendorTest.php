@@ -12,7 +12,7 @@ namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 use DateTimeImmutable;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
-use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
+use OxidEsales\GraphQL\Base\Tests\Integration\TokenTestCase;
 use TheCodingMachine\GraphQLite\Types\DateTimeType;
 
 final class VendorTest extends TokenTestCase

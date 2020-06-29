@@ -12,8 +12,7 @@ namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
-use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
-
+use OxidEsales\GraphQL\Base\Tests\Integration\TokenTestCase;
 use function version_compare;
 
 final class ProductTest extends TokenTestCase
