@@ -10,8 +10,11 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Banner\Service;
 
 use OxidEsales\Eshop\Application\Model\ActionList;
+use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
+use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Catalogue\Banner\DataType\Banner as BannerDataType;
 use OxidEsales\GraphQL\Catalogue\Banner\Exception\BannerNotFound;
@@ -25,12 +28,17 @@ final class Banner
     /** @var Authorization */
     private $authorizationService;
 
+    /** @var Authentication */
+    private $authenticationService;
+
     public function __construct(
         Repository $repository,
-        Authorization $authorizationService
+        Authorization $authorizationService,
+        Authentication $authenticationService
     ) {
-        $this->repository           = $repository;
-        $this->authorizationService = $authorizationService;
+        $this->repository            = $repository;
+        $this->authorizationService  = $authorizationService;
+        $this->authenticationService = $authenticationService;
     }
 
     /**
@@ -64,6 +72,17 @@ final class Banner
     {
         /** @var ActionList $actionList */
         $actionList = oxNew(ActionList::class);
+
+        try {
+            $userId = $this->authenticationService->getUserId();
+            $user = oxNew(User::class);
+            $user->load($userId);
+            if ($user->isLoaded()) {
+                $actionList->setUser($user);
+            }
+        } catch (InvalidToken $e) {
+        }
+
         $actionList->loadBanners();
 
         $result = [];
