@@ -75,8 +75,9 @@ final class Banner
 
         try {
             $userId = $this->authenticationService->getUserId();
-            $user = oxNew(User::class);
+            $user   = oxNew(User::class);
             $user->load($userId);
+
             if ($user->isLoaded()) {
                 $actionList->setUser($user);
             }
