@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- `\OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase`
+- `\OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase` moved to GraphQL Base Module
 
 ## [0.1.0] 2020-06-23
 
