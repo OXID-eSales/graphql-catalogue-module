@@ -1,0 +1,32 @@
+# depfile.yml
+paths:
+  - ./src/
+  - ./vendor/oxid-esales/oxideshop-ce/source/
+  - ./vendor/oxid-esales/oxideshop-unified-namespace-generator/
+layers:
+  - name: Controller
+    collectors:
+      - type: className
+        regex: .*GraphQL.*Controller.*
+  - name: Service
+    collectors:
+      - type: className
+        regex: .*GraphQL.*Service.*
+  - name: Repository
+    collectors:
+      - type: className
+        regex: .*GraphQL.*Repository.*
+  - name: Infrastructure
+    collectors:
+      - type: directory
+        regex: .*vendor/oxid-esales/oxideshop-ce/source/.*
+      - type: directory
+        regex: .*vendor/oxid-esales/oxideshop-unified-namespace-generator/.*
+ruleset:
+  Controller:
+    - Service
+  Service:
+    - Repository
+  Repository:
+    - Infrastructure
+  Infrastructure: ~
