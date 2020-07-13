@@ -13,7 +13,7 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
 
 /**
- * @covers OxidEsales\GraphQL\Catalogue\DataType\Currency
+ * @covers OxidEsales\GraphQL\Catalogue\Currency\DataType\Currency
  */
 final class CurrencyEnterpriseTest extends MultishopTestCase
 {

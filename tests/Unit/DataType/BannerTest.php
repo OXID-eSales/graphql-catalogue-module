@@ -14,7 +14,7 @@ use OxidEsales\GraphQL\Catalogue\Banner\DataType\Banner;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \OxidEsales\GraphQL\Catalogue\DataType\Banner
+ * @covers \OxidEsales\GraphQL\Catalogue\Banner\DataType\Banner
  */
 final class BannerTest extends TestCase
 {

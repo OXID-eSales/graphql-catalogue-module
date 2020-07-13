@@ -13,7 +13,7 @@ use OxidEsales\GraphQL\Catalogue\Product\DataType\ProductScalePrice;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductScalePrice
+ * @covers OxidEsales\GraphQL\Catalogue\Product\DataType\ProductScalePrice
  */
 final class ProductScalePriceTest extends TestCase
 {

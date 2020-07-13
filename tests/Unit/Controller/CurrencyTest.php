@@ -19,8 +19,8 @@ use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
- * @covers OxidEsales\GraphQL\Catalogue\Currency\Controller
- * @covers OxidEsales\GraphQL\Catalogue\Currency\Service\Repository
+ * @covers OxidEsales\GraphQL\Catalogue\Currency\Controller\Currency
+ * @covers OxidEsales\GraphQL\Catalogue\Currency\Infrastructure\Repository
  * @covers OxidEsales\GraphQL\Catalogue\Currency\Service\Currency
  * @covers OxidEsales\GraphQL\Catalogue\Currency\Exception\CurrencyNotFound
  */

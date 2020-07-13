@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 final class NamespaceMapperTest extends TestCase
 {
     /**
-     * @covers OxidEsales\GraphQL\Catalogue\Framework\NamespaceMapper
+     * @covers OxidEsales\GraphQL\Catalogue\Shared\Service\NamespaceMapper
      */
     public function testNamespaceCounts(): void
     {

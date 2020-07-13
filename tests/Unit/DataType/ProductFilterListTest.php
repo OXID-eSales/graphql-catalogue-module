@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 use TheCodingMachine\GraphQLite\Types\ID;
 
 /**
- * @covers \OxidEsales\GraphQL\Catalogue\DataType\ProductFilterList
+ * @covers OxidEsales\GraphQL\Catalogue\Product\DataType\ProductFilterList
  */
 final class ProductFilterListTest extends TestCase
 {

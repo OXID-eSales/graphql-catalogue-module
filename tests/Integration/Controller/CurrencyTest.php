@@ -13,8 +13,8 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
 /**
- * @covers OxidEsales\GraphQL\Catalogue\DataType\Currency
- * @covers OxidEsales\GraphQL\Catalogue\Controller\Currency
+ * @covers OxidEsales\GraphQL\Catalogue\Currency\DataType\Currency
+ * @covers OxidEsales\GraphQL\Catalogue\Currency\Controller\Currency
  */
 final class CurrencyTest extends TestCase
 {

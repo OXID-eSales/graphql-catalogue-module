@@ -15,7 +15,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInt
 use OxidEsales\GraphQL\Base\Tests\Integration\TokenTestCase;
 
 /**
- * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService
+ * @covers OxidEsales\GraphQL\Catalogue\Product\Service\RelationService
  */
 final class ProductRelationServiceTest extends TokenTestCase
 {
@@ -175,9 +175,9 @@ final class ProductRelationServiceTest extends TokenTestCase
     }
 
     /**
-     * @covers OxidEsales\GraphQL\Catalogue\DataType\Selection
-     * @covers OxidEsales\GraphQL\Catalogue\DataType\SelectionList
-     * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService
+     * @covers OxidEsales\GraphQL\Catalogue\Product\DataType\Selection
+     * @covers OxidEsales\GraphQL\Catalogue\Product\DataType\SelectionList
+     * @covers OxidEsales\GraphQL\Catalogue\Product\Service\RelationService
      */
     public function testGetSelectionListsRelation(): void
     {
@@ -340,8 +340,8 @@ final class ProductRelationServiceTest extends TokenTestCase
     }
 
     /**
-     * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductUnit
-     * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService
+     * @covers OxidEsales\GraphQL\Catalogue\Product\DataType\ProductUnit
+     * @covers OxidEsales\GraphQL\Catalogue\Product\Service\RelationService
      */
     public function testGetUnitNameAndPriceRelation(): void
     {
@@ -367,8 +367,8 @@ final class ProductRelationServiceTest extends TokenTestCase
     }
 
     /**
-     * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductStock
-     * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService
+     * @covers OxidEsales\GraphQL\Catalogue\Product\DataType\ProductStock
+     * @covers OxidEsales\GraphQL\Catalogue\Product\Service\RelationService
      */
     public function testGetRestockDateRelation(): void
     {
@@ -671,8 +671,8 @@ final class ProductRelationServiceTest extends TokenTestCase
     }
 
     /**
-     * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductScalePrice
-     * @covers OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService
+     * @covers OxidEsales\GraphQL\Catalogue\Product\DataType\ProductScalePrice
+     * @covers OxidEsales\GraphQL\Catalogue\Product\Service\RelationService
      */
     public function testGetScalePricesRelation(): void
     {

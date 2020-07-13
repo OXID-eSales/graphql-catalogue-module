@@ -13,7 +13,7 @@ use OxidEsales\GraphQL\Catalogue\Category\Exception\CategoryNotFound;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers OxidEsales\GraphQL\Catalogue\Exception\CategoryNotFound
+ * @covers OxidEsales\GraphQL\Catalogue\Category\Exception\CategoryNotFound
  */
 final class CategoryNotFoundTest extends TestCase
 {

@@ -20,8 +20,8 @@ use OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\Repository;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \OxidEsales\GraphQL\Catalogue\DataType\ProductImageGallery
- * @covers \OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService
+ * @covers OxidEsales\GraphQL\Catalogue\Product\DataType\ProductImage
+ * @covers OxidEsales\GraphQL\Catalogue\Product\Service\RelationService
  */
 final class ProductImageGalleryTest extends TestCase
 {

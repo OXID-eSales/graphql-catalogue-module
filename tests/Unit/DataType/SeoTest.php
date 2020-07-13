@@ -13,7 +13,7 @@ use OxidEsales\GraphQL\Catalogue\Shared\DataType\Seo;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers OxidEsales\GraphQL\Catalogue\DataType\Seo
+ * @covers OxidEsales\GraphQL\Catalogue\Shared\DataType\Seo
  */
 final class SeoTest extends TestCase
 {

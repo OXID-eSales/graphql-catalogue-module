@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
- * @covers OxidEsales\GraphQL\Catalogue\DataType\Currency
+ * @covers OxidEsales\GraphQL\Catalogue\Currency\DataType\Currency
  */
 final class CurrencyTest extends TestCase
 {

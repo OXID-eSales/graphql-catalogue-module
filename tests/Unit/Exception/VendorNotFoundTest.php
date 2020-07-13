@@ -13,7 +13,7 @@ use OxidEsales\GraphQL\Catalogue\Vendor\Exception\VendorNotFound;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers OxidEsales\GraphQL\Catalogue\Exception\VendorNotFound
+ * @covers OxidEsales\GraphQL\Catalogue\Vendor\Exception\VendorNotFound
  */
 final class VendorNotFoundTest extends TestCase
 {

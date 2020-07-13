@@ -13,7 +13,7 @@ use OxidEsales\GraphQL\Catalogue\Product\DataType\ProductImage;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \OxidEsales\GraphQL\Catalogue\DataType\ProductImage
+ * @covers OxidEsales\GraphQL\Catalogue\Product\DataType\ProductImage
  */
 final class ProductImageTest extends TestCase
 {

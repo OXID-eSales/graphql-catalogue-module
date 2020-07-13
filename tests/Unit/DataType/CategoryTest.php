@@ -14,7 +14,7 @@ use OxidEsales\GraphQL\Catalogue\Category\DataType\Category;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers OxidEsales\GraphQL\Catalogue\DataType\Category
+ * @covers OxidEsales\GraphQL\Catalogue\Category\DataType\Category
  */
 final class CategoryTest extends TestCase
 {

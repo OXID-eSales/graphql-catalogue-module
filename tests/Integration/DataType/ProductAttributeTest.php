@@ -20,8 +20,8 @@ use OxidEsales\GraphQL\Catalogue\Product\Service\RelationService;
 use OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\Repository;
 
 /**
- * @covers \OxidEsales\GraphQL\Catalogue\DataType\ProductAttribute
- * @covers \OxidEsales\GraphQL\Catalogue\DataType\ProductRelationService
+ * @covers OxidEsales\GraphQL\Catalogue\Product\DataType\ProductAttribute
+ * @covers OxidEsales\GraphQL\Catalogue\Product\Service\RelationService
  */
 final class ProductAttributeTest extends TestCase
 {

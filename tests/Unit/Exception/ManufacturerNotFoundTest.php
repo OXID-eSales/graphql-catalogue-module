@@ -13,7 +13,7 @@ use OxidEsales\GraphQL\Catalogue\Manufacturer\Exception\ManufacturerNotFound;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers OxidEsales\GraphQL\Catalogue\Exception\ManufacturerNotFound
+ * @covers OxidEsales\GraphQL\Catalogue\Manufacturer\Exception\ManufacturerNotFound
  */
 final class ManufacturerNotFoundTest extends TestCase
 {

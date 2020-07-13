@@ -13,7 +13,7 @@ use OxidEsales\GraphQL\Catalogue\Attribute\Exception\AttributeNotFound;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers OxidEsales\GraphQL\Catalogue\Exception\AttributeNotFound
+ * @covers OxidEsales\GraphQL\Catalogue\Attribute\Exception\AttributeNotFound
  */
 final class AttributeNotFoundTest extends TestCase
 {

@@ -16,7 +16,7 @@ use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 use OxidEsales\GraphQL\Catalogue\Shared\DataType\Seo;
 
 /**
- * @covers \OxidEsales\GraphQL\Catalogue\DataType\Seo
+ * @covers OxidEsales\GraphQL\Catalogue\Shared\DataType\Seo
  */
 final class SeoTest extends TestCase
 {

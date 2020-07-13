@@ -14,7 +14,7 @@ use OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\Repository;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers OxidEsales\GraphQL\Catalogue\Service\Repository
+ * @covers OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\Repository
  */
 final class RepositoryTest extends TestCase
 {
