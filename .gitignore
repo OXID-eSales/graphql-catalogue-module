@@ -1,5 +1,6 @@
 .idea
 .php_cs.cache
+.deptrac.cache
 composer.lock
 vendor/
 tests/reports/
