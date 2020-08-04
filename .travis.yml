@@ -34,5 +34,6 @@ install:
 script:
     - composer test:syntax
     - composer test:lint
-    - composer test:static
     - composer test:unit
+    - if [ $(php -r "echo PHP_MAJOR_VERSION . PHP_MINOR_VERSION;") == "74" -a "$DEPENDENCIES" == "" ]; then composer test:static; fi;
+    - if [ $(php -r "echo PHP_MAJOR_VERSION . PHP_MINOR_VERSION;") == "74" -a "$DEPENDENCIES" == "" ]; then composer test:deptrac; fi;
