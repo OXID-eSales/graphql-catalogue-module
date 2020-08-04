@@ -21,8 +21,6 @@ final class ReviewTest extends TokenTestCase
 
     private const REVIEW_PRODUCT = 'b56597806428de2f58b1c6c7d3e0e093';
 
-    private const REVIEW_USER = 'e7af1c3b786fd02906ccd75698f4e6b9';
-
     private const WRONG_USER = '_test_wrong_user';
 
     private const WRONG_PRODUCT = '_test_wrong_product';
@@ -229,7 +227,7 @@ final class ReviewTest extends TokenTestCase
         }');
 
         $this->assertNull(
-            $response['body']['data']['review']['reviewer']
+            $result['body']['data']['review']['reviewer']
         );
     }
 
@@ -269,13 +267,13 @@ final class ReviewTest extends TokenTestCase
                 'username' => 'admin',
                 'password' => 'admin',
                 'oxid'     => self::WRONG_PRODUCT,
-                'expected' => 404,
+                'expected' => 200,
             ],
             'user_wrong_product'  => [
                 'username' => 'user@oxid-esales.com',
                 'password' => 'useruser',
                 'oxid'     => self::WRONG_PRODUCT,
-                'expected' => 404,
+                'expected' => 200,
             ],
             'admin_wrong_type' => [
                 'username' => 'admin',
@@ -295,11 +293,10 @@ final class ReviewTest extends TokenTestCase
     /**
      * @dataProvider getReviewProductDataProvider
      *
-     * @param mixed $withToken
+     * @param array $token
      * @param mixed $product
-     * @param mixed $expected
      */
-    public function testReviewWithInactiveProduct($withToken, $product, $expected): void
+    public function testReviewWithInactiveProduct($token, $product): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -314,8 +311,8 @@ final class ReviewTest extends TokenTestCase
             ->setParameter(':OXID', self::REVIEW_PRODUCT)
             ->execute();
 
-        if ($withToken) {
-            $this->prepareToken();
+        if ($token) {
+            $this->prepareToken($token['username'], $token['password']);
         }
 
         $result = $this->query('query {
@@ -329,7 +326,7 @@ final class ReviewTest extends TokenTestCase
         }');
 
         $this->assertResponseStatus(
-            $expected,
+            200,
             $result
         );
 
@@ -343,17 +340,25 @@ final class ReviewTest extends TokenTestCase
     {
         return [
             [
-                'withToken'       => false,
+                'token'           => null,
                 'expectedProduct' => null,
-                'expected'        => 401,
             ],
             [
-                'withToken'       => true,
+                'token'           => [
+                    'username' => 'user@oxid-esales.com',
+                    'password' => 'useruser',
+                ],
+                'expectedProduct' => null,
+            ],
+            [
+                'token'           => [
+                    'username' => 'admin',
+                    'password' => 'admin',
+                ],
                 'expectedProduct' => [
                     'id'     => self::REVIEW_PRODUCT,
                     'active' => false,
                 ],
-                'expected' => 200,
             ],
         ];
     }

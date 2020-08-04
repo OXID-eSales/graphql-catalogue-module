@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Review\Service;
 
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\Product;
+use OxidEsales\GraphQL\Catalogue\Product\Exception\ProductNotFound;
 use OxidEsales\GraphQL\Catalogue\Product\Service\Product as ProductService;
 use OxidEsales\GraphQL\Catalogue\Review\DataType\Review;
 use OxidEsales\GraphQL\Catalogue\Review\DataType\Reviewer;
@@ -55,6 +57,11 @@ final class RelationService
             return null;
         }
 
-        return $this->productService->product($review->getObjectId());
+        try {
+            /** @var Product */
+            return $this->productService->product($review->getObjectId());
+        } catch (ProductNotFound | InvalidLogin $e) {
+            return null;
+        }
     }
 }
