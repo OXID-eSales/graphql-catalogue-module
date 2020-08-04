@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Product\Service;
 
-use OxidEsales\Eshop\Application\Model\Attribute;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Catalogue\Category\DataType\Category;
 use OxidEsales\GraphQL\Catalogue\Manufacturer\DataType\Manufacturer;
@@ -25,6 +24,7 @@ use OxidEsales\GraphQL\Catalogue\Product\DataType\ProductStock;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\ProductUnit;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\SelectionList;
 use OxidEsales\GraphQL\Catalogue\Product\Exception\ProductNotFound;
+use OxidEsales\GraphQL\Catalogue\Product\Infrastructure\Product as ProductInfrastructure;
 use OxidEsales\GraphQL\Catalogue\Product\Service\Product as ProductService;
 use OxidEsales\GraphQL\Catalogue\Review\DataType\Review;
 use OxidEsales\GraphQL\Catalogue\Shared\DataType\Seo;
@@ -32,9 +32,6 @@ use OxidEsales\GraphQL\Catalogue\Vendor\DataType\Vendor;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 
-use function array_map;
-use function count;
-use function is_iterable;
 use function strlen;
 
 /**
@@ -45,10 +42,15 @@ final class RelationService
     /** @var ProductService */
     private $productService;
 
+    /** @var ProductInfrastructure */
+    private $productInfrastructure;
+
     public function __construct(
-        ProductService $productService
+        ProductService $productService,
+        ProductInfrastructure $productInfrastructure
     ) {
-        $this->productService = $productService;
+        $this->productService        = $productService;
+        $this->productInfrastructure = $productInfrastructure;
     }
 
     /**
@@ -128,14 +130,7 @@ final class RelationService
      */
     public function getScalePrices(Product $product): array
     {
-        $amountPrices = $product->getEshopModel()->loadAmountPriceInfo();
-
-        return array_map(
-            function ($amountPrice) {
-                return new ProductScalePrice($amountPrice);
-            },
-            $amountPrices
-        );
+        return $this->productInfrastructure->getScalePrices($product);
     }
 
     /**
@@ -143,7 +138,7 @@ final class RelationService
      */
     public function getBundleProduct(Product $product): ?Product
     {
-        $bundleProductId = (string) $product->getEshopModel()->getFieldData('oxbundleid');
+        $bundleProductId = $product->getBundleId();
 
         if (!strlen($bundleProductId)) {
             return null;
@@ -164,15 +159,7 @@ final class RelationService
      */
     public function getManufacturer(Product $product): ?Manufacturer
     {
-        $manufacturer = $product->getEshopModel()->getManufacturer();
-
-        if ($manufacturer === null) {
-            return null;
-        }
-
-        return new Manufacturer(
-            $manufacturer
-        );
+        return $this->productInfrastructure->getManufacturer($product);
     }
 
     /**
@@ -180,16 +167,7 @@ final class RelationService
      */
     public function getVendor(Product $product): ?Vendor
     {
-        /** @var null|\OxidEsales\Eshop\Application\Model\Vendor */
-        $vendor = $product->getEshopModel()->getVendor();
-
-        if ($vendor === null) {
-            return null;
-        }
-
-        return new Vendor(
-            $vendor
-        );
+        return $this->productInfrastructure->getVendor($product);
     }
 
     /**
@@ -197,19 +175,7 @@ final class RelationService
      */
     public function getCategory(Product $product): ?Category
     {
-        /** @var null|\OxidEsales\Eshop\Application\Model\Category */
-        $category = $product->getEshopModel()->getCategory();
-
-        if (
-            $category === null ||
-            !$category->getId()
-        ) {
-            return null;
-        }
-
-        return new Category(
-            $category
-        );
+        return $this->productInfrastructure->getCategory($product);
     }
 
     /**
@@ -241,18 +207,7 @@ final class RelationService
      */
     public function getCrossSelling(Product $product): array
     {
-        $products = $product->getEshopModel()->getCrossSelling();
-
-        if (!is_iterable($products) || count($products) === 0) {
-            return [];
-        }
-        $crossSellings = [];
-
-        foreach ($products as $product) {
-            $crossSellings[] = new Product($product);
-        }
-
-        return $crossSellings;
+        return $this->productInfrastructure->getCrossSelling($product);
     }
 
     /**
@@ -262,20 +217,7 @@ final class RelationService
      */
     public function getAttributes(Product $product): array
     {
-        /** @var \OxidEsales\Eshop\Application\Model\AttributeList $productAttributes */
-        $productAttributes = $product->getEshopModel()->getAttributes();
-
-        if (!is_iterable($productAttributes) || count($productAttributes) === 0) {
-            return [];
-        }
-        $attributes = [];
-
-        /** @var Attribute $attribute */
-        foreach ($productAttributes as $key => $attribute) {
-            $attributes[$key] = new ProductAttribute($attribute);
-        }
-
-        return $attributes;
+        return $this->productInfrastructure->getAttributes($product);
     }
 
     /**
@@ -285,18 +227,7 @@ final class RelationService
      */
     public function getAccessories(Product $product): array
     {
-        $products = $product->getEshopModel()->getAccessoires();
-
-        if (!is_iterable($products) || count($products) === 0) {
-            return [];
-        }
-        $accessories = [];
-
-        foreach ($products as $product) {
-            $accessories[] = new Product($product);
-        }
-
-        return $accessories;
+        return $this->productInfrastructure->getAccessories($product);
     }
 
     /**
@@ -306,19 +237,7 @@ final class RelationService
      */
     public function getSelectionLists(Product $product): array
     {
-        $selections = $product->getEshopModel()->getSelections();
-
-        if (!is_iterable($selections) || count($selections) === 0) {
-            return [];
-        }
-
-        $selectionLists = [];
-
-        foreach ($selections as $selection) {
-            $selectionLists[] = new SelectionList($selection);
-        }
-
-        return $selectionLists;
+        return $this->productInfrastructure->getSelectionLists($product);
     }
 
     /**
@@ -328,18 +247,7 @@ final class RelationService
      */
     public function getReviews(Product $product): array
     {
-        $result = [];
-
-        $reviews = $product->getEshopModel()->getReviews();
-
-        if ($reviews !== null) {
-            /** @var \OxidEsales\Eshop\Application\Model\Review $review */
-            foreach ($reviews as $review) {
-                $result[] = new Review($review);
-            }
-        }
-
-        return $result;
+        return $this->productInfrastructure->getReviews($product);
     }
 
     /**
@@ -349,16 +257,6 @@ final class RelationService
      */
     public function getVariants(Product $product): array
     {
-        $result = [];
-
-        $variants = $product->getEshopModel()->getVariants();
-
-        if (is_iterable($variants)) {
-            foreach ($variants as $variant) {
-                $result[] = new Product($variant);
-            }
-        }
-
-        return $result;
+        return $this->productInfrastructure->getVariants($product);
     }
 }
