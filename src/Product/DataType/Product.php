@@ -185,6 +185,11 @@ final class Product implements DataType
         return !(bool) $this->product->getFieldData('oxblfixedprice');
     }
 
+    public function getBundleId(): string
+    {
+        return (string) $this->product->getFieldData('oxbundleid');
+    }
+
     /**
      * @return class-string
      */

@@ -14,6 +14,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInt
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\Product;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\ProductImage;
+use OxidEsales\GraphQL\Catalogue\Product\Infrastructure\Product as ProductInfrastructure;
 use OxidEsales\GraphQL\Catalogue\Product\Service\Product as ProductService;
 use OxidEsales\GraphQL\Catalogue\Product\Service\RelationService;
 use OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\Repository;
@@ -127,7 +128,8 @@ final class ProductImageGalleryTest extends TestCase
             new ProductService(
                 $repo,
                 $this->createMock(Authorization::class)
-            )
+            ),
+            new ProductInfrastructure()
         );
     }
 }

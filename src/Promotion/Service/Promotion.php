@@ -9,12 +9,12 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Promotion\Service;
 
-use OxidEsales\Eshop\Application\Model\ActionList;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Catalogue\Promotion\DataType\Promotion as PromotionDataType;
 use OxidEsales\GraphQL\Catalogue\Promotion\Exception\PromotionNotFound;
+use OxidEsales\GraphQL\Catalogue\Promotion\Infrastructure\Promotion as PromotionInfrastructure;
 use OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\Repository;
 
 final class Promotion
@@ -25,12 +25,17 @@ final class Promotion
     /** @var Authorization */
     private $authorizationService;
 
+    /** @var PromotionInfrastructure */
+    private $promotionInfrastructure;
+
     public function __construct(
         Repository $repository,
-        Authorization $authorizationService
+        Authorization $authorizationService,
+        PromotionInfrastructure $promotionInfrastructure
     ) {
-        $this->repository           = $repository;
-        $this->authorizationService = $authorizationService;
+        $this->repository              = $repository;
+        $this->authorizationService    = $authorizationService;
+        $this->promotionInfrastructure = $promotionInfrastructure;
     }
 
     /**
@@ -65,18 +70,6 @@ final class Promotion
      */
     public function promotions(): array
     {
-        /** @var ActionList $actionList */
-        $actionList = oxNew(ActionList::class);
-        $actionList->loadCurrent();
-
-        $result = [];
-
-        if ($promotions = $actionList->getArray()) {
-            foreach ($promotions as $promotion) {
-                $result[] = new PromotionDataType($promotion);
-            }
-        }
-
-        return $result;
+        return $this->promotionInfrastructure->promotions();
     }
 }
