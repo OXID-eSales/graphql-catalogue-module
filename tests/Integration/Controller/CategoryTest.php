@@ -329,6 +329,7 @@ final class CategoryTest extends TokenTestCase
                 vat
                 skipDiscount
                 showSuffix
+                sortField
             }
         }');
 
@@ -340,6 +341,15 @@ final class CategoryTest extends TokenTestCase
             24,
             $result['body']['data']['categories']
         );
+
+        //check default sorting ASC
+        $last = 0;
+
+        foreach ($result['body']['data']['categories'] as $category) {
+            $current = $category['sortField'];
+            $this->assertTrue($current > $last);
+            $last = $current;
+        }
     }
 
     public function testGetCategoryListWithPartialFilter(): void
@@ -758,5 +768,67 @@ final class CategoryTest extends TokenTestCase
         $actualCategories = $result['body']['data']['categories'];
 
         $this->assertEquals($expectedCategories, $actualCategories);
+    }
+
+    public function providerSortedCategoriesList()
+    {
+        return  [
+            'title_asc' => [
+                'sortField' => 'title',
+                'sortOrder' => 'ASC',
+                'method'    => 'asort',
+                'mode'      => SORT_STRING,
+            ],
+            'title_desc' => [
+                'sortField' => 'title',
+                'sortOrder' => 'DESC',
+                'method'    => 'asort',
+                'mode'      => SORT_NUMERIC,
+            ],
+            'oxsort_asc' => [
+                'sortField' => 'sortField',
+                'sortOrder' => 'ASC',
+                'method'    => 'asort',
+                'mode'      => SORT_NUMERIC,
+            ],
+            'oxsort_desc' => [
+                'sortField' => 'sortField',
+                'sortOrder' => 'DESC',
+                'method'    => 'arsort',
+                'mode'      => SORT_NUMERIC,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider providerSortedCategoriesList
+     */
+    public function testSortedCategoriesList(string $sortField, string $order, string $method, int $mode): void
+    {
+        $result = $this->query('query {
+            categories(
+                sort: {
+                    ' . $sortField . ': "' . $order . '"
+                }
+            ) {
+                id
+                title
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $titles = [];
+
+        foreach ($result['body']['data']['categories'] as $category) {
+            $titles[$category['id']] = $category['title'];
+        }
+
+        $expected = $titles;
+        $method($expected, $mode);
+        $this->assertSame($expected, $titles);
     }
 }

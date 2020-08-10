@@ -176,4 +176,38 @@ final class CategoryMultiLanguageTest extends TestCase
             ],
         ];
     }
+
+    /**
+     * @dataProvider providerGetCategoryListWithFilterMultiLanguage
+     */
+    public function testSortedCategoriesListByTitle(string $languageId): void
+    {
+        $this->setGETRequestParameter('lang', $languageId);
+
+        $result = $this->query('query {
+            categories(
+                sort: {
+                    title: "ASC"
+                }
+            ) {
+                id
+                title
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $titles = [];
+
+        foreach ($result['body']['data']['categories'] as $category) {
+            $titles[$category['id']] = $category['title'];
+        }
+
+        $expected = $titles;
+        asort($expected, SORT_STRING);
+        $this->assertSame($expected, $titles);
+    }
 }

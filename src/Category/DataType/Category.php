@@ -262,6 +262,14 @@ final class Category implements DataType
     }
 
     /**
+     * @Field()
+     */
+    public function getSortField(): string
+    {
+        return (string) $this->category->getFieldData('oxsort');
+    }
+
+    /**
      * @return class-string
      */
     public static function getModelClass(): string
