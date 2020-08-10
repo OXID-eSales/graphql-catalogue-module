@@ -10,11 +10,13 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Category\Service;
 
 use OxidEsales\GraphQL\Base\DataType\BoolFilter;
+use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Catalogue\Category\DataType\Category as CategoryDataType;
 use OxidEsales\GraphQL\Catalogue\Category\DataType\CategoryFilterList;
+use OxidEsales\GraphQL\Catalogue\Category\DataType\Sorting;
 use OxidEsales\GraphQL\Catalogue\Category\Exception\CategoryNotFound;
 use OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\Repository;
 
@@ -60,12 +62,19 @@ final class Category
     /**
      * @return CategoryDataType[]
      */
-    public function categories(CategoryFilterList $filter): array
-    {
+    public function categories(
+        CategoryFilterList $filter,
+        Sorting $sort
+    ): array {
         if (!$this->authorizationService->isAllowed('VIEW_INACTIVE_CATEGORY')) {
             $filter = $filter->withActiveFilter(new BoolFilter(true));
         }
 
-        return $this->repository->getByFilter($filter, CategoryDataType::class);
+        return $this->repository->getList(
+            CategoryDataType::class,
+            $filter,
+            new PaginationFilter(),
+            $sort
+        );
     }
 }

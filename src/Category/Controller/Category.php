@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Catalogue\Category\Controller;
 
 use OxidEsales\GraphQL\Catalogue\Category\DataType\Category as CategoryDataType;
 use OxidEsales\GraphQL\Catalogue\Category\DataType\CategoryFilterList;
+use OxidEsales\GraphQL\Catalogue\Category\DataType\Sorting;
 use OxidEsales\GraphQL\Catalogue\Category\Service\Category as CategoryService;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
@@ -38,10 +39,13 @@ final class Category
      *
      * @return CategoryDataType[]
      */
-    public function categories(?CategoryFilterList $filter = null): array
-    {
+    public function categories(
+        ?CategoryFilterList $filter = null,
+        ?Sorting $sort = null
+    ): array {
         return $this->categoryService->categories(
-            $filter ?? new CategoryFilterList()
+            $filter ?? new CategoryFilterList(),
+            $sort ?? new Sorting([])
         );
     }
 }

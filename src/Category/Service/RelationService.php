@@ -15,6 +15,7 @@ use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Catalogue\Category\DataType\Category;
 use OxidEsales\GraphQL\Catalogue\Category\DataType\CategoryFilterList;
 use OxidEsales\GraphQL\Catalogue\Category\DataType\CategoryIDFilter;
+use OxidEsales\GraphQL\Catalogue\Category\DataType\Sorting;
 use OxidEsales\GraphQL\Catalogue\Category\Exception\CategoryNotFound;
 use OxidEsales\GraphQL\Catalogue\Category\Service\Category as CategoryService;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\Product;
@@ -84,7 +85,8 @@ final class RelationService
             new CategoryFilterList(
                 null,
                 new StringFilter((string) $category->getId())
-            )
+            ),
+            new Sorting([])
         );
     }
 
