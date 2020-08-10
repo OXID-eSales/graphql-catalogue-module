@@ -45,8 +45,6 @@ final class CategoryTest extends TokenTestCase
                 thumbnail
                 externalLink
                 template
-                defaultSortField
-                defaultSortMode
                 priceFrom
                 priceTo
                 icon
@@ -78,8 +76,6 @@ final class CategoryTest extends TokenTestCase
         $this->assertNull($category['thumbnail']);
         $this->assertEmpty($category['externalLink']);
         $this->assertEmpty($category['template']);
-        $this->assertEmpty($category['defaultSortField']);
-        $this->assertSame('ASC', $category['defaultSortMode']);
         $this->assertSame(0.0, $category['priceFrom']);
         $this->assertSame(0.0, $category['priceTo']);
         $this->assertRegExp(
@@ -253,8 +249,6 @@ final class CategoryTest extends TokenTestCase
                     thumbnail
                     externalLink
                     template
-                    defaultSortField
-                    defaultSortMode
                     priceFrom
                     priceTo
                     icon
@@ -287,8 +281,6 @@ final class CategoryTest extends TokenTestCase
         $this->assertNull($child['thumbnail']);
         $this->assertEmpty($child['externalLink']);
         $this->assertEmpty($child['template']);
-        $this->assertEmpty($child['defaultSortField']);
-        $this->assertSame('ASC', $child['defaultSortMode']);
         $this->assertSame(0.0, $child['priceFrom']);
         $this->assertSame(0.0, $child['priceTo']);
         $this->assertRegExp(
@@ -312,24 +304,6 @@ final class CategoryTest extends TokenTestCase
             categories {
                 id
                 position
-                active
-                hidden
-                title
-                shortDescription
-                longDescription
-                thumbnail
-                externalLink
-                template
-                defaultSortField
-                defaultSortMode
-                priceFrom
-                priceTo
-                icon
-                promotionIcon
-                vat
-                skipDiscount
-                showSuffix
-                sortField
             }
         }');
 
@@ -346,7 +320,7 @@ final class CategoryTest extends TokenTestCase
         $last = 0;
 
         foreach ($result['body']['data']['categories'] as $category) {
-            $current = $category['sortField'];
+            $current = $category['position'];
             $this->assertTrue($current > $last);
             $last = $current;
         }
@@ -786,13 +760,13 @@ final class CategoryTest extends TokenTestCase
                 'mode'      => SORT_NUMERIC,
             ],
             'oxsort_asc' => [
-                'sortField' => 'sortField',
+                'sortField' => 'sort',
                 'sortOrder' => 'ASC',
                 'method'    => 'asort',
                 'mode'      => SORT_NUMERIC,
             ],
             'oxsort_desc' => [
-                'sortField' => 'sortField',
+                'sortField' => 'sort',
                 'sortOrder' => 'DESC',
                 'method'    => 'arsort',
                 'mode'      => SORT_NUMERIC,
