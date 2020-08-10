@@ -298,7 +298,7 @@ final class CategoryTest extends TokenTestCase
         );
     }
 
-    public function testGetCategoryListWithoutFilter(): void
+    public function testGetCategoryListWithoutFilterAndSorting(): void
     {
         $result = $this->query('query {
             categories {
@@ -315,15 +315,6 @@ final class CategoryTest extends TokenTestCase
             24,
             $result['body']['data']['categories']
         );
-
-        //check default sorting ASC
-        $last = 0;
-
-        foreach ($result['body']['data']['categories'] as $category) {
-            $current = $category['position'];
-            $this->assertTrue($current > $last);
-            $last = $current;
-        }
     }
 
     public function testGetCategoryListWithPartialFilter(): void
@@ -747,29 +738,47 @@ final class CategoryTest extends TokenTestCase
     public function providerSortedCategoriesList()
     {
         return  [
-            'title_asc' => [
-                'sortField' => 'title',
-                'sortOrder' => 'ASC',
-                'method'    => 'asort',
-                'mode'      => SORT_STRING,
-            ],
-            'title_desc' => [
-                'sortField' => 'title',
-                'sortOrder' => 'DESC',
-                'method'    => 'asort',
-                'mode'      => SORT_NUMERIC,
-            ],
             'oxsort_asc' => [
-                'sortField' => 'sort',
-                'sortOrder' => 'ASC',
-                'method'    => 'asort',
-                'mode'      => SORT_NUMERIC,
+                'sortquery'     => '
+                      sort: {
+                        sort: "ASC"
+                    }
+                ',
+                'method'        => 'asort',
+                'mode'          => SORT_NUMERIC,
+                'field'         => 'position',
             ],
             'oxsort_desc' => [
-                'sortField' => 'sort',
-                'sortOrder' => 'DESC',
+                'sortquery' => '
+                    sort: {
+                        sort: "DESC"
+                    }
+                ',
                 'method'    => 'arsort',
                 'mode'      => SORT_NUMERIC,
+                'field'     => 'position',
+            ],
+            'title_asc' => [
+                'sortquery' => '
+                    sort: {
+                        sort:  ""
+                        title: "ASC"
+                    }
+                ',
+                'method'    => 'asort',
+                'mode'      => SORT_STRING,
+                'field'     => 'title',
+            ],
+            'title_desc' => [
+                'sortquery' => '
+                    sort: {
+                        sort:  ""
+                        title: "DESC"
+                    }
+                ',
+                'method'    => 'arsort',
+                'mode'      => SORT_STRING,
+                'field'     => 'title',
             ],
         ];
     }
@@ -777,16 +786,19 @@ final class CategoryTest extends TokenTestCase
     /**
      * @dataProvider providerSortedCategoriesList
      */
-    public function testSortedCategoriesList(string $sortField, string $order, string $method, int $mode): void
-    {
+    public function testSortedCategoriesList(
+        string $sortQuery,
+        string $method,
+        int $mode,
+        string $field
+    ): void {
         $result = $this->query('query {
-            categories(
-                sort: {
-                    ' . $sortField . ': "' . $order . '"
-                }
-            ) {
+            categories( ' .
+                 $sortQuery .
+            ') {
                 id
                 title
+                position
             }
         }');
 
@@ -798,7 +810,7 @@ final class CategoryTest extends TokenTestCase
         $titles = [];
 
         foreach ($result['body']['data']['categories'] as $category) {
-            $titles[$category['id']] = $category['title'];
+            $titles[$category['id']] = $category[$field];
         }
 
         $expected = $titles;
