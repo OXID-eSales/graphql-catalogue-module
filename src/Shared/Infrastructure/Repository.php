@@ -14,6 +14,7 @@ use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\DataType\FilterInterface;
 use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
+use OxidEsales\GraphQL\Base\DataType\Sorting;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Catalogue\Shared\DataType\DataType;
 use OxidEsales\GraphQL\Catalogue\Shared\DataType\FilterList;
@@ -68,6 +69,68 @@ final class Repository
      * @throws InvalidArgumentException if model in $type is not instance of BaseModel
      *
      * @return T[]
+     */
+    public function getList(
+        string $type,
+        FilterList $filter,
+        PaginationFilter $pagination,
+        Sorting $sorting,
+        bool $disableSubShop = true
+    ): array {
+        $types = [];
+        $model = $this->getModel(
+            $type::getModelClass(),
+            $disableSubShop
+        );
+        $queryBuilder = $this->queryBuilderFactory->create();
+        $queryBuilder->select($model->getViewName() . '.*')
+                     ->from($model->getViewName());
+
+        if (
+            $filter->getActive() !== null &&
+            $filter->getActive()->equals() === true
+        ) {
+            $activeSnippet = $model->getSqlActiveSnippet();
+
+            if (strlen($activeSnippet)) {
+                $queryBuilder->andWhere($activeSnippet);
+            }
+        }
+
+        /** @var FilterInterface[] $filters */
+        $filters = array_filter($filter->getFilters());
+
+        foreach ($filters as $field => $fieldFilter) {
+            $fieldFilter->addToQuery($queryBuilder, $field);
+        }
+
+        $pagination->addPaginationToQuery($queryBuilder);
+
+        $sorting->addToQuery($queryBuilder);
+
+        $queryBuilder->getConnection()->setFetchMode(PDO::FETCH_ASSOC);
+        /** @var \Doctrine\DBAL\Statement $result */
+        $result = $queryBuilder->execute();
+
+        foreach ($result as $row) {
+            $newModel = clone $model;
+            $newModel->assign($row);
+            $types[] = new $type($newModel);
+        }
+
+        return $types;
+    }
+
+    /**
+     * @template T
+     *
+     * @param class-string<T> $type
+     *
+     * @throws InvalidArgumentException if model in $type is not instance of BaseModel
+     *
+     * @return T[]
+     *
+     * @deprecated use self::getList instead
      */
     public function getByFilter(
         FilterList $filter,
