@@ -817,4 +817,45 @@ final class CategoryTest extends TokenTestCase
         $method($expected, $mode);
         $this->assertSame($expected, $titles);
     }
+
+    public function testMultiSortedCategoriesList(): void
+    {
+        $result = $this->query('query {
+            categories(
+                sort: {
+                    sort:  "DESC"
+                    title: "ASC"
+                }
+            ) {
+                id
+                title
+                position
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $otherResult = $this->query('query {
+            categories(
+                sort: {
+                    sort:  "ASC"
+                    title: "ASC"
+                }
+            ) {
+                id
+                title
+                position
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $otherResult
+        );
+
+        $this->assertNotSame($result, $otherResult);
+    }
 }
