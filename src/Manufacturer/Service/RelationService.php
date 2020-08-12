@@ -14,6 +14,7 @@ use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
 use OxidEsales\GraphQL\Catalogue\Manufacturer\DataType\Manufacturer;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\Product as ProductDataType;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\ProductFilterList;
+use OxidEsales\GraphQL\Catalogue\Product\DataType\Sorting;
 use OxidEsales\GraphQL\Catalogue\Product\Service\Product as ProductService;
 use OxidEsales\GraphQL\Catalogue\Shared\DataType\Seo;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
@@ -48,7 +49,8 @@ final class RelationService
      */
     public function getProducts(
         Manufacturer $manufacturer,
-        ?PaginationFilter $pagination = null
+        ?PaginationFilter $pagination = null,
+        ?Sorting $sort
     ): array {
         return $this->productService->products(
             new ProductFilterList(
@@ -58,7 +60,8 @@ final class RelationService
                     $manufacturer->getId()
                 )
             ),
-            $pagination
+            $pagination,
+            $sort ?? new Sorting([])
         );
     }
 }

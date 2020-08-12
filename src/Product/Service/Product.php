@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Product\Service;
 
 use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
+use OxidEsales\GraphQL\Base\DataType\Sorting;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Base\Service\Authorization;
@@ -61,7 +62,11 @@ final class Product
     /**
      * @return ProductDataType[]
      */
-    public function products(ProductFilterList $filter, ?PaginationFilter $pagination = null): array
+    public function products(
+        ProductFilterList $filter,
+        ?PaginationFilter $pagination = null,
+        Sorting $sort
+    ): array
     {
         // In case user has VIEW_INACTIVE_PRODUCT permissions
         // return all products including inactive ones
@@ -69,10 +74,11 @@ final class Product
             $filter = $filter->withActiveFilter(null);
         }
 
-        return $this->repository->getByFilter(
-            $filter,
+        return $this->repository->getList(
             ProductDataType::class,
-            $pagination
+            $filter,
+            $pagination ?? new PaginationFilter(),
+            $sort
         );
     }
 }

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Product\Controller;
 
 use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
+use OxidEsales\GraphQL\Catalogue\Product\DataType\Sorting;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\Product as ProductDataType;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\ProductFilterList;
 use OxidEsales\GraphQL\Catalogue\Product\Service\Product as ProductService;
@@ -39,11 +40,16 @@ final class Product
      *
      * @return ProductDataType[]
      */
-    public function products(?ProductFilterList $filter = null, ?PaginationFilter $pagination = null): array
+    public function products(
+        ?ProductFilterList $filter = null,
+        ?PaginationFilter $pagination = null,
+        ?Sorting $sort = null
+    ): array
     {
         return $this->productService->products(
             $filter ?? new ProductFilterList(),
-            $pagination
+            $pagination,
+            $sort ?? new Sorting([])
         );
     }
 }

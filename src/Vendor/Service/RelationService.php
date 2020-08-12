@@ -13,6 +13,7 @@ use OxidEsales\GraphQL\Base\DataType\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\Product;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\ProductFilterList;
+use OxidEsales\GraphQL\Catalogue\Product\DataType\Sorting;
 use OxidEsales\GraphQL\Catalogue\Product\Service\Product as ProductService;
 use OxidEsales\GraphQL\Catalogue\Shared\DataType\Seo;
 use OxidEsales\GraphQL\Catalogue\Vendor\DataType\Vendor;
@@ -48,7 +49,8 @@ final class RelationService
      */
     public function getProducts(
         Vendor $vendor,
-        ?PaginationFilter $pagination = null
+        ?PaginationFilter $pagination = null,
+        ?Sorting $sort
     ): array {
         return $this->productService->products(
             new ProductFilterList(
@@ -57,7 +59,8 @@ final class RelationService
                 null,
                 new IDFilter($vendor->getId())
             ),
-            $pagination
+            $pagination,
+            $sort ?? new Sorting([])
         );
     }
 }

@@ -16,6 +16,7 @@ use OxidEsales\GraphQL\Catalogue\Category\DataType\Category;
 use OxidEsales\GraphQL\Catalogue\Category\DataType\CategoryFilterList;
 use OxidEsales\GraphQL\Catalogue\Category\DataType\CategoryIDFilter;
 use OxidEsales\GraphQL\Catalogue\Category\DataType\Sorting;
+use OxidEsales\GraphQL\Catalogue\Product\DataType\Sorting as ProductSorting;
 use OxidEsales\GraphQL\Catalogue\Category\Exception\CategoryNotFound;
 use OxidEsales\GraphQL\Catalogue\Category\Service\Category as CategoryService;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\Product;
@@ -105,14 +106,16 @@ final class RelationService
      */
     public function getProducts(
         Category $category,
-        ?PaginationFilter $pagination
+        ?PaginationFilter $pagination,
+        ?ProductSorting $sort
     ): array {
         return $this->productService->products(
             new ProductFilterList(
                 null,
                 new CategoryIDFilter($category->getId())
             ),
-            $pagination
+            $pagination,
+            $sort ?? new ProductSorting([])
         );
     }
 }
