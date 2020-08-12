@@ -483,6 +483,89 @@ final class ProductTest extends TokenTestCase
         );
     }
 
+    public function dataProviderSortedProductsList()
+    {
+        return  [
+            'title_asc' => [
+                'sortquery' => '
+                    sort: {
+                        title: "ASC"
+                    }
+                ',
+                'method'    => 'asort',
+                'mode'      => SORT_STRING,
+                'field'     => 'title',
+            ],
+            'title_desc' => [
+                'sortquery' => '
+                    sort: {
+                        title: "DESC"
+                    }
+                ',
+                'method'    => 'arsort',
+                'mode'      => SORT_STRING,
+                'field'     => 'title',
+            ],
+            'price_asc' => [
+                'sortquery' => '
+                    sort: {
+                        price: "ASC"
+                    }
+                ',
+                'method'    => 'asort',
+                'mode'      => SORT_NUMERIC,
+                'field'     => 'price',
+            ],
+            'price_desc' => [
+                'sortquery' => '
+                    sort: {
+                        price: "DESC"
+                    }
+                ',
+                'method'    => 'arsort',
+                'mode'      => SORT_NUMERIC,
+                'field'     => 'price',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderSortedProductsList
+     */
+    public function testSortedProducts(
+        string $sortQuery,
+        string $method,
+        int $mode,
+        string $field
+    ): void {
+        $result = $this->query('query {
+            products(
+                ' . $sortQuery . '
+                pagination: {
+                    limit: 5
+                }
+            ) {
+                id
+                title
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $titles = [];
+
+        foreach ($result['body']['data']['products'] as $product) {
+            $titles[$product['id']] = ($field == 'price') ? $product['price']['price']: $product[$field];
+        }
+
+        $expected = $titles;
+        $method($expected, $mode);
+        $this->assertSame($expected, $titles);
+    }
+
     /**
      * @dataProvider productsOffsetAndLimitDataProvider
      */
