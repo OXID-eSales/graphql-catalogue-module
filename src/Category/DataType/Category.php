@@ -160,29 +160,6 @@ final class Category implements DataType
     }
 
     /**
-     * Default field for sorting of products in this category
-     * (most of oxarticles fields)
-     *
-     * @Field()
-     */
-    public function getDefaultSortField(): string
-    {
-        return $this->category->getDefaultSorting();
-    }
-
-    /**
-     * With default field for sorting you specify the manner
-     * in which the products in the category will be sorted
-     * (ASC or DESC)
-     *
-     * @Field()
-     */
-    public function getDefaultSortMode(): string
-    {
-        return $this->category->getDefaultSortingMode() ? 'DESC' : 'ASC';
-    }
-
-    /**
      * If specified, all products, with price higher than specified,
      * will be shown in this category
      *

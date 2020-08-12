@@ -45,8 +45,6 @@ final class CategoryTest extends TokenTestCase
                 thumbnail
                 externalLink
                 template
-                defaultSortField
-                defaultSortMode
                 priceFrom
                 priceTo
                 icon
@@ -78,8 +76,6 @@ final class CategoryTest extends TokenTestCase
         $this->assertNull($category['thumbnail']);
         $this->assertEmpty($category['externalLink']);
         $this->assertEmpty($category['template']);
-        $this->assertEmpty($category['defaultSortField']);
-        $this->assertSame('ASC', $category['defaultSortMode']);
         $this->assertSame(0.0, $category['priceFrom']);
         $this->assertSame(0.0, $category['priceTo']);
         $this->assertRegExp(
@@ -253,8 +249,6 @@ final class CategoryTest extends TokenTestCase
                     thumbnail
                     externalLink
                     template
-                    defaultSortField
-                    defaultSortMode
                     priceFrom
                     priceTo
                     icon
@@ -287,8 +281,6 @@ final class CategoryTest extends TokenTestCase
         $this->assertNull($child['thumbnail']);
         $this->assertEmpty($child['externalLink']);
         $this->assertEmpty($child['template']);
-        $this->assertEmpty($child['defaultSortField']);
-        $this->assertSame('ASC', $child['defaultSortMode']);
         $this->assertSame(0.0, $child['priceFrom']);
         $this->assertSame(0.0, $child['priceTo']);
         $this->assertRegExp(
@@ -306,29 +298,12 @@ final class CategoryTest extends TokenTestCase
         );
     }
 
-    public function testGetCategoryListWithoutFilter(): void
+    public function testGetCategoryListWithoutFilterAndSorting(): void
     {
         $result = $this->query('query {
             categories {
                 id
                 position
-                active
-                hidden
-                title
-                shortDescription
-                longDescription
-                thumbnail
-                externalLink
-                template
-                defaultSortField
-                defaultSortMode
-                priceFrom
-                priceTo
-                icon
-                promotionIcon
-                vat
-                skipDiscount
-                showSuffix
             }
         }');
 
@@ -758,5 +733,129 @@ final class CategoryTest extends TokenTestCase
         $actualCategories = $result['body']['data']['categories'];
 
         $this->assertEquals($expectedCategories, $actualCategories);
+    }
+
+    public function providerSortedCategoriesList()
+    {
+        return  [
+            'oxsort_asc' => [
+                'sortquery'     => '
+                      sort: {
+                        sort: "ASC"
+                    }
+                ',
+                'method'        => 'asort',
+                'mode'          => SORT_NUMERIC,
+                'field'         => 'position',
+            ],
+            'oxsort_desc' => [
+                'sortquery' => '
+                    sort: {
+                        sort: "DESC"
+                    }
+                ',
+                'method'    => 'arsort',
+                'mode'      => SORT_NUMERIC,
+                'field'     => 'position',
+            ],
+            'title_asc' => [
+                'sortquery' => '
+                    sort: {
+                        sort:  ""
+                        title: "ASC"
+                    }
+                ',
+                'method'    => 'asort',
+                'mode'      => SORT_STRING,
+                'field'     => 'title',
+            ],
+            'title_desc' => [
+                'sortquery' => '
+                    sort: {
+                        sort:  ""
+                        title: "DESC"
+                    }
+                ',
+                'method'    => 'arsort',
+                'mode'      => SORT_STRING,
+                'field'     => 'title',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider providerSortedCategoriesList
+     */
+    public function testSortedCategoriesList(
+        string $sortQuery,
+        string $method,
+        int $mode,
+        string $field
+    ): void {
+        $result = $this->query('query {
+            categories( ' .
+                 $sortQuery .
+            ') {
+                id
+                title
+                position
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $titles = [];
+
+        foreach ($result['body']['data']['categories'] as $category) {
+            $titles[$category['id']] = $category[$field];
+        }
+
+        $expected = $titles;
+        $method($expected, $mode);
+        $this->assertSame($expected, $titles);
+    }
+
+    public function testMultiSortedCategoriesList(): void
+    {
+        $result = $this->query('query {
+            categories(
+                sort: {
+                    sort:  "DESC"
+                    title: "ASC"
+                }
+            ) {
+                id
+                title
+                position
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $otherResult = $this->query('query {
+            categories(
+                sort: {
+                    sort:  "ASC"
+                    title: "ASC"
+                }
+            ) {
+                id
+                title
+                position
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $otherResult
+        );
+
+        $this->assertNotSame($result, $otherResult);
     }
 }
