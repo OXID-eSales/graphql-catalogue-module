@@ -458,4 +458,36 @@ final class ManufacturerTest extends TokenTestCase
             count($result['body']['data']['manufacturer']['products'])
         );
     }
+
+    public function testManufacturerSortedProductList(): void
+    {
+        $result = $this->query('query {
+              manufacturer (id: "' . self::ACTIVE_MANUFACTURER . '") {
+                id
+                products (
+                    sort: {
+                        title: "ASC"
+                    }
+                ){
+                    id
+                    title
+                }
+              }
+            }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $titles = [];
+
+        foreach ($result['body']['data']['manufacturer']['products'] as $product) {
+            $titles[$product['id']] = $product['title'];
+        }
+
+        $expected = $titles;
+        asort($expected, SORT_FLAG_CASE | SORT_STRING);
+        $this->assertSame($expected, $titles);
+    }
 }

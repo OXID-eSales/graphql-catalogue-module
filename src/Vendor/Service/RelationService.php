@@ -49,7 +49,7 @@ final class RelationService
      */
     public function getProducts(
         Vendor $vendor,
-        ?PaginationFilter $pagination = null,
+        ?PaginationFilter $pagination,
         ?Sorting $sort
     ): array {
         return $this->productService->products(

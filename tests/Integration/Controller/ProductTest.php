@@ -493,7 +493,6 @@ final class ProductTest extends TokenTestCase
                     }
                 ',
                 'method'    => 'asort',
-                'mode'      => SORT_STRING,
                 'field'     => 'title',
             ],
             'title_desc' => [
@@ -503,7 +502,6 @@ final class ProductTest extends TokenTestCase
                     }
                 ',
                 'method'    => 'arsort',
-                'mode'      => SORT_STRING,
                 'field'     => 'title',
             ],
             'price_asc' => [
@@ -513,8 +511,8 @@ final class ProductTest extends TokenTestCase
                     }
                 ',
                 'method'    => 'asort',
+                'field'     => 'varMinPrice',
                 'mode'      => SORT_NUMERIC,
-                'field'     => 'price',
             ],
             'price_desc' => [
                 'sortquery' => '
@@ -522,9 +520,8 @@ final class ProductTest extends TokenTestCase
                         price: "DESC"
                     }
                 ',
-                'method'    => 'arsort',
-                'mode'      => SORT_NUMERIC,
-                'field'     => 'price',
+                'method'    => 'array_multisort',
+                'field'     => 'varMinPrice',
             ],
         ];
     }
@@ -535,18 +532,16 @@ final class ProductTest extends TokenTestCase
     public function testSortedProducts(
         string $sortQuery,
         string $method,
-        int $mode,
-        string $field
+        string $field,
+        ?int $mode = null
     ): void {
         $result = $this->query('query {
             products(
                 ' . $sortQuery . '
-                pagination: {
-                    limit: 5
-                }
             ) {
                 id
                 title
+                varMinPrice
             }
         }');
 
@@ -555,15 +550,20 @@ final class ProductTest extends TokenTestCase
             $result
         );
 
-        $titles = [];
+        $orderedProducts = [];
 
         foreach ($result['body']['data']['products'] as $product) {
-            $titles[$product['id']] = ($field == 'price') ? $product['price']['price']: $product[$field];
+            $orderedProducts[$product['id']] = $product[$field];
         }
 
-        $expected = $titles;
-        $method($expected, $mode);
-        $this->assertSame($expected, $titles);
+        $expected = $orderedProducts;
+
+        if ($field == 'title') {
+            $method($expected, SORT_STRING | SORT_FLAG_CASE);
+        } else {
+            $mode ? $method($expected, $mode) : $method(array_values($expected), SORT_DESC, array_keys($expected), SORT_ASC, $expected);
+        }
+        $this->assertSame($expected, $orderedProducts);
     }
 
     /**

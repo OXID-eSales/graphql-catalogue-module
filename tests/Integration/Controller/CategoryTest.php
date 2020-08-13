@@ -858,4 +858,31 @@ final class CategoryTest extends TokenTestCase
 
         $this->assertNotSame($result, $otherResult);
     }
+
+    public function testCategorySortedProductList(): void
+    {
+        $result = $this->query('query {
+          category (id: "' . self::CATEGORY_WITH_PRODUCTS . '") {
+            id
+            products (
+                sort: {
+                    title: "ASC"
+                }
+            ){
+                id
+                title
+            }
+          }
+        }');
+
+        $titles = [];
+
+        foreach ($result['body']['data']['category']['products'] as $product) {
+            $titles[$product['id']] = $product['title'];
+        }
+
+        $expected = $titles;
+        asort($expected, SORT_FLAG_CASE | SORT_STRING);
+        $this->assertSame($expected, $titles);
+    }
 }

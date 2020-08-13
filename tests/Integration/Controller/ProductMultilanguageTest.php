@@ -155,4 +155,38 @@ final class ProductMultilanguageTest extends TestCase
             ],
         ];
     }
+
+    /**
+     *  @dataProvider providerGetProductVariantsMultilanguage
+     */
+    public function testSortedProductListByTitle(string $languageId): void
+    {
+        $this->setGETRequestParameter('lang', $languageId);
+
+        $result = $this->query('query {
+            products(
+                sort: {
+                    title: "ASC"
+                }
+            ) {
+                id
+                title
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $titles = [];
+
+        foreach ($result['body']['data']['products'] as $product) {
+            $titles[$product['id']] = $product['title'];
+        }
+
+        $expected = $titles;
+        asort($expected, SORT_FLAG_CASE | SORT_STRING);
+        $this->assertSame($expected, $titles);
+    }
 }

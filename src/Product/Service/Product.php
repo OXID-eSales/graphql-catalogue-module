@@ -64,10 +64,9 @@ final class Product
      */
     public function products(
         ProductFilterList $filter,
-        ?PaginationFilter $pagination = null,
+        ?PaginationFilter $pagination,
         Sorting $sort
-    ): array
-    {
+    ): array {
         // In case user has VIEW_INACTIVE_PRODUCT permissions
         // return all products including inactive ones
         if ($this->authorizationService->isAllowed('VIEW_INACTIVE_PRODUCT')) {

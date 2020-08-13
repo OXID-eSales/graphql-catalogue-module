@@ -416,4 +416,36 @@ final class VendorTest extends TokenTestCase
             $productStatus
         );
     }
+
+    public function testVendorSortedProductList(): void
+    {
+        $result = $this->query('query {
+          vendor (id: "' . self::ACTIVE_VENDOR . '") {
+            id
+            products (
+                sort: {
+                    title: "ASC"
+                }
+            ){
+                id
+                title
+            }
+          }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $titles = [];
+
+        foreach ($result['body']['data']['vendor']['products'] as $product) {
+            $titles[$product['id']] = $product['title'];
+        }
+
+        $expected = $titles;
+        asort($expected, SORT_FLAG_CASE | SORT_STRING);
+        $this->assertSame($expected, $titles);
+    }
 }
