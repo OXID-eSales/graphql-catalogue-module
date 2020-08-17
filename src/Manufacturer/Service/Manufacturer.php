@@ -9,11 +9,13 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Manufacturer\Service;
 
+use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Catalogue\Manufacturer\DataType\Manufacturer as ManufacturerDataType;
 use OxidEsales\GraphQL\Catalogue\Manufacturer\DataType\ManufacturerFilterList;
+use OxidEsales\GraphQL\Catalogue\Manufacturer\DataType\Sorting;
 use OxidEsales\GraphQL\Catalogue\Manufacturer\Exception\ManufacturerNotFound;
 use OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\Repository;
 
@@ -63,17 +65,21 @@ final class Manufacturer
     /**
      * @return ManufacturerDataType[]
      */
-    public function manufacturers(ManufacturerFilterList $filter): array
-    {
+    public function manufacturers(
+        ManufacturerFilterList $filter,
+        Sorting $sort
+    ): array {
         // In case user has VIEW_INACTIVE_MANUFACTURER permissions
         // return all manufacturers including inactive ones
         if ($this->authorizationService->isAllowed('VIEW_INACTIVE_MANUFACTURER')) {
             $filter = $filter->withActiveFilter(null);
         }
 
-        return $this->repository->getByFilter(
+        return $this->repository->getList(
+            ManufacturerDataType::class,
             $filter,
-            ManufacturerDataType::class
+            new PaginationFilter(),
+            $sort
         );
     }
 }

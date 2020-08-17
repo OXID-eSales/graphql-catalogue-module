@@ -204,98 +204,6 @@ final class ManufacturerTest extends TokenTestCase
         );
     }
 
-    public function providerGetManufacturerMultilanguage()
-    {
-        return [
-            'de' => [
-                'languageId' => '0',
-                'title'      => 'Liquid Force',
-            ],
-            'en' => [
-                'languageId' => '1',
-                'title'      => 'Liquid Force Kite',
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider providerGetManufacturerMultilanguage
-     */
-    public function testGetManufacturerMultilanguage(string $languageId, string $title): void
-    {
-        $query = 'query {
-            manufacturer (id: "' . self::ACTIVE_MULTILANGUAGE_MANUFACTURER . '") {
-                id
-                title
-            }
-        }';
-
-        $this->setGETRequestParameter(
-            'lang',
-            $languageId
-        );
-
-        $result = $this->query($query);
-        $this->assertResponseStatus(
-            200,
-            $result
-        );
-
-        $this->assertEquals(
-            [
-                'id'    => self::ACTIVE_MULTILANGUAGE_MANUFACTURER,
-                'title' => $title,
-            ],
-            $result['body']['data']['manufacturer']
-        );
-    }
-
-    public function providerGetManufacturerListWithFilterMultilanguage()
-    {
-        return [
-            'de' => [
-                'languageId' => '0',
-                'count'      => 0,
-            ],
-            'en' => [
-                'languageId' => '1',
-                'count'      => 1,
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider providerGetManufacturerListWithFilterMultilanguage
-     */
-    public function testGetManufacturerListWithFilterMultilanguage(string $languageId, int $count): void
-    {
-        $query = 'query{
-            manufacturers(filter: {
-                title: {
-                    contains: "Force Kite"
-                }
-            }){
-                id
-            }
-        }';
-
-        $this->setGETRequestParameter(
-            'lang',
-            $languageId
-        );
-
-        $result = $this->query($query);
-        $this->assertResponseStatus(
-            200,
-            $result
-        );
-
-        $this->assertEquals(
-            $count,
-            count($result['body']['data']['manufacturers'])
-        );
-    }
-
     public function testGetManufacturerWithoutProducts(): void
     {
         $result = $this->query('query {
@@ -457,5 +365,64 @@ final class ManufacturerTest extends TokenTestCase
             $numberOfExpectedProducts,
             count($result['body']['data']['manufacturer']['products'])
         );
+    }
+
+    public function dataProviderSortedManufacturersList()
+    {
+        return  [
+            'title_asc' => [
+                'sortquery' => '
+                    sort: {
+                        title: "ASC"
+                    }
+                ',
+                'method'    => 'asort',
+                'field'     => 'title',
+            ],
+            'title_desc' => [
+                'sortquery' => '
+                    sort: {
+                        title: "DESC"
+                    }
+                ',
+                'method'    => 'arsort',
+                'field'     => 'title',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderSortedManufacturersList
+     */
+    public function testSortedManufacturers(
+        string $sortQuery,
+        string $method,
+        string $field
+    ): void {
+        $result = $this->query('query {
+            manufacturers(
+                ' . $sortQuery . '
+            ) {
+                id
+                title
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $sortedManufacturers = [];
+
+        foreach ($result['body']['data']['manufacturers'] as $manufacturer) {
+            $sortedManufacturers[$manufacturer['id']] = $manufacturer[$field];
+        }
+
+        $expected = $sortedManufacturers;
+
+        $method($expected, SORT_STRING | SORT_FLAG_CASE);
+
+        $this->assertSame($expected, $sortedManufacturers);
     }
 }

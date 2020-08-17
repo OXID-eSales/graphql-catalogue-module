@@ -120,4 +120,52 @@ final class ManufacturerMultilanguageTest extends TestCase
             $result['body']['data']['manufacturers']
         );
     }
+
+    public function providerGetManufacturersMultilanguage()
+    {
+        return [
+            'de' => [
+                'languageId' => '0',
+            ],
+            'en' => [
+                'languageId' => '1',
+            ],
+        ];
+    }
+
+    /**
+     *  @dataProvider providerGetManufacturersMultilanguage
+     */
+    public function testSortedManufacturersList(string $languageId): void
+    {
+        $this->setGETRequestParameter('lang', $languageId);
+
+        $result = $this->query('query {
+            manufacturers(
+                sort: {
+                    title: "ASC"
+                }
+            ) {
+                id
+                title
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $sortedManufacturers = [];
+
+        foreach ($result['body']['data']['manufacturers'] as $manufacturer) {
+            $sortedManufacturers[$manufacturer['id']] = $manufacturer['title'];
+        }
+
+        $expected = $sortedManufacturers;
+
+        asort($expected, SORT_STRING | SORT_FLAG_CASE);
+
+        $this->assertSame($expected, $sortedManufacturers);
+    }
 }
