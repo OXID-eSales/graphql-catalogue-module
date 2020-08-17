@@ -145,4 +145,46 @@ final class VendorMultiLanguageTest extends TestCase
             ],
         ];
     }
+
+    public function providerGetVendorListMultilanguage()
+    {
+        return [
+            'de' => [
+                'languageId' => '0',
+            ],
+            'en' => [
+                'languageId' => '1',
+            ],
+        ];
+    }
+
+    /**
+     *  @dataProvider providerGetVendorListMultilanguage
+     */
+    public function testSortedVendorList(string $languageId): void
+    {
+        $this->setGETRequestParameter('lang', $languageId);
+
+        $result = $this->query('query {
+            vendors(
+                sort: {
+                    title: "ASC"
+                }
+            ) {
+                title
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $sortedVendors = $result['body']['data']['vendors'];
+        $expected      = $sortedVendors;
+
+        asort($expected, SORT_STRING | SORT_FLAG_CASE);
+
+        $this->assertSame($expected, $sortedVendors);
+    }
 }

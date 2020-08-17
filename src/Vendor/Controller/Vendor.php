@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Vendor\Controller;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Catalogue\Vendor\DataType\Sorting;
 use OxidEsales\GraphQL\Catalogue\Vendor\DataType\Vendor as VendorDataType;
 use OxidEsales\GraphQL\Catalogue\Vendor\DataType\VendorFilterList;
 use OxidEsales\GraphQL\Catalogue\Vendor\Exception\VendorNotFound;
@@ -43,10 +44,13 @@ final class Vendor
      *
      * @return VendorDataType[]
      */
-    public function vendors(?VendorFilterList $filter = null): array
-    {
+    public function vendors(
+        ?VendorFilterList $filter = null,
+        ?Sorting $sort = null
+    ): array {
         return $this->vendorService->vendors(
-            $filter ?? new VendorFilterList()
+            $filter ?? new VendorFilterList(),
+            $sort ?? new Sorting([])
         );
     }
 }

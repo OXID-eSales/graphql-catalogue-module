@@ -257,6 +257,56 @@ final class VendorTest extends TokenTestCase
         );
     }
 
+    public function dataProviderSortedVendorList()
+    {
+        return  [
+            'title_asc' => [
+                'sortquery' => '
+                    sort: {
+                        title: "ASC"
+                    }
+                ',
+                'method'    => 'asort',
+            ],
+            'title_desc' => [
+                'sortquery' => '
+                    sort: {
+                        title: "DESC"
+                    }
+                ',
+                'method'    => 'arsort',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderSortedVendorList
+     */
+    public function testSortedVendorList(
+        string $sortQuery,
+        string $method
+    ): void {
+        $result = $this->query('query {
+            vendors(
+                ' . $sortQuery . '
+            ) {
+                title
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $sortedVendors = $result['body']['data']['vendors'];
+        $expected      = $sortedVendors;
+
+        $method($expected, SORT_STRING | SORT_FLAG_CASE);
+
+        $this->assertSame($expected, $sortedVendors);
+    }
+
     public function testVendorProductsWithOffsetAndLimit(): void
     {
         $result = $this->query('query {

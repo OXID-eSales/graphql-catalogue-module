@@ -9,10 +9,12 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Vendor\Service;
 
+use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\Repository;
+use OxidEsales\GraphQL\Catalogue\Vendor\DataType\Sorting;
 use OxidEsales\GraphQL\Catalogue\Vendor\DataType\Vendor as VendorDataType;
 use OxidEsales\GraphQL\Catalogue\Vendor\DataType\VendorFilterList;
 use OxidEsales\GraphQL\Catalogue\Vendor\Exception\VendorNotFound;
@@ -62,17 +64,21 @@ final class Vendor
     /**
      * @return VendorDataType[]
      */
-    public function vendors(VendorFilterList $filter): array
-    {
+    public function vendors(
+        VendorFilterList $filter,
+        Sorting $sort
+    ): array {
         // In case user has VIEW_INACTIVE_VENDOR permissions
         // return all vendors including inactive
         if ($this->authorizationService->isAllowed('VIEW_INACTIVE_VENDOR')) {
             $filter = $filter->withActiveFilter(null);
         }
 
-        return $this->repository->getByFilter(
+        return $this->repository->getList(
+            VendorDataType::class,
             $filter,
-            VendorDataType::class
+            new PaginationFilter(),
+            $sort
         );
     }
 }
