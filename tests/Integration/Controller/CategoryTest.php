@@ -209,7 +209,9 @@ final class CategoryTest extends TokenTestCase
         $result = $this->query('query{
             category(id: "' . self::CATEGORY_WITH_CHILDREN . '"){
                 id
-                children{id}
+                children {
+                    id
+                }
             }
          }');
 
@@ -221,11 +223,11 @@ final class CategoryTest extends TokenTestCase
         $children = $result['body']['data']['category']['children'];
 
         $this->assertSame(
-            '0f40c6a077b68c21f164767c4a903fd2',
+            '0f4270b89fbef1481958381410a0dbca',
             $children[0]['id']
         );
         $this->assertSame(
-            '0f4270b89fbef1481958381410a0dbca',
+            '0f40c6a077b68c21f164767c4a903fd2',
             $children[1]['id']
         );
         $this->assertSame(
@@ -271,11 +273,11 @@ final class CategoryTest extends TokenTestCase
 
         $child = $result['body']['data']['category']['children'][0];
 
-        $this->assertSame('0f40c6a077b68c21f164767c4a903fd2', $child['id']);
-        $this->assertSame(202, $child['position']);
+        $this->assertSame('0f4270b89fbef1481958381410a0dbca', $child['id']);
+        $this->assertSame(201, $child['position']);
         $this->assertTrue($child['active']);
         $this->assertFalse($child['hidden']);
-        $this->assertSame('Bindungen', $child['title']);
+        $this->assertSame('Wakeboards', $child['title']);
         $this->assertEmpty($child['shortDescription']);
         $this->assertEmpty($child['longDescription']);
         $this->assertNull($child['thumbnail']);
@@ -284,14 +286,17 @@ final class CategoryTest extends TokenTestCase
         $this->assertSame(0.0, $child['priceFrom']);
         $this->assertSame(0.0, $child['priceTo']);
         $this->assertRegExp(
-            '@https?://.*/out/pictures/generated/category/icon/.*/wakeboarding_bindings_1_cico.jpg@',
+            '@https?://.*/out/pictures/generated/category/icon/.*/wakeboarding_boards_1_cico.jpg@',
             $child['icon']
         );
-        $this->assertNull($child['promotionIcon']);
+        $this->assertRegExp(
+            '@https?://.*/out/pictures/generated/category/promo_icon/.*/cat_promo_wakeboards_pico.jpg@',
+            $child['promotionIcon']
+        );
         $this->assertNull($child['vat']);
         $this->assertFalse($child['skipDiscount']);
         $this->assertTrue($child['showSuffix']);
-        $this->assertRegExp('@https?://.*/Wakeboarding/Bindungen/@', $child['seo']['url']);
+        $this->assertRegExp('@https?://.*/Wakeboarding/Wakeboards/@', $child['seo']['url']);
         $this->assertInstanceOf(
             DateTimeInterface::class,
             new DateTimeImmutable($child['timestamp'])
