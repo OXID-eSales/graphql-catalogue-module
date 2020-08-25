@@ -1578,4 +1578,65 @@ final class ProductTest extends TokenTestCase
     {
         $this->assertSame(sort($expected), sort($actual));
     }
+
+    public function testProductListDefaultSort()
+    {
+        $expectedProducts = $this->prepareProductListSorting();
+
+        $result = $this->query('query {
+            products(filter: {
+                title: {
+                  contains: "kite"
+                }
+              }) {
+                id
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertSame(
+            $expectedProducts,
+            $result['body']['data']['products']
+        );
+    }
+
+    private function prepareProductListSorting()
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $result = $this->query('query {
+            products(filter: {
+                title: {
+                  contains: "kite"
+                }
+              }) {
+                id
+            }
+        }');
+
+        $sort = 0;
+        $products = $result['body']['data']['products'];
+        //shuffle products to make sure that default sort is not the same
+        shuffle($products);
+
+        foreach ($products as $product) {
+            $queryBuilder
+                ->update('oxarticles')
+                ->set('oxsort', $sort)
+                ->where('OXID = :OXID')
+                ->setParameter(':OXID', $product['id'])
+                ->execute();
+
+            $sort++;
+        }
+
+        return $products;
+    }
 }

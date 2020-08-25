@@ -27,8 +27,6 @@ final class CategoryTest extends TokenTestCase
 
     private const CATEGORY_WITH_PRODUCTS  = '0f4fb00809cec9aa0910aa9c8fe36751';
 
-    private const CATEGORY_WITH_PARENT = '0f41a4463b227c437f6e6bf57b1697c4';
-
     private const PRODUCT_RELATED_TO_ACTIVE_CATEGORY = 'b56369b1fc9d7b97f9c5fc343b349ece';
 
     public function testGetSingleActiveCategory(): void
@@ -523,7 +521,8 @@ final class CategoryTest extends TokenTestCase
             $result['body']['data']['category']['products']
         );
 
-        $productStatus = $result['body']['data']['category']['products'][0]['active'];
+        //Test product sort
+        $productStatus = end($result['body']['data']['category']['products'])['active'];
         $this->assertSame(
             $active,
             $productStatus
@@ -543,6 +542,9 @@ final class CategoryTest extends TokenTestCase
      */
     public function testCategoryProductListOffsetAndLimit(int $offset, int $limit, array $expectedProducts): void
     {
+        //Prepare products sorting otherwise limit will return products on random order
+        $this->prepareCategoryProductSort();
+
         $result = $this->query('query {
             category (id: "' . self::CATEGORY_WITH_PRODUCTS . '") {
                 title
@@ -567,6 +569,43 @@ final class CategoryTest extends TokenTestCase
         );
     }
 
+    private function prepareCategoryProductSort()
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $result = $this->query('query {
+            category (id: "' . self::CATEGORY_WITH_PRODUCTS . '") {
+                title
+                products(sort: {
+                    title: "ASC"
+                }) {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $sort = 0;
+        $products = $result['body']['data']['category']['products'];
+        foreach ($products as $product) {
+            $queryBuilder
+                ->update('oxarticles')
+                ->set('oxsort', $sort)
+                ->where('OXID = :OXID')
+                ->setParameter(':OXID', $product['id'])
+                ->execute();
+
+            $sort++;
+        }
+    }
+
     /**
      * @return array[]
      */
@@ -578,12 +617,12 @@ final class CategoryTest extends TokenTestCase
                 2,
                 [
                     [
-                        'id'    => 'b56369b1fc9d7b97f9c5fc343b349ece',
-                        'title' => 'Kite CORE GTS',
+                        'id'    => 'f4fe052346b4ec271011e25c052682c5',
+                        'title' => 'Kite CORE GT',
                     ],
                     [
-                        'id'    => 'b56597806428de2f58b1c6c7d3e0e093',
-                        'title' => 'Kite NBK EVO 2010',
+                        'id'    => 'b56369b1fc9d7b97f9c5fc343b349ece',
+                        'title' => 'Kite CORE GTS',
                     ],
                 ],
             ],
@@ -592,16 +631,16 @@ final class CategoryTest extends TokenTestCase
                 3,
                 [
                     [
+                        'id'    => 'f4f0cb3606e231c3fdb34fcaee2d6d04',
+                        'title' => 'Kite LIQUID FORCE ENVY',
+                    ],
+                    [
+                        'id'    => 'fad21eb148918c8f4d9f0077fedff1ba',
+                        'title' => 'Kite LIQUID FORCE HAVOC',
+                    ],
+                    [
                         'id'    => 'b56c560872da93602ff88c7267eb4774',
                         'title' => 'Kite NAISH PARK 2011',
-                    ],
-                    [
-                        'id'    => 'dc5480c47d8cd5a9eab9da5db9159cc6',
-                        'title' => 'Kite RRD PASSION 2009',
-                    ],
-                    [
-                        'id'    => 'dc57391739360d306c8dfcb3a4295e19',
-                        'title' => 'Kite RRD PASSION 2010',
                     ],
                 ],
             ],
@@ -610,16 +649,16 @@ final class CategoryTest extends TokenTestCase
                 20,
                 [
                     [
-                        'id'    => 'f4f0cb3606e231c3fdb34fcaee2d6d04',
-                        'title' => 'Kite LIQUID FORCE ENVY',
+                        'id'    => 'b56764137ca959da9541bb28c1987d6c',
+                        'title' => 'Kite NBK REBEL 2010',
                     ],
                     [
-                        'id'    => 'f4fe052346b4ec271011e25c052682c5',
-                        'title' => 'Kite CORE GT',
+                        'id'    => 'dc5480c47d8cd5a9eab9da5db9159cc6',
+                        'title' => 'Kite RRD PASSION 2009',
                     ],
                     [
-                        'id'    => 'fad21eb148918c8f4d9f0077fedff1ba',
-                        'title' => 'Kite LIQUID FORCE HAVOC',
+                        'id'    => 'dc57391739360d306c8dfcb3a4295e19',
+                        'title' => 'Kite RRD PASSION 2010',
                     ],
                     [
                         'id'    => 'fadc492a5807c56eb80b0507accd756b',
