@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Shared\Service;
+namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Service;
 
 use OxidEsales\Eshop\Core\Price as EshopPriceModel;
 use OxidEsales\Eshop\Core\Registry as EshopRegistry;
