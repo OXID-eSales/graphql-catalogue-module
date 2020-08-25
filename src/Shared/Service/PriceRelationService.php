@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Catalogue\Product\Service;
+namespace OxidEsales\GraphQL\Catalogue\Shared\Service;
 
 use OxidEsales\GraphQL\Catalogue\Currency\DataType\Currency;
 use OxidEsales\GraphQL\Catalogue\Currency\Infrastructure\Repository;
-use OxidEsales\GraphQL\Catalogue\Product\DataType\Price;
+use OxidEsales\GraphQL\Catalogue\Shared\DataType\Price;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 
