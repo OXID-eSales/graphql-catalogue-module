@@ -32,8 +32,12 @@ final class PriceRelationService
     /**
      * @Field()
      */
-    public function getCurrency(): Currency
+    public function getCurrency(Price $price): Currency
     {
+        if ($currencyObject = $price->getCurrencyObject()) {
+            return new Currency($currencyObject);
+        }
+
         return $this->currencyRepository->getActiveCurrency();
     }
 }

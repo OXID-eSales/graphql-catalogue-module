@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Shared\DataType;
 
 use OxidEsales\Eshop\Core\Price as PriceModel;
+use stdClass;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
@@ -21,9 +22,13 @@ final class Price
     /** @var PriceModel */
     private $price;
 
-    public function __construct(PriceModel $price)
+    /** @var ?stdClass */
+    private $currency;
+
+    public function __construct(PriceModel $price, ?stdClass $currency = null)
     {
-        $this->price = $price;
+        $this->price    = $price;
+        $this->currency = $currency;
     }
 
     /**
@@ -56,5 +61,10 @@ final class Price
     public function isNettoPriceMode(): bool
     {
         return $this->price->isNettoMode();
+    }
+
+    public function getCurrencyObject(): ?stdClass
+    {
+        return $this->currency;
     }
 }
