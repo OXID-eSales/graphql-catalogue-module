@@ -569,43 +569,6 @@ final class CategoryTest extends TokenTestCase
         );
     }
 
-    private function prepareCategoryProductSort()
-    {
-        $queryBuilderFactory = ContainerFactory::getInstance()
-            ->getContainer()
-            ->get(QueryBuilderFactoryInterface::class);
-        $queryBuilder = $queryBuilderFactory->create();
-
-        $result = $this->query('query {
-            category (id: "' . self::CATEGORY_WITH_PRODUCTS . '") {
-                title
-                products(sort: {
-                    title: "ASC"
-                }) {
-                    id
-                }
-            }
-        }');
-
-        $this->assertResponseStatus(
-            200,
-            $result
-        );
-
-        $sort = 0;
-        $products = $result['body']['data']['category']['products'];
-        foreach ($products as $product) {
-            $queryBuilder
-                ->update('oxarticles')
-                ->set('oxsort', $sort)
-                ->where('OXID = :OXID')
-                ->setParameter(':OXID', $product['id'])
-                ->execute();
-
-            $sort++;
-        }
-    }
-
     /**
      * @return array[]
      */
@@ -928,5 +891,43 @@ final class CategoryTest extends TokenTestCase
         $expected = $titles;
         asort($expected, SORT_FLAG_CASE | SORT_STRING);
         $this->assertSame($expected, $titles);
+    }
+
+    private function prepareCategoryProductSort(): void
+    {
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $result = $this->query('query {
+            category (id: "' . self::CATEGORY_WITH_PRODUCTS . '") {
+                title
+                products(sort: {
+                    title: "ASC"
+                }) {
+                    id
+                }
+            }
+        }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $sort     = 0;
+        $products = $result['body']['data']['category']['products'];
+
+        foreach ($products as $product) {
+            $queryBuilder
+                ->update('oxarticles')
+                ->set('oxsort', $sort)
+                ->where('OXID = :OXID')
+                ->setParameter(':OXID', $product['id'])
+                ->execute();
+
+            $sort++;
+        }
     }
 }

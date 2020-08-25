@@ -1574,12 +1574,7 @@ final class ProductTest extends TokenTestCase
         $this->assertEquals([$actualProduct], $actualProducts);
     }
 
-    private function assertArraySameNonAssociative(array $expected, array $actual): void
-    {
-        $this->assertSame(sort($expected), sort($actual));
-    }
-
-    public function testProductListDefaultSort()
+    public function testProductListDefaultSort(): void
     {
         $expectedProducts = $this->prepareProductListSorting();
 
@@ -1604,6 +1599,11 @@ final class ProductTest extends TokenTestCase
         );
     }
 
+    private function assertArraySameNonAssociative(array $expected, array $actual): void
+    {
+        $this->assertSame(sort($expected), sort($actual));
+    }
+
     private function prepareProductListSorting()
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
@@ -1621,7 +1621,7 @@ final class ProductTest extends TokenTestCase
             }
         }');
 
-        $sort = 0;
+        $sort     = 0;
         $products = $result['body']['data']['products'];
         //shuffle products to make sure that default sort is not the same
         shuffle($products);
