@@ -102,6 +102,12 @@ UPDATE `oxarticles` SET `OXVENDORID` = 'fe07958b49de225bd1dbc7594fb9a6b0' where 
 #product_to_manufacturer
 UPDATE `oxarticles` SET `OXMANUFACTURERID` = 'oiaf6ab7e12e86291e86dd3ff891fe40' where `OXID` = '058e613db53d782adfc9f2ccb43c45fe';
 
+#product sort direction
+UPDATE `oxarticles` SET `OXSORT` = '1' where `OXID` = 'b56369b1fc9d7b97f9c5fc343b349ece';
+UPDATE `oxarticles` SET `OXSORT` = '2' where `OXID` = 'dc55b2b2e633527f9a8b2408a032f28f';
+UPDATE `oxarticles` SET `OXSORT` = '3' where `OXID` = 'dc5ffdf380e15674b56dd562a7cb6aec';
+UPDATE `oxarticles` SET `OXSORT` = '4' where `OXID` = 'f4f981b0d9e34d2aeda82d79412480a4';
+
 # Banner is configured for group
 INSERT INTO `oxactions` (`OXID`, `OXSHOPID`, `OXTYPE`, `OXSORT`, `OXACTIVE`) VALUES
 ('_test_group_banner', 1, 3, 6, 1);

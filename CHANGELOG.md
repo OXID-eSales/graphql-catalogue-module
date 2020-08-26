@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Added
+
+- Default sorting for Products and Categories
+
 ### Changed
 
 - Repository::delete() takes loaded BaseModel as argument.

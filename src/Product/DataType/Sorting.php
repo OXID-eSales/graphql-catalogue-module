@@ -14,6 +14,13 @@ use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 final class Sorting extends BaseSorting
 {
+    public function __construct(array $sorting)
+    {
+        $sorting = $sorting ?: ['oxsort' => self::SORTING_ASC];
+
+        parent::__construct($sorting);
+    }
+
     /**
      * @Factory(name="ProductSorting")
      */

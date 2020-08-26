@@ -248,9 +248,9 @@ final class CategoryEnterpriseTest extends MultishopTestCase
 
         $this->assertEquals(
             [
-                ['id' => self::CATEGORY_IDS['jeans-active']],
-                ['id' => self::CATEGORY_IDS['shoes-active']],
                 ['id' => self::CATEGORY_IDS['supplies-active']],
+                ['id' => self::CATEGORY_IDS['shoes-active']],
+                ['id' => self::CATEGORY_IDS['jeans-active']],
             ],
             $result['body']['data']['categories']
         );
@@ -331,7 +331,7 @@ final class CategoryEnterpriseTest extends MultishopTestCase
                     'title' => 'Smart Loop NAISH',
                 ],
             ],
-            $result['body']['data']['categories'][2]['products']
+            $result['body']['data']['categories'][0]['products']
         );
     }
 
