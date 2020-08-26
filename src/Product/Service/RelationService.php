@@ -172,10 +172,14 @@ final class RelationService
 
     /**
      * @Field()
+     *
+     * @return Category[]
      */
-    public function getCategory(Product $product): ?Category
-    {
-        return $this->productInfrastructure->getCategory($product);
+    public function getCategories(
+        Product $product,
+        bool $onlyMainCategory = true
+    ): array {
+        return $this->productInfrastructure->getCategories($product, $onlyMainCategory);
     }
 
     /**

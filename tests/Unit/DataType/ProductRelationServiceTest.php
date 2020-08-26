@@ -13,6 +13,7 @@ use OxidEsales\Eshop\Application\Model\Article as EshopArticleModel;
 use OxidEsales\Eshop\Application\Model\Category as EshopCategoryModel;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\Service\Authorization;
+use OxidEsales\GraphQL\Catalogue\Category\Service\Category as CategoryService;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\Product;
 use OxidEsales\GraphQL\Catalogue\Product\Infrastructure\Product as ProductInfrastructure;
 use OxidEsales\GraphQL\Catalogue\Product\Service\Product as ProductService;
@@ -38,12 +39,13 @@ final class ProductRelationServiceTest extends TestCase
             }
         };
 
-        $this->assertNull(
-            $this->productRelationService()->getCategory(
+        $this->assertEquals(
+            $this->productRelationService()->getCategories(
                 new Product(
                     $noCategoryProductModelStub
                 )
-            )
+            ),
+            []
         );
     }
 
@@ -69,12 +71,13 @@ final class ProductRelationServiceTest extends TestCase
             }
         };
 
-        $this->assertNull(
-            $this->productRelationService()->getCategory(
+        $this->assertEquals(
+            $this->productRelationService()->getCategories(
                 new Product(
                     $emptyCategoryProductModelStub
                 )
-            )
+            ),
+            []
         );
     }
 
@@ -89,7 +92,12 @@ final class ProductRelationServiceTest extends TestCase
                 $repo,
                 $this->createMock(Authorization::class)
             ),
-            new ProductInfrastructure()
+            new ProductInfrastructure(
+                new CategoryService(
+                    $repo,
+                    $this->createMock(Authorization::class)
+                )
+            )
         );
     }
 }
