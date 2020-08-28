@@ -746,31 +746,16 @@ final class CategoryTest extends TokenTestCase
     {
         return  [
             'oxsort_asc' => [
-                'sortquery'     => '
-                      sort: {
-                        sort: "ASC"
-                    }
-                ',
+                'sortquery'     => '',
                 'method'        => 'asort',
                 'mode'          => SORT_NUMERIC,
                 'field'         => 'position',
             ],
-            'oxsort_desc' => [
-                'sortquery' => '
-                    sort: {
-                        sort: "DESC"
-                    }
-                ',
-                'method'    => 'arsort',
-                'mode'      => SORT_NUMERIC,
-                'field'     => 'position',
-            ],
             'title_asc' => [
                 'sortquery' => '
-                    sort: {
-                        sort:  ""
+                    (sort: {
                         title: "ASC"
-                    }
+                    })
                 ',
                 'method'    => 'asort',
                 'mode'      => SORT_STRING,
@@ -778,10 +763,9 @@ final class CategoryTest extends TokenTestCase
             ],
             'title_desc' => [
                 'sortquery' => '
-                    sort: {
-                        sort:  ""
+                    (sort: {
                         title: "DESC"
-                    }
+                    })
                 ',
                 'method'    => 'arsort',
                 'mode'      => SORT_STRING,
@@ -800,9 +784,9 @@ final class CategoryTest extends TokenTestCase
         string $field
     ): void {
         $result = $this->query('query {
-            categories( ' .
+            categories ' .
                  $sortQuery .
-            ') {
+            ' {
                 id
                 title
                 position
@@ -823,47 +807,6 @@ final class CategoryTest extends TokenTestCase
         $expected = $titles;
         $method($expected, $mode);
         $this->assertSame($expected, $titles);
-    }
-
-    public function testMultiSortedCategoriesList(): void
-    {
-        $result = $this->query('query {
-            categories(
-                sort: {
-                    sort:  "DESC"
-                    title: "ASC"
-                }
-            ) {
-                id
-                title
-                position
-            }
-        }');
-
-        $this->assertResponseStatus(
-            200,
-            $result
-        );
-
-        $otherResult = $this->query('query {
-            categories(
-                sort: {
-                    sort:  "ASC"
-                    title: "ASC"
-                }
-            ) {
-                id
-                title
-                position
-            }
-        }');
-
-        $this->assertResponseStatus(
-            200,
-            $otherResult
-        );
-
-        $this->assertNotSame($result, $otherResult);
     }
 
     public function testCategorySortedProductList(): void

@@ -187,7 +187,6 @@ final class CategoryMultiLanguageTest extends TestCase
         $result = $this->query('query {
             categories(
                 sort: {
-                    sort:  ""
                     title: "ASC"
                 }
             ) {

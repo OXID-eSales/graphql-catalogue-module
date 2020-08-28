@@ -25,11 +25,9 @@ final class Sorting extends BaseSorting
      * @Factory(name="CategorySorting")
      */
     public static function fromUserInput(
-        ?string $sort  = self::SORTING_ASC,
         ?string $title = null
     ): self {
         return new self([
-            'oxsort'  => $sort,
             'oxtitle' => $title,
         ]);
     }
