@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Manufacturer\DataType;
 
-use DateTimeImmutable;
 use DateTimeInterface;
 use OxidEsales\Eshop\Application\Model\Manufacturer as ManufacturerModel;
+use OxidEsales\GraphQL\Base\DataType\DateTimeImmutableFactory;
 use OxidEsales\GraphQL\Catalogue\Shared\DataType\DataType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
@@ -79,9 +79,9 @@ final class Manufacturer implements DataType
     /**
      * @Field()
      */
-    public function getTimestamp(): DateTimeInterface
+    public function getTimestamp(): ?DateTimeInterface
     {
-        return new DateTimeImmutable((string) $this->manufacturer->getFieldData('oxtimestamp'));
+        return DateTimeImmutableFactory::fromString((string) $this->manufacturer->getFieldData('oxtimestamp'));
     }
 
     /**

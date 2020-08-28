@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Promotion\DataType;
 
-use DateTimeImmutable;
 use OxidEsales\EshopCommunity\Application\Model\Actions as EshopActionsModel;
+use OxidEsales\GraphQL\Base\DataType\DateTimeImmutableFactory;
 use OxidEsales\GraphQL\Catalogue\Shared\DataType\DataType;
 use OxidEsales\GraphQL\Catalogue\Shared\Exception\WrongType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
@@ -77,13 +77,13 @@ final class Promotion implements DataType
     {
         $activeNow = false;
 
-        $from = new DateTimeImmutable(
+        $from = DateTimeImmutableFactory::fromString(
             (string) $this->actionsModel->getFieldData('oxactivefrom')
         );
-        $to = new DateTimeImmutable(
+        $to = DateTimeImmutableFactory::fromString(
             (string) $this->actionsModel->getFieldData('oxactiveto')
         );
-        $now = $now ?? new DateTimeImmutable('now');
+        $now = $now ?? DateTimeImmutableFactory::fromString('now');
 
         if ($from <= $now && $to >= $now) {
             $activeNow = true;
