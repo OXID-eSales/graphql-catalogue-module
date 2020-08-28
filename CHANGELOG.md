@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Repository::delete() takes loaded BaseModel as argument.
 - `OxidEsales\GraphQL\Catalogue\Product\DataType\Price` moved to `OxidEsales\GraphQL\Catalogue\Shared\DataType\Price`
+- Replaced Product field Category with Categories
 
 ### Removed
 
