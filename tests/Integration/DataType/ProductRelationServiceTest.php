@@ -735,7 +735,7 @@ final class ProductRelationServiceTest extends TokenTestCase
         $result = $this->query('query {
             product (id: "' . self::ACTIVE_PRODUCT . '") {
                 id
-                category {
+                categories {
                     id
                 }
             }
@@ -748,7 +748,7 @@ final class ProductRelationServiceTest extends TokenTestCase
 
         $this->assertSame(
             '0f40c6a077b68c21f164767c4a903fd2',
-            $result['body']['data']['product']['category']['id']
+            $result['body']['data']['product']['categories'][0]['id']
         );
     }
 }

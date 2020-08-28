@@ -19,6 +19,8 @@ final class ProductTest extends TokenTestCase
 {
     private const ACTIVE_PRODUCT = '058e613db53d782adfc9f2ccb43c45fe';
 
+    private const ACTIVE_PRODUCT_WITH_MORE_CATEGORIES = 'b56164c54701f07df14b141da197c207';
+
     private const INACTIVE_PRODUCT  = '09602cddb5af0aba745293d08ae6bcf6';
 
     private const ACTIVE_PRODUCT_WITH_ACCESSORIES = '05848170643ab0deb9914566391c0c63';
@@ -32,6 +34,8 @@ final class ProductTest extends TokenTestCase
     private const ACTIVE_CROSSSOLD_FOR_ACTIVE_PRODUCT = 'b5685a5230f5050475f214b4bb0e239b';
 
     private const ACTIVE_PRODUCT_CATEGORY = '0f40c6a077b68c21f164767c4a903fd2';
+
+    private const ACTIVE_PRODUCT_CATEGORY_2 = 'fc7e7bd8403448f00a363f60f44da8f2';
 
     private const ACTIVE_PRODUCT_TITLE = 'DECADE';
 
@@ -751,7 +755,7 @@ final class ProductTest extends TokenTestCase
         $result = $this->query('query {
             products(filter: { category: { equals: "' . self::ACTIVE_PRODUCT_CATEGORY . '" } }) {
                 id
-                category {
+                categories(onlyMainCategory: true){
                     active
                 }
             }
@@ -759,7 +763,7 @@ final class ProductTest extends TokenTestCase
 
         $this->assertResponseStatus(200, $result);
 
-        $category = $result['body']['data']['products'][0]['category'];
+        $category = $result['body']['data']['products'][0]['categories'][0];
         $this->assertNull($category);
         // TODO: Using a valid token, this list should also contain inactive category
         //$this->assertFalse($category['active']);
@@ -1105,7 +1109,7 @@ final class ProductTest extends TokenTestCase
         $this->assertSame($expectedCrossSelling, $filteredCrossSelling);
     }
 
-    public function productCategoryWithTokenProvider()
+    public function productMainCategoryWithTokenProvider()
     {
         return [
             [
@@ -1143,13 +1147,13 @@ final class ProductTest extends TokenTestCase
     }
 
     /**
-     * @dataProvider productCategoryWithTokenProvider
+     * @dataProvider productMainCategoryWithTokenProvider
      *
      * @param mixed $isCategoryActive
      * @param mixed $withToken
      * @param mixed $expectedCategory
      */
-    public function testGetProductCategory($isCategoryActive, $withToken, $expectedCategory): void
+    public function testGetProductMainCategory($isCategoryActive, $withToken, $expectedCategory): void
     {
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -1170,7 +1174,7 @@ final class ProductTest extends TokenTestCase
 
         $result = $this->query('query {
             product(id: "' . self::ACTIVE_PRODUCT . '") {
-                category {
+                categories(onlyMainCategory: true) {
                     id
                     active
                 }
@@ -1182,9 +1186,43 @@ final class ProductTest extends TokenTestCase
             $result
         );
 
-        $productCategory = $result['body']['data']['product']['category'];
+        $this->assertCount($expectedCategory ? 1 : 0, $result['body']['data']['product']['categories']);
+        $productMainCategory = $result['body']['data']['product']['categories'][0];
 
-        $this->assertSame($expectedCategory, $productCategory);
+        $this->assertSame($expectedCategory, $productMainCategory);
+    }
+
+    public function testGetProductAllCategories(): void
+    {
+        $result = $this->query('query {
+                product(id: "' . self::ACTIVE_PRODUCT_WITH_MORE_CATEGORIES . '") {
+                    categories(onlyMainCategory: false) {
+                        id
+                        active
+                    }
+                }
+            }');
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $expectedCategories = [
+            [
+                'id'     => self::ACTIVE_PRODUCT_CATEGORY,
+                'active' => true,
+            ],
+            [
+                'id'     => self::ACTIVE_PRODUCT_CATEGORY_2,
+                'active' => true,
+            ],
+        ];
+
+        $this->assertCount(count($expectedCategories), $result['body']['data']['product']['categories']);
+        $productAllCategory = $result['body']['data']['product']['categories'];
+
+        $this->assertSame($expectedCategories, $productAllCategory);
     }
 
     public function filterProductsByCategoryProvider()
@@ -1195,8 +1233,8 @@ final class ProductTest extends TokenTestCase
                 'withToken'        => false,
                 'expectedProducts' => [
                     [
-                        'id'       => self::ACTIVE_PRODUCT,
-                        'category' => null,
+                        'id'         => self::ACTIVE_PRODUCT,
+                        'categories' => [],
                     ],
                 ],
             ],
@@ -1205,8 +1243,8 @@ final class ProductTest extends TokenTestCase
                 'withToken'        => true,
                 'expectedProducts' => [
                     [
-                        'id'       => self::ACTIVE_PRODUCT,
-                        'category' => null,
+                        'id'         => self::ACTIVE_PRODUCT,
+                        'categories' => [],
                         // TODO: Using a valid token, this list should also contain an inactive category
                         //       EshopModelArticle::getCategory() only returns active category
                         // 'category' => [
@@ -1221,10 +1259,12 @@ final class ProductTest extends TokenTestCase
                 'withToken'        => false,
                 'expectedProducts' => [
                     [
-                        'id'       => self::ACTIVE_PRODUCT,
-                        'category' => [
-                            'id'     => self::ACTIVE_PRODUCT_CATEGORY,
-                            'active' => true,
+                        'id'         => self::ACTIVE_PRODUCT,
+                        'categories' => [
+                            [
+                                'id'     => self::ACTIVE_PRODUCT_CATEGORY,
+                                'active' => true,
+                            ],
                         ],
                     ],
                 ],
@@ -1234,10 +1274,12 @@ final class ProductTest extends TokenTestCase
                 'withToken'        => true,
                 'expectedProducts' => [
                     [
-                        'id'       => self::ACTIVE_PRODUCT,
-                        'category' => [
-                            'id'     => self::ACTIVE_PRODUCT_CATEGORY,
-                            'active' => true,
+                        'id'         => self::ACTIVE_PRODUCT,
+                        'categories' => [
+                            [
+                                'id'     => self::ACTIVE_PRODUCT_CATEGORY,
+                                'active' => true,
+                            ],
                         ],
                     ],
                 ],
@@ -1283,7 +1325,7 @@ final class ProductTest extends TokenTestCase
                 }
             ) {
                 id
-                category {
+                categories {
                     id
                     active
                 }
@@ -1532,7 +1574,7 @@ final class ProductTest extends TokenTestCase
                 id
                 active
                 title
-                category {
+                categories {
                     id
                     active
                 }
@@ -1542,12 +1584,14 @@ final class ProductTest extends TokenTestCase
         $this->assertResponseStatus(200, $productResult);
 
         $expectedProduct = [
-            'id'       => self::ACTIVE_PRODUCT,
-            'active'   => true,
-            'title'    => self::ACTIVE_PRODUCT_FULL_TITLE,
-            'category' => [
-                'id'     => self::ACTIVE_PRODUCT_CATEGORY,
-                'active' => true,
+            'id'         => self::ACTIVE_PRODUCT,
+            'active'     => true,
+            'title'      => self::ACTIVE_PRODUCT_FULL_TITLE,
+            'categories' => [
+                [
+                    'id'     => self::ACTIVE_PRODUCT_CATEGORY,
+                    'active' => true,
+                ],
             ],
         ];
         $actualProduct = $productResult['body']['data']['product'];
@@ -1561,7 +1605,7 @@ final class ProductTest extends TokenTestCase
                 id
                 active
                 title
-                category {
+                categories {
                     id
                     active
                 }
