@@ -48,7 +48,7 @@ final class Product
         return $this->productService->products(
             $filter ?? new ProductFilterList(),
             $pagination,
-            $sort ?? new Sorting([])
+            $sort ?? Sorting::fromUserInput()
         );
     }
 }

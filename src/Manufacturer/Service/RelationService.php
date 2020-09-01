@@ -61,7 +61,7 @@ final class RelationService
                 )
             ),
             $pagination,
-            $sort ?? new Sorting([])
+            $sort ?? Sorting::fromUserInput()
         );
     }
 }

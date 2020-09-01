@@ -60,7 +60,7 @@ final class RelationService
                 new IDFilter($vendor->getId())
             ),
             $pagination,
-            $sort ?? new Sorting([])
+            $sort ?? Sorting::fromUserInput()
         );
     }
 }

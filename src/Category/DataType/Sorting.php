@@ -14,22 +14,30 @@ use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 final class Sorting extends BaseSorting
 {
-    public function __construct(array $sorting)
-    {
-        $sorting = $sorting ?: ['oxsort' => self::SORTING_ASC];
-
-        parent::__construct($sorting);
-    }
-
     /**
      * @Factory(name="CategorySorting")
+     *
+     * By default the categories will be sorted by their position ('oxsort' column).
+     * In case you want to sort them by other field, like title for example,
+     * you should set the position as an empty string.
+     *
+     * query {
+     *      categories(
+     *          sort: {
+     *              position: "",
+     *              title: "ASC"
+     *          }
+     *      ) {
+     *          title
+     *      }
+     * }
      */
     public static function fromUserInput(
-        ?string $sort  = self::SORTING_ASC,
+        ?string $position = self::SORTING_ASC,
         ?string $title = null
     ): self {
         return new self([
-            'oxsort'  => $sort,
+            'oxsort'  => $position,
             'oxtitle' => $title,
         ]);
     }

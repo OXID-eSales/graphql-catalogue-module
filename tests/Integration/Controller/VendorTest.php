@@ -474,6 +474,7 @@ final class VendorTest extends TokenTestCase
             id
             products (
                 sort: {
+                    position: ""
                     title: "ASC"
                 }
             ){
