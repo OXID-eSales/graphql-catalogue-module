@@ -20,12 +20,13 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
  */
 final class ProductDimensions
 {
-    /** @var EshopProductModel|EshopOrderArticleModel */
+    /** @var EshopOrderArticleModel|EshopProductModel */
     private $product;
 
     /**
      * ProductDimensions constructor.
-     * @param EshopProductModel|EshopOrderArticleModel $product
+     *
+     * @param EshopOrderArticleModel|EshopProductModel $product
      */
     public function __construct(
         BaseModel $product
