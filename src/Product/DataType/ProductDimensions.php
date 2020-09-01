@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Product\DataType;
 
 use OxidEsales\Eshop\Application\Model\Article as EshopProductModel;
+use OxidEsales\Eshop\Application\Model\OrderArticle as EshopOrderArticleModel;
+use OxidEsales\Eshop\Core\Model\BaseModel;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
@@ -18,11 +20,16 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
  */
 final class ProductDimensions
 {
-    /** @var EshopProductModel */
+    /** @var EshopOrderArticleModel|EshopProductModel */
     private $product;
 
+    /**
+     * ProductDimensions constructor.
+     *
+     * @param EshopOrderArticleModel|EshopProductModel $product
+     */
     public function __construct(
-        EshopProductModel $product
+        BaseModel $product
     ) {
         $this->product = $product;
     }
