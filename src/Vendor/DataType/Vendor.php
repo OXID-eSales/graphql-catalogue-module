@@ -79,7 +79,7 @@ final class Vendor implements DataType
     /**
      * @Field()
      */
-    public function getTimestamp(): DateTimeInterface
+    public function getTimestamp(): ?DateTimeInterface
     {
         return DateTimeImmutableFactory::fromString((string) $this->vendor->getFieldData('oxtimestamp'));
     }

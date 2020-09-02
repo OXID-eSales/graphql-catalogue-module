@@ -62,7 +62,7 @@ final class Review implements DataType
     /**
      * @Field()
      */
-    public function getCreateAt(): DateTimeInterface
+    public function getCreateAt(): ?DateTimeInterface
     {
         return DateTimeImmutableFactory::fromString(
             (string) $this->review->getFieldData('oxcreate')

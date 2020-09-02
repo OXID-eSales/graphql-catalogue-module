@@ -50,7 +50,7 @@ final class Link implements DataType
     /**
      * @Field()
      */
-    public function getTimestamp(): DateTimeInterface
+    public function getTimestamp(): ?DateTimeInterface
     {
         return DateTimeImmutableFactory::fromString((string) $this->link->getFieldData('oxtimestamp'));
     }
@@ -74,7 +74,7 @@ final class Link implements DataType
     /**
      * @Field()
      */
-    public function getCreationDate(): DateTimeInterface
+    public function getCreationDate(): ?DateTimeInterface
     {
         return DateTimeImmutableFactory::fromString((string) $this->link->getFieldData('oxinsert'));
     }

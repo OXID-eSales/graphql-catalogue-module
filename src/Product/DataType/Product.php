@@ -122,7 +122,7 @@ final class Product implements DataType
     /**
      * @Field()
      */
-    public function getInsert(): DateTimeInterface
+    public function getInsert(): ?DateTimeInterface
     {
         return DateTimeImmutableFactory::fromString(
             (string) $this->product->getFieldData('oxinsert')
@@ -140,7 +140,7 @@ final class Product implements DataType
     /**
      * @Field()
      */
-    public function getTimestamp(): DateTimeInterface
+    public function getTimestamp(): ?DateTimeInterface
     {
         return DateTimeImmutableFactory::fromString(
             (string) $this->product->getFieldData('oxtimestamp')
