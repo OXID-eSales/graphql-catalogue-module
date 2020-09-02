@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Link\DataType;
 
-use DateTimeImmutable;
 use DateTimeInterface;
 use OxidEsales\EshopCommunity\Application\Model\Links as LinkModel;
+use OxidEsales\GraphQL\Base\DataType\DateTimeImmutableFactory;
 use OxidEsales\GraphQL\Catalogue\Shared\DataType\DataType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
@@ -50,9 +50,9 @@ final class Link implements DataType
     /**
      * @Field()
      */
-    public function getTimestamp(): DateTimeInterface
+    public function getTimestamp(): ?DateTimeInterface
     {
-        return new DateTimeImmutable((string) $this->link->getFieldData('oxtimestamp'));
+        return DateTimeImmutableFactory::fromString((string) $this->link->getFieldData('oxtimestamp'));
     }
 
     /**
@@ -74,9 +74,9 @@ final class Link implements DataType
     /**
      * @Field()
      */
-    public function getCreationDate(): DateTimeImmutable
+    public function getCreationDate(): ?DateTimeInterface
     {
-        return new DateTimeImmutable((string) $this->link->getFieldData('oxinsert'));
+        return DateTimeImmutableFactory::fromString((string) $this->link->getFieldData('oxinsert'));
     }
 
     /**

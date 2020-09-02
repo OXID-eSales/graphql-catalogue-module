@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Banner\DataType;
 
-use DateTimeImmutable;
 use DateTimeInterface;
 use OxidEsales\Eshop\Application\Model\Actions as EshopActionsModel;
+use OxidEsales\GraphQL\Base\DataType\DateTimeImmutableFactory;
 use OxidEsales\GraphQL\Catalogue\Shared\DataType\DataType;
 use OxidEsales\GraphQL\Catalogue\Shared\Exception\WrongType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
@@ -64,13 +64,13 @@ final class Banner implements DataType
             return true;
         }
 
-        $from = new DateTimeImmutable(
+        $from = DateTimeImmutableFactory::fromString(
             (string) $this->actionsModel->getFieldData('oxactivefrom')
         );
-        $to = new DateTimeImmutable(
+        $to = DateTimeImmutableFactory::fromString(
             (string) $this->actionsModel->getFieldData('oxactiveto')
         );
-        $now = $now ?? new DateTimeImmutable('now');
+        $now = $now ?? DateTimeImmutableFactory::fromString('now');
 
         if ($from <= $now && $to >= $now) {
             return true;

@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Category\DataType;
 
-use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
 use OxidEsales\Eshop\Application\Model\Category as CategoryModel;
+use OxidEsales\GraphQL\Base\DataType\DateTimeImmutableFactory;
 use OxidEsales\GraphQL\Catalogue\Shared\DataType\DataType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
@@ -83,13 +83,13 @@ final class Category implements DataType
             return true;
         }
 
-        $from = new DateTimeImmutable(
+        $from = DateTimeImmutableFactory::fromString(
             (string) $this->category->getFieldData('oxactivefrom')
         );
-        $to = new DateTimeImmutable(
+        $to = DateTimeImmutableFactory::fromString(
             (string) $this->category->getFieldData('oxactiveto')
         );
-        $now = $now ?? new DateTimeImmutable('now');
+        $now = $now ?? DateTimeImmutableFactory::fromString('now');
 
         if ($from <= $now && $to >= $now) {
             return true;
@@ -231,9 +231,9 @@ final class Category implements DataType
      *
      * @throws Exception
      */
-    public function getTimestamp(): DateTimeInterface
+    public function getTimestamp(): ?DateTimeInterface
     {
-        return new DateTimeImmutable(
+        return DateTimeImmutableFactory::fromString(
             $this->category->getFieldData('oxtimestamp')
         );
     }
