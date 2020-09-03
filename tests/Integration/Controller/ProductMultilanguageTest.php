@@ -166,6 +166,7 @@ final class ProductMultilanguageTest extends TestCase
         $result = $this->query('query {
             products(
                 sort: {
+                    position: ""
                     title: "ASC"
                 }
             ) {

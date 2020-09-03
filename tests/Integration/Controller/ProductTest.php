@@ -493,6 +493,7 @@ final class ProductTest extends TokenTestCase
             'title_asc' => [
                 'sortquery' => '
                     sort: {
+                        position: ""
                         title: "ASC"
                     }
                 ',
@@ -502,6 +503,7 @@ final class ProductTest extends TokenTestCase
             'title_desc' => [
                 'sortquery' => '
                     sort: {
+                        position: ""
                         title: "DESC"
                     }
                 ',
@@ -511,6 +513,7 @@ final class ProductTest extends TokenTestCase
             'price_asc' => [
                 'sortquery' => '
                     sort: {
+                        position: ""
                         price: "ASC"
                     }
                 ',
@@ -521,6 +524,7 @@ final class ProductTest extends TokenTestCase
             'price_desc' => [
                 'sortquery' => '
                     sort: {
+                        position: ""
                         price: "DESC"
                     }
                 ',
@@ -753,7 +757,10 @@ final class ProductTest extends TokenTestCase
         $this->prepareToken();
 
         $result = $this->query('query {
-            products(filter: { category: { equals: "' . self::ACTIVE_PRODUCT_CATEGORY . '" } }) {
+            products(
+                filter: { category: { equals: "' . self::ACTIVE_PRODUCT_CATEGORY . '" } }
+                sort: { position: "" }
+            ) {
                 id
                 categories(onlyMainCategory: true){
                     active

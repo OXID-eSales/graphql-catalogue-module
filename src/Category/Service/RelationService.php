@@ -87,7 +87,7 @@ final class RelationService
                 null,
                 new StringFilter((string) $category->getId())
             ),
-            new Sorting([])
+            Sorting::fromUserInput()
         );
     }
 

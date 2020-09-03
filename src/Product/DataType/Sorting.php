@@ -14,21 +14,31 @@ use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 final class Sorting extends BaseSorting
 {
-    public function __construct(array $sorting)
-    {
-        $sorting = $sorting ?: ['oxsort' => self::SORTING_ASC];
-
-        parent::__construct($sorting);
-    }
-
     /**
      * @Factory(name="ProductSorting")
+     *
+     * By default the products will be sorted by their position ('oxsort' column).
+     * In case you want to sort them by other field, like title for example,
+     * you should set the position as an empty string.
+     *
+     * query {
+     *      products(
+     *          sort: {
+     *              position: "",
+     *              title: "ASC"
+     *          }
+     *      ) {
+     *          title
+     *      }
+     * }
      */
     public static function fromUserInput(
+        ?string $position = self::SORTING_ASC,
         ?string $title = null,
         ?string $price = null
     ): self {
         return new self([
+            'oxsort'        => $position,
             'oxtitle'       => $title,
             'oxvarminprice' => $price,
         ]);

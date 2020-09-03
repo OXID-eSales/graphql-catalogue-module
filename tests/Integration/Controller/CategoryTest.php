@@ -468,7 +468,8 @@ final class CategoryTest extends TokenTestCase
                 'withToken'             => false,
                 'expectedProductsCount' => 11,
                 'active'                => true,
-            ], [
+            ],
+            [
                 'withToken'             => true,
                 'expectedProductsCount' => 12,
                 'active'                => false,
@@ -522,7 +523,7 @@ final class CategoryTest extends TokenTestCase
         );
 
         //Test product sort
-        $productStatus = end($result['body']['data']['category']['products'])['active'];
+        $productStatus = $result['body']['data']['category']['products'][0]['active'];
         $this->assertSame(
             $active,
             $productStatus
@@ -542,16 +543,21 @@ final class CategoryTest extends TokenTestCase
      */
     public function testCategoryProductListOffsetAndLimit(int $offset, int $limit, array $expectedProducts): void
     {
-        //Prepare products sorting otherwise limit will return products on random order
-        $this->prepareCategoryProductSort();
+        $this->prepareToken();
 
         $result = $this->query('query {
             category (id: "' . self::CATEGORY_WITH_PRODUCTS . '") {
                 title
-                products(pagination: {
-                    offset: ' . $offset . '
-                    limit: ' . $limit . '
-                }) {
+                products(
+                    pagination: {
+                        offset: ' . $offset . '
+                        limit: ' . $limit . '
+                    }
+                    sort: {
+                        position: ""
+                        title: "ASC"
+                    }
+                ) {
                     id
                     title
                 }
@@ -748,7 +754,7 @@ final class CategoryTest extends TokenTestCase
             'oxsort_asc' => [
                 'sortquery'     => '
                       sort: {
-                        sort: "ASC"
+                        position: "ASC"
                     }
                 ',
                 'method'        => 'asort',
@@ -758,7 +764,7 @@ final class CategoryTest extends TokenTestCase
             'oxsort_desc' => [
                 'sortquery' => '
                     sort: {
-                        sort: "DESC"
+                        position: "DESC"
                     }
                 ',
                 'method'    => 'arsort',
@@ -768,7 +774,7 @@ final class CategoryTest extends TokenTestCase
             'title_asc' => [
                 'sortquery' => '
                     sort: {
-                        sort:  ""
+                        position: ""
                         title: "ASC"
                     }
                 ',
@@ -779,7 +785,7 @@ final class CategoryTest extends TokenTestCase
             'title_desc' => [
                 'sortquery' => '
                     sort: {
-                        sort:  ""
+                        position: ""
                         title: "DESC"
                     }
                 ',
@@ -830,7 +836,7 @@ final class CategoryTest extends TokenTestCase
         $result = $this->query('query {
             categories(
                 sort: {
-                    sort:  "DESC"
+                    position: "DESC"
                     title: "ASC"
                 }
             ) {
@@ -848,7 +854,7 @@ final class CategoryTest extends TokenTestCase
         $otherResult = $this->query('query {
             categories(
                 sort: {
-                    sort:  "ASC"
+                    position: "ASC"
                     title: "ASC"
                 }
             ) {
@@ -873,6 +879,7 @@ final class CategoryTest extends TokenTestCase
             id
             products (
                 sort: {
+                    position: ""
                     title: "ASC"
                 }
             ){
@@ -891,43 +898,5 @@ final class CategoryTest extends TokenTestCase
         $expected = $titles;
         asort($expected, SORT_FLAG_CASE | SORT_STRING);
         $this->assertSame($expected, $titles);
-    }
-
-    private function prepareCategoryProductSort(): void
-    {
-        $queryBuilderFactory = ContainerFactory::getInstance()
-            ->getContainer()
-            ->get(QueryBuilderFactoryInterface::class);
-        $queryBuilder = $queryBuilderFactory->create();
-
-        $result = $this->query('query {
-            category (id: "' . self::CATEGORY_WITH_PRODUCTS . '") {
-                title
-                products(sort: {
-                    title: "ASC"
-                }) {
-                    id
-                }
-            }
-        }');
-
-        $this->assertResponseStatus(
-            200,
-            $result
-        );
-
-        $sort     = 0;
-        $products = $result['body']['data']['category']['products'];
-
-        foreach ($products as $product) {
-            $queryBuilder
-                ->update('oxarticles')
-                ->set('oxsort', $sort)
-                ->where('OXID = :OXID')
-                ->setParameter(':OXID', $product['id'])
-                ->execute();
-
-            $sort++;
-        }
     }
 }

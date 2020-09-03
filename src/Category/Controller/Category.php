@@ -45,7 +45,7 @@ final class Category
     ): array {
         return $this->categoryService->categories(
             $filter ?? new CategoryFilterList(),
-            $sort ?? new Sorting([])
+            $sort ?? Sorting::fromUserInput()
         );
     }
 }
