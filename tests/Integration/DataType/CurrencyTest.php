@@ -33,7 +33,7 @@ final class CurrencyTest extends TestCase
         $currency = new Currency($currencyObject);
 
         $this->assertSame($currencyObject->id, $currency->getId());
-        $this->assertSame($currencyObject->rate, $currency->getRate());
+        $this->assertSame((float) $currencyObject->rate, $currency->getRate());
         $this->assertSame($currencyObject->name, $currency->getName());
         $this->assertSame($currencyObject->sign, $currency->getSign());
         $this->assertSame((int) $currencyObject->decimal, $currency->getPrecision());

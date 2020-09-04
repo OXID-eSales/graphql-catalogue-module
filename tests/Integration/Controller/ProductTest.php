@@ -206,7 +206,7 @@ final class ProductTest extends TokenTestCase
         $expectedCurrency = Registry::getConfig()->getActShopCurrencyObject();
         $this->assertSame($expectedCurrency->id, $currency['id']);
         $this->assertSame($expectedCurrency->name, $currency['name']);
-        $this->assertSame($expectedCurrency->rate, $currency['rate']);
+        $this->assertSame((float) $expectedCurrency->rate, $currency['rate']);
         $this->assertSame($expectedCurrency->sign, $currency['sign']);
 
         $listPrice = $product['listPrice'];

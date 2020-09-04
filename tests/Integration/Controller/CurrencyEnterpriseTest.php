@@ -48,7 +48,7 @@ final class CurrencyEnterpriseTest extends MultishopTestCase
             $resultCurrency['name']
         );
         $this->assertSame(
-            $configCurrency->rate,
+            (float) $configCurrency->rate,
             $resultCurrency['rate']
         );
         $this->assertSame(
@@ -89,7 +89,7 @@ final class CurrencyEnterpriseTest extends MultishopTestCase
             $resultCurrency['name']
         );
         $this->assertSame(
-            $configCurrency->rate,
+            (float) $configCurrency->rate,
             $resultCurrency['rate']
         );
         $this->assertSame(
@@ -172,7 +172,7 @@ final class CurrencyEnterpriseTest extends MultishopTestCase
                 $resultCurrencies[$key]['name']
             );
             $this->assertSame(
-                $expectedCurrency->rate,
+                (float) $expectedCurrency->rate,
                 $resultCurrencies[$key]['rate']
             );
             $this->assertSame(

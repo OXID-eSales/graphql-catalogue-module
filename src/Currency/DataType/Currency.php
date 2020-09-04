@@ -45,9 +45,9 @@ final class Currency
     /**
      * @Field()
      */
-    public function getRate(): string
+    public function getRate(): float
     {
-        return $this->currency->rate;
+        return (float) $this->currency->rate;
     }
 
     /**

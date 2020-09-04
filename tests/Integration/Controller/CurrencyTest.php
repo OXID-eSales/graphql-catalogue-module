@@ -47,7 +47,7 @@ final class CurrencyTest extends TestCase
             $resultCurrency['name']
         );
         $this->assertSame(
-            $configCurrency->rate,
+            (float) $configCurrency->rate,
             $resultCurrency['rate']
         );
         $this->assertSame(
@@ -88,7 +88,7 @@ final class CurrencyTest extends TestCase
             $resultCurrency['name']
         );
         $this->assertSame(
-            $configCurrency->rate,
+            (float) $configCurrency->rate,
             $resultCurrency['rate']
         );
         $this->assertSame(
@@ -167,7 +167,7 @@ final class CurrencyTest extends TestCase
                 $resultCurrencies[$key]['name']
             );
             $this->assertSame(
-                $expectedCurrency->rate,
+                (float) $expectedCurrency->rate,
                 $resultCurrencies[$key]['rate']
             );
             $this->assertSame(
