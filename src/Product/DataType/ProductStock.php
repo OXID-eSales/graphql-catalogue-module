@@ -12,13 +12,14 @@ namespace OxidEsales\GraphQL\Catalogue\Product\DataType;
 use DateTimeInterface;
 use OxidEsales\Eshop\Application\Model\Article as EshopProductModel;
 use OxidEsales\GraphQL\Base\DataType\DateTimeImmutableFactory;
+use OxidEsales\GraphQL\Catalogue\Shared\DataType\DataType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
 /**
  * @Type()
  */
-final class ProductStock
+final class ProductStock implements DataType
 {
     /** @var EshopProductModel */
     private $product;
@@ -27,6 +28,11 @@ final class ProductStock
         EshopProductModel $product
     ) {
         $this->product = $product;
+    }
+
+    public function getEshopModel(): EshopProductModel
+    {
+        return $this->product;
     }
 
     /**
@@ -66,5 +72,13 @@ final class ProductStock
         return DateTimeImmutableFactory::fromString(
             $restockDate
         );
+    }
+
+    /**
+     * @return string class-string
+     */
+    public static function getModelClass(): string
+    {
+        return EshopProductModel::class;
     }
 }
