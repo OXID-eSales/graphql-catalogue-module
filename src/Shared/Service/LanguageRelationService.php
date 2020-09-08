@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Shared\Service;
 
-use OxidEsales\Eshop\Core\Language as LanguageService;
 use OxidEsales\GraphQL\Catalogue\Shared\DataType\Language;
+use OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\LanguageInfrastructure;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 
@@ -19,13 +19,13 @@ use TheCodingMachine\GraphQLite\Annotations\Field;
  */
 final class LanguageRelationService
 {
-    /** @var LanguageService */
-    private $languageService;
+    /** @var LanguageInfrastructure */
+    private $languageInfrastructure;
 
     public function __construct(
-        LanguageService $languageService
+        LanguageInfrastructure $languageInfrastructure
     ) {
-        $this->languageService = $languageService;
+        $this->languageInfrastructure = $languageInfrastructure;
     }
 
     /**
@@ -33,9 +33,7 @@ final class LanguageRelationService
      */
     public function getCode(Language $language): string
     {
-        $languageId = $language->getLanguageId();
-
-        return $this->languageService->getLanguageAbbr($languageId);
+        return $this->languageInfrastructure->getLanguageCode($language->getLanguageId());
     }
 
     /**
@@ -43,9 +41,6 @@ final class LanguageRelationService
      */
     public function getLanguage(Language $language): string
     {
-        $languageId = $language->getLanguageId();
-        $languageNames = $this->languageService->getLanguageNames();
-
-        return $languageNames[$languageId];
+        return $this->languageInfrastructure->getLanguageName($language->getLanguageId());
     }
 }
