@@ -34,7 +34,7 @@ final class Language
         return new ID($this->getLanguageId());
     }
 
-    public function getLanguageId()
+    public function getLanguageId(): int
     {
         return $this->languageId;
     }
