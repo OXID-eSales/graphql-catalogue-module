@@ -15,7 +15,9 @@ use OxidEsales\GraphQL\Catalogue\Product\Exception\ProductNotFound;
 use OxidEsales\GraphQL\Catalogue\Product\Service\Product as ProductService;
 use OxidEsales\GraphQL\Catalogue\Review\DataType\Review;
 use OxidEsales\GraphQL\Catalogue\Review\DataType\Reviewer;
+use OxidEsales\GraphQL\Catalogue\Review\Infrastructure\Review as ReviewInfrastructure;
 use OxidEsales\GraphQL\Catalogue\Review\Service\Reviewer as ReviewerService;
+use OxidEsales\GraphQL\Catalogue\Shared\DataType\Language;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 
@@ -30,12 +32,17 @@ final class RelationService
     /** @var ReviewerService */
     private $reviewerService;
 
+    /** @var ReviewInfrastructure */
+    private $reviewInfrastructure;
+
     public function __construct(
         ProductService $productService,
-        ReviewerService $reviewerService
+        ReviewerService $reviewerService,
+        ReviewInfrastructure $reviewInfrastructure
     ) {
-        $this->productService     = $productService;
-        $this->reviewerService    = $reviewerService;
+        $this->productService          = $productService;
+        $this->reviewerService         = $reviewerService;
+        $this->reviewInfrastructure    = $reviewInfrastructure;
     }
 
     /**
@@ -63,5 +70,13 @@ final class RelationService
         } catch (ProductNotFound | InvalidLogin $e) {
             return null;
         }
+    }
+
+    /**
+     * @Field()
+     */
+    public function getLanguage(Review $review): Language
+    {
+        return $this->reviewInfrastructure->getLanguage($review);
     }
 }
