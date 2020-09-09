@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Default sorting for Products and Categories
+- Language relation for product reviews.
 
 ### Changed
 
