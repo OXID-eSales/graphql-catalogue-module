@@ -10,12 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Default sorting for Products and Categories
 - Language relation for product reviews.
+- ProductStock::getEshopModel method [PR-14](https://github.com/OXID-eSales/graphql-catalogue-module/pull/14)
 
 ### Changed
 
 - Repository::delete() takes loaded BaseModel as argument.
 - `OxidEsales\GraphQL\Catalogue\Product\DataType\Price` moved to `OxidEsales\GraphQL\Catalogue\Shared\DataType\Price`
 - Replaced Product field Category with Categories
+- ProductStock DataType now implements DataType [PR-14](https://github.com/OXID-eSales/graphql-catalogue-module/pull/14)
 
 ### Removed
 
