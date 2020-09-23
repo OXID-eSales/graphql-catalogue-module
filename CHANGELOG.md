@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced Product field Category with Categories
 - ProductStock DataType now implements DataType [PR-14](https://github.com/OXID-eSales/graphql-catalogue-module/pull/14)
 
+### Fixed
+
+- Ensure product long description is always a string
+
 ### Removed
 
 - `\OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase` moved to GraphQL Base Module

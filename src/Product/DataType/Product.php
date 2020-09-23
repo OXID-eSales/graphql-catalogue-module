@@ -108,7 +108,7 @@ final class Product implements DataType
      */
     public function getLongDescription(): string
     {
-        return $this->product->getLongDesc();
+        return (string) $this->product->getLongDesc();
     }
 
     /**
