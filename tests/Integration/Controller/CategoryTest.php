@@ -17,15 +17,19 @@ use OxidEsales\GraphQL\Base\Tests\Integration\TokenTestCase;
 
 final class CategoryTest extends TokenTestCase
 {
+    public const SORTING_DESC = 1;
+
+    public const SORTING_ASC = 0;
+
     private const ACTIVE_CATEGORY = 'd86fdf0d67bf76dc427aabd2e53e0a97';
 
-    private const INACTIVE_CATEGORY  = 'd8665fef35f4d528e92c3d664f4a00c0';
+    private const INACTIVE_CATEGORY = 'd8665fef35f4d528e92c3d664f4a00c0';
 
-    private const CATEGORY_WITHOUT_CHILDREN  = '0f4270b89fbef1481958381410a0dbca';
+    private const CATEGORY_WITHOUT_CHILDREN = '0f4270b89fbef1481958381410a0dbca';
 
-    private const CATEGORY_WITH_CHILDREN  = '943173edecf6d6870a0f357b8ac84d32';
+    private const CATEGORY_WITH_CHILDREN = '943173edecf6d6870a0f357b8ac84d32';
 
-    private const CATEGORY_WITH_PRODUCTS  = '0f4fb00809cec9aa0910aa9c8fe36751';
+    private const CATEGORY_WITH_PRODUCTS = '0f4fb00809cec9aa0910aa9c8fe36751';
 
     private const PRODUCT_RELATED_TO_ACTIVE_CATEGORY = 'b56369b1fc9d7b97f9c5fc343b349ece';
 
@@ -750,16 +754,16 @@ final class CategoryTest extends TokenTestCase
 
     public function providerSortedCategoriesList()
     {
-        return  [
-            'oxsort_asc' => [
-                'sortquery'     => '
+        return [
+            'oxsort_asc'  => [
+                'sortquery' => '
                       sort: {
                         position: "ASC"
                     }
                 ',
-                'method'        => 'asort',
-                'mode'          => SORT_NUMERIC,
-                'field'         => 'position',
+                'method'    => 'asort',
+                'mode'      => SORT_NUMERIC,
+                'field'     => 'position',
             ],
             'oxsort_desc' => [
                 'sortquery' => '
@@ -771,7 +775,7 @@ final class CategoryTest extends TokenTestCase
                 'mode'      => SORT_NUMERIC,
                 'field'     => 'position',
             ],
-            'title_asc' => [
+            'title_asc'   => [
                 'sortquery' => '
                     sort: {
                         position: ""
@@ -782,7 +786,7 @@ final class CategoryTest extends TokenTestCase
                 'mode'      => SORT_STRING,
                 'field'     => 'title',
             ],
-            'title_desc' => [
+            'title_desc'  => [
                 'sortquery' => '
                     sort: {
                         position: ""
@@ -807,7 +811,7 @@ final class CategoryTest extends TokenTestCase
     ): void {
         $result = $this->query('query {
             categories( ' .
-                 $sortQuery .
+            $sortQuery .
             ') {
                 id
                 title
@@ -898,5 +902,89 @@ final class CategoryTest extends TokenTestCase
         $expected = $titles;
         asort($expected, SORT_FLAG_CASE | SORT_STRING);
         $this->assertSame($expected, $titles);
+    }
+
+    /**
+     * @dataProvider dataProviderCategoryProductListFastSorting
+     */
+    public function testCategoryProductListFastSorting(string $sorting, int $sortMode, array $expectedProducts): void
+    {
+        // set category fast sorting
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $queryBuilder
+            ->update('oxcategories')
+            ->set('OXDEFSORT', ':sort')
+            ->set('OXDEFSORTMODE', ':sortMode')
+            ->where('OXID = :OXID')
+            ->setParameters([
+                ':OXID'     => self::CATEGORY_WITH_PRODUCTS,
+                ':sort'     => $sorting,
+                ':sortMode' => $sortMode,
+            ])
+            ->execute();
+
+        $result = $this->query('query {
+          category (id: "' . self::CATEGORY_WITH_PRODUCTS . '") {
+            id
+            products {
+                id
+            }
+          }
+        }');
+
+        $products = $result['body']['data']['category']['products'];
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            12,
+            $products
+        );
+
+        $this->assertSame(
+            $expectedProducts,
+            array_slice($products, 0, 3)
+        );
+    }
+
+    public function dataProviderCategoryProductListFastSorting(): array
+    {
+        return [
+            //none, no fast sorting
+            'without_fast_sorting' => [
+                '',
+                0,
+                [
+                    ['id' => 'b56369b1fc9d7b97f9c5fc343b349ece'],
+                    ['id' => 'b56597806428de2f58b1c6c7d3e0e093'],
+                    ['id' => 'b5666b6d4bcb67c61dee4887bfba8351'],
+                ],
+            ],
+            'price_asc'            => [
+                'oxprice',
+                self::SORTING_ASC,
+                [
+                    ['id' => 'dc57391739360d306c8dfcb3a4295e19'],
+                    ['id' => 'b56597806428de2f58b1c6c7d3e0e093'],
+                    ['id' => 'dc5480c47d8cd5a9eab9da5db9159cc6'],
+                ],
+            ],
+            'title_desc'           => [
+                'oxtitle',
+                self::SORTING_DESC,
+                [
+                    ['id' => 'fadc492a5807c56eb80b0507accd756b'],
+                    ['id' => 'dc57391739360d306c8dfcb3a4295e19'],
+                    ['id' => 'dc5480c47d8cd5a9eab9da5db9159cc6'],
+                ],
+            ],
+        ];
     }
 }

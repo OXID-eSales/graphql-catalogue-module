@@ -34,4 +34,15 @@ INSERT INTO `oxactions` (`OXID`, `OXSHOPID`, `OXTYPE`, `OXTITLE`, `OXTITLE_1`, `
 ('test_inactive_sub_shop_promotion_1',	    2,	2,	'Upcoming sub shop promotion DE',	'Upcoming sub shop promotion EN',	'',	'',	'Long description 3 DE',	'Long description 3 EN',	'',	'',	0,	'2010-01-01 00:00:00',	'2010-02-01 00:00:00',	'',	'',	'',	'',	'',	'',	'',	'',	1,	'2020-04-23 12:07:10');
 
 INSERT INTO `oxarticles2shop` (`OXSHOPID`, `OXMAPOBJECTID`) VALUES
-(2, 933);
+(2, 933),
+(2, 1088),
+(2, 1094);
+
+# Category for fast sorting
+REPLACE INTO `oxcategories` (`OXID`, `OXMAPID`, `OXPARENTID`,   `OXLEFT`, `OXRIGHT`, `OXROOTID`,     `OXSORT`, `OXACTIVE`, `OXSHOPID`,   `OXTITLE`,                    `OXDESC`,                    `OXLONGDESC`,                `OXDEFSORT`, `OXDEFSORTMODE`, `OXPRICEFROM`, `OXPRICETO`, `OXACTIVE_1`, `OXTITLE_1`,                  `OXDESC_1`,                        `OXLONGDESC_1`,                    `OXVAT`, `OXSHOWSUFFIX`) VALUES
+('e7d257920a5369cd8d7db52485491d54', 926, 'oxrootid',      1,        4,        'e7d257920a5369cd8d7db52485491d54', 1,        1,         2, 'Test category', 'Test category desc [DE]', 'Test category long desc', 'oxartnum',   0,               0,             0,           1,           'Test category [EN]', 'Test category desc [EN]', 'Test category long desc [EN]',  5,       1);
+
+REPLACE INTO `oxobject2category` (`OXID`, `OXSHOPID`, `OXOBJECTID`, `OXCATNID`, `OXPOS`, `OXTIME`) VALUES
+('28819912f2c4febde1c3987de797635a',	2,	'd861ad687c60820255dbf8f88516f24d',	'e7d257920a5369cd8d7db52485491d54',	0,	0),
+('85fc3e4814da77dcc3abab31163f52da',	2,	'd86f775338da3228bec9e968f02e7551',	'e7d257920a5369cd8d7db52485491d54',	0,	0),
+('94d865bf075725341cafa4bd45941032',	2,	'd86236918e1533cccb679208628eda32',	'e7d257920a5369cd8d7db52485491d54',	0,	999999999);

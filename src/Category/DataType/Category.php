@@ -238,6 +238,16 @@ final class Category implements DataType
         );
     }
 
+    public function getDefSort(): ?string
+    {
+        return $this->category->getFieldData('oxdefsort');
+    }
+
+    public function getDefSortMode(): int
+    {
+        return (int) $this->category->getFieldData('oxdefsortmode');
+    }
+
     /**
      * @return class-string
      */

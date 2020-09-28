@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Tests\Integration\Controller;
 
 use OxidEsales\Eshop\Core\Element2ShopRelations;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
 
 /**
@@ -17,11 +19,16 @@ use OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase;
  */
 final class CategoryEnterpriseTest extends MultishopTestCase
 {
+    public const SORTING_DESC = 1;
+
+    public const SORTING_ASC  = 0;
+
     private const CATEGORY_IDS = [
         'shoes-active'    => 'd86fdf0d67bf76dc427aabd2e53e0a97',
         'jeans-active'    => 'd863b76c6bb90a970a5577adf890e8cd',
         'jeans-inactive'  => 'd8665fef35f4d528e92c3d664f4a00c0',
         'supplies-active' => 'fc7e7bd8403448f00a363f60f44da8f2',
+        'test-active'     => 'e7d257920a5369cd8d7db52485491d54',
     ];
 
     private const PRODUCT_ID = 'd86236918e1533cccb679208628eda32';
@@ -333,6 +340,84 @@ final class CategoryEnterpriseTest extends MultishopTestCase
             ],
             $result['body']['data']['categories'][0]['products']
         );
+    }
+
+    /**
+     * @dataProvider dataProviderCategoryProductListFastSorting
+     */
+    public function testSubShopCategoryProductListFastSorting(string $sorting, int $sortMode, array $expectedProducts): void
+    {
+        $this->addCategoryToShops(self::CATEGORY_IDS['test-active'], [2]);
+
+        $this->setGETRequestParameter('shp', '2');
+
+        // set category fast sorting
+        $queryBuilderFactory = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $queryBuilder
+            ->update('oxcategories')
+            ->set('OXDEFSORT', ':sort')
+            ->set('OXDEFSORTMODE', ':sortMode')
+            ->where('OXID = :OXID')
+            ->setParameters([
+                ':OXID'          => self::CATEGORY_IDS['test-active'],
+                ':sort'          => $sorting,
+                ':sortMode'      => $sortMode,
+            ])
+            ->execute();
+
+        $result = $this->query('query {
+          category (id: "' . self::CATEGORY_IDS['test-active'] . '") {
+            id
+            products {
+                id
+            }
+          }
+        }');
+
+        $products = $result['body']['data']['category']['products'];
+
+        $this->assertResponseStatus(
+            200,
+            $result
+        );
+
+        $this->assertCount(
+            3,
+            $products
+        );
+
+        $this->assertSame(
+            $expectedProducts,
+            $products
+        );
+    }
+
+    public function dataProviderCategoryProductListFastSorting(): array
+    {
+        return [
+            'price_desc' => [
+                'oxprice',
+                self::SORTING_DESC,
+                [
+                    ['id' => 'd86236918e1533cccb679208628eda32'],
+                    ['id' => 'd86f775338da3228bec9e968f02e7551'],
+                    ['id' => 'd861ad687c60820255dbf8f88516f24d'],
+                ],
+            ],
+            'title_asc'  => [
+                'oxtitle',
+                self::SORTING_ASC,
+                [
+                    ['id' => 'd86f775338da3228bec9e968f02e7551'],
+                    ['id' => 'd861ad687c60820255dbf8f88516f24d'],
+                    ['id' => 'd86236918e1533cccb679208628eda32'],
+                ],
+            ],
+        ];
     }
 
     private function addCategoryToShops(string $categoryId, array $shops): void

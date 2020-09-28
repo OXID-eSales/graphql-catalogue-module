@@ -109,13 +109,20 @@ final class RelationService
         ?PaginationFilter $pagination,
         ?ProductSorting $sort
     ): array {
+        $defSort = new ProductSorting([]);
+
+        if ($category->getDefSort()) {
+            $defSortMode = $category->getDefSortMode() !== 0 ? ProductSorting::SORTING_DESC : ProductSorting::SORTING_ASC;
+            $defSort     = new ProductSorting([$category->getDefSort() => $defSortMode]);
+        }
+
         return $this->productService->products(
             new ProductFilterList(
                 null,
                 new CategoryIDFilter($category->getId())
             ),
             $pagination,
-            $sort ?? new ProductSorting([])
+            $sort ?? $defSort
         );
     }
 }
