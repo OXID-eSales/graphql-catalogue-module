@@ -109,6 +109,7 @@ final class Repository
         $sorting->addToQuery($queryBuilder);
 
         $queryBuilder->getConnection()->setFetchMode(PDO::FETCH_ASSOC);
+
         /** @var \Doctrine\DBAL\Statement $result */
         $result = $queryBuilder->execute();
 

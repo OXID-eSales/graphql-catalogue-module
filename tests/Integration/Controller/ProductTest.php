@@ -490,6 +490,115 @@ final class ProductTest extends TokenTestCase
     public function dataProviderSortedProductsList()
     {
         return  [
+            'min_price_variant_asc' => [
+                'sortquery' => '
+                    sort: {
+                        position: ""
+                        minPriceVariant: "ASC"
+                    }
+                ',
+                'method'    => 'asort',
+                'field'     => 'varMinPrice',
+                'mode'      => SORT_NUMERIC,
+            ],
+            'min_price_variant_desc' => [
+                'sortquery' => '
+                    sort: {
+                        position: ""
+                        minPriceVariant: "DESC"
+                    }
+                ',
+                'method'    => 'array_multisort',
+                'field'     => 'varMinPrice',
+            ],
+            'product_number_asc' => [
+                'sortquery' => '
+                    sort: {
+                        position: ""
+                        productNumber: "ASC"
+                    }
+                ',
+                'method'    => 'asort',
+                'field'     => 'sku',
+                'mode'      => SORT_STRING,
+            ],
+            'product_number_desc' => [
+                'sortquery' => '
+                    sort: {
+                        position: ""
+                        productNumber: "DESC"
+                    }
+                ',
+                'method'    => 'arsort',
+                'field'     => 'sku',
+                'mode'      => SORT_STRING,
+            ],
+            'price_asc' => [
+                'sortquery' => '
+                    sort: {
+                        position: ""
+                        price: "ASC"
+                        title: "ASC"
+                    }
+                ',
+                'method'    => 'uasort_asc',
+                'field'     => 'price',
+            ],
+            'price_desc' => [
+                'sortquery' => '
+                    sort: {
+                        position: ""
+                        price: "DESC"
+                        title: "DESC"
+                    }
+                ',
+                'method'    => 'uasort_desc',
+                'field'     => 'price',
+            ],
+            'rating_asc' => [
+                'sortquery' => '
+                    sort: {
+                        position: ""
+                        rating: "ASC"
+                        title: "ASC"
+                    }
+                ',
+                'method'    => 'uasort_asc',
+                'field'     => 'rating',
+            ],
+            'rating_desc' => [
+                'sortquery' => '
+                    sort: {
+                        position: ""
+                        rating: "DESC"
+                        title: "DESC"
+                    }
+                ',
+                'method'    => 'uasort_desc',
+                'field'     => 'rating',
+            ],
+            'stock_asc' => [
+                'sortquery' => '
+                    sort: {
+                        position: ""
+                        stock: "ASC"
+                        title: "ASC"
+                    }
+                ',
+                'method'    => 'uasort_asc',
+                'field'     => 'stock',
+            ],
+            'stock_desc' => [
+                'sortquery' => '
+                    sort: {
+                        position: ""
+                        stock: "DESC"
+                        title: "DESC"
+                    }
+                ',
+                'method'    => 'uasort_desc',
+                'field'     => 'stock',
+            ],
             'title_asc' => [
                 'sortquery' => '
                     sort: {
@@ -510,27 +619,6 @@ final class ProductTest extends TokenTestCase
                 'method'    => 'arsort',
                 'field'     => 'title',
             ],
-            'price_asc' => [
-                'sortquery' => '
-                    sort: {
-                        position: ""
-                        price: "ASC"
-                    }
-                ',
-                'method'    => 'asort',
-                'field'     => 'varMinPrice',
-                'mode'      => SORT_NUMERIC,
-            ],
-            'price_desc' => [
-                'sortquery' => '
-                    sort: {
-                        position: ""
-                        price: "DESC"
-                    }
-                ',
-                'method'    => 'array_multisort',
-                'field'     => 'varMinPrice',
-            ],
         ];
     }
 
@@ -550,6 +638,16 @@ final class ProductTest extends TokenTestCase
                 id
                 title
                 varMinPrice
+                sku
+                stock{
+                    stock
+                }
+                rating{
+                    rating
+                }
+                price {
+                    price
+                }
             }
         }');
 
@@ -561,16 +659,32 @@ final class ProductTest extends TokenTestCase
         $orderedProducts = [];
 
         foreach ($result['body']['data']['products'] as $product) {
-            $orderedProducts[$product['id']] = $product[$field];
+            if (in_array($field, ['stock', 'rating', 'price'])) {
+                $orderedProducts[$product['id']] = [
+                    $field  => $product[$field][$field],
+                    'title' => $product['title'],
+                ];
+            } else {
+                $orderedProducts[$product['id']] = $product[$field];
+            }
         }
 
         $expected = $orderedProducts;
 
         if ($field == 'title') {
             $method($expected, SORT_STRING | SORT_FLAG_CASE);
+        } elseif ($method == 'uasort_asc') {
+            uasort($expected, function ($item1, $item2) {
+                return $item1 <=> $item2;
+            });
+        } elseif ($method == 'uasort_desc') {
+            uasort($expected, function ($item1, $item2) {
+                return $item2 <=> $item1;
+            });
         } else {
             $mode ? $method($expected, $mode) : $method(array_values($expected), SORT_DESC, array_keys($expected), SORT_ASC, $expected);
         }
+
         $this->assertSame($expected, $orderedProducts);
     }
 

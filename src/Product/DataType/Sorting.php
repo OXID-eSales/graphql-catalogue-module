@@ -34,13 +34,21 @@ final class Sorting extends BaseSorting
      */
     public static function fromUserInput(
         ?string $position = self::SORTING_ASC,
-        ?string $title = null,
-        ?string $price = null
+        ?string $minPriceVariant = null,
+        ?string $price = null,
+        ?string $productNumber = null,
+        ?string $rating = null,
+        ?string $stock = null,
+        ?string $title = null
     ): self {
         return new self([
             'oxsort'        => $position,
+            'oxvarminprice' => $minPriceVariant,
+            'oxprice'       => $price,
+            'oxartnum'      => $productNumber,
+            'oxrating'      => $rating,
+            'oxstock'       => $stock,
             'oxtitle'       => $title,
-            'oxvarminprice' => $price,
         ]);
     }
 }
