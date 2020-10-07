@@ -37,3 +37,7 @@ script:
     - composer test:unit
     - if [ $(php -r "echo PHP_MAJOR_VERSION . PHP_MINOR_VERSION;") == "74" -a "$DEPENDENCIES" == "" ]; then composer test:static; fi;
     - if [ $(php -r "echo PHP_MAJOR_VERSION . PHP_MINOR_VERSION;") == "74" -a "$DEPENDENCIES" == "" ]; then composer test:deptrac; fi;
+
+after_success:
+    - sudo chmod +775 schema.sh
+    - ./schema.sh
