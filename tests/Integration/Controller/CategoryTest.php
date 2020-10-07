@@ -909,6 +909,8 @@ final class CategoryTest extends TokenTestCase
      */
     public function testCategoryProductListFastSorting(string $sorting, int $sortMode, array $expectedProducts): void
     {
+        $categoryId = '0f4f08358666c54b4fde3d83d2b7ef04';
+
         // set category fast sorting
         $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
@@ -921,14 +923,14 @@ final class CategoryTest extends TokenTestCase
             ->set('OXDEFSORTMODE', ':sortMode')
             ->where('OXID = :OXID')
             ->setParameters([
-                ':OXID'     => self::CATEGORY_WITH_PRODUCTS,
+                ':OXID'     => $categoryId,
                 ':sort'     => $sorting,
                 ':sortMode' => $sortMode,
             ])
             ->execute();
 
         $result = $this->query('query {
-          category (id: "' . self::CATEGORY_WITH_PRODUCTS . '") {
+          category (id: "' . $categoryId . '") {
             id
             products {
                 id
@@ -944,13 +946,13 @@ final class CategoryTest extends TokenTestCase
         );
 
         $this->assertCount(
-            12,
+            4,
             $products
         );
 
         $this->assertSame(
             $expectedProducts,
-            array_slice($products, 0, 3)
+            $products
         );
     }
 
@@ -962,27 +964,30 @@ final class CategoryTest extends TokenTestCase
                 '',
                 0,
                 [
-                    ['id' => 'b56369b1fc9d7b97f9c5fc343b349ece'],
-                    ['id' => 'b56597806428de2f58b1c6c7d3e0e093'],
-                    ['id' => 'b5666b6d4bcb67c61dee4887bfba8351'],
+                    ['id' => '058de8224773a1d5fd54d523f0c823e0'],
+                    ['id' => 'adc920f4cbfa739803058c663a4a00b9'],
+                    ['id' => 'd8631f92ababb452139f222afb81cd36'],
+                    ['id' => 'f4fe754e1692b9f79f2a7b1a01bb8dee'],
                 ],
             ],
             'price_asc'            => [
                 'oxprice',
                 self::SORTING_ASC,
                 [
-                    ['id' => 'dc57391739360d306c8dfcb3a4295e19'],
-                    ['id' => 'b56597806428de2f58b1c6c7d3e0e093'],
-                    ['id' => 'dc5480c47d8cd5a9eab9da5db9159cc6'],
+                    ['id' => '058de8224773a1d5fd54d523f0c823e0'],
+                    ['id' => 'f4fe754e1692b9f79f2a7b1a01bb8dee'],
+                    ['id' => 'd8631f92ababb452139f222afb81cd36'],
+                    ['id' => 'adc920f4cbfa739803058c663a4a00b9'],
                 ],
             ],
             'title_desc'           => [
                 'oxtitle',
                 self::SORTING_DESC,
                 [
-                    ['id' => 'fadc492a5807c56eb80b0507accd756b'],
-                    ['id' => 'dc57391739360d306c8dfcb3a4295e19'],
-                    ['id' => 'dc5480c47d8cd5a9eab9da5db9159cc6'],
+                    ['id' => 'f4fe754e1692b9f79f2a7b1a01bb8dee'],
+                    ['id' => 'd8631f92ababb452139f222afb81cd36'],
+                    ['id' => 'adc920f4cbfa739803058c663a4a00b9'],
+                    ['id' => '058de8224773a1d5fd54d523f0c823e0'],
                 ],
             ],
         ];
