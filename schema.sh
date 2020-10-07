@@ -9,7 +9,7 @@ fi
 
 body='{
 "request": {
-"branch":"master-schema_documentation-OXDEV-3979"
+"branch":"master"
 }}'
 
 curl -s -X POST \
