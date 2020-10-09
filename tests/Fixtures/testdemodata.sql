@@ -78,6 +78,8 @@ INSERT INTO `oxlinks` (`OXID`, `OXSHOPID`, `OXACTIVE`, `OXURL`, `OXURLDESC`, `OX
 ('test_inactive_2', 1, 0, 'http://www.oxid-esales-inactive.com', '<p>Inaktiv link</p>', '<p>Incative link</p>', '', '', '2012-06-05 07:04:54');
 
 UPDATE oxarticles SET oxdelivery = '2999-12-31' WHERE oxid = 'f4fe754e1692b9f79f2a7b1a01bb8dee';
+UPDATE oxarticles SET oxtitle = 'Kitefix Kleber GLUFIX' WHERE oxid = 'f33d5bcc7135908fd36fc736c643aa1c';
+UPDATE oxarticles SET oxtitle = 'Kite LEINEN VECTOR QUAD PRO' WHERE oxid = 'd86f775338da3228bec9e968f02e7551';
 
 #banners
 UPDATE `oxactions` SET `OXTITLE_1` = 'Banner 1 en' WHERE `OXID` = 'b5639c6431b26687321f6ce654878fa5';
