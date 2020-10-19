@@ -22,8 +22,8 @@ If you didn't have the `oxid-esales/graphql-base` module installed, composer wil
 After requiring the module, you need to activate it, either via OXID eShop admin or CLI.
 
 ```bash
-$ ./bin/oe-console oe:module:activate oe/graphql-base
-$ ./bin/oe-console oe:module:activate oe/graphql-catalogue
+$ ./bin/oe-console oe:module:activate oe_graphql_base
+$ ./bin/oe-console oe:module:activate oe_graphql_catalogue
 ```
 
 ### How to use

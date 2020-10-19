@@ -14,7 +14,7 @@ $sMetadataVersion = '2.0';
  * Module information
  */
 $aModule = [
-    'id'            => 'oe/graphql-catalogue',
+    'id'            => 'oe_graphql_catalogue',
     'title'         => [
         'de'        =>  'GraphQL Katalog',
         'en'        =>  'GraphQL Catalogue',
