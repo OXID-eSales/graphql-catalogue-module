@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Catalogue\Promotion\DataType;
 
-use OxidEsales\EshopCommunity\Application\Model\Actions as EshopActionsModel;
+use OxidEsales\Eshop\Application\Model\Actions as EshopActionsModel;
 use OxidEsales\GraphQL\Base\DataType\DateTimeImmutableFactory;
 use OxidEsales\GraphQL\Catalogue\Shared\DataType\DataType;
 use OxidEsales\GraphQL\Catalogue\Shared\Exception\WrongType;
