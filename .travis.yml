@@ -26,7 +26,7 @@ env:
     - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
 
 before_install:
-    - composer self-update 1.10.16
+    - composer self-update --1
     - phpenv config-rm xdebug.ini
 
 install:
