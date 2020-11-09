@@ -10,7 +10,9 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Catalogue\Banner\Service;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
+use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Catalogue\Banner\DataType\Banner as BannerDataType;
 use OxidEsales\GraphQL\Catalogue\Banner\Exception\BannerNotFound;
@@ -25,17 +27,22 @@ final class Banner
     /** @var Authorization */
     private $authorizationService;
 
+    /** @var Authentication */
+    private $authenticationService;
+
     /** @var BannerInfrastructure */
     private $bannerInfrastructure;
 
     public function __construct(
         Repository $repository,
         Authorization $authorizationService,
+        Authentication $authenticationService,
         BannerInfrastructure $bannerInfrastructure
     ) {
         $this->repository            = $repository;
         $this->authorizationService  = $authorizationService;
         $this->bannerInfrastructure  = $bannerInfrastructure;
+        $this->authenticationService = $authenticationService;
     }
 
     /**
@@ -67,6 +74,13 @@ final class Banner
      */
     public function banners(): array
     {
-        return $this->bannerInfrastructure->banners();
+        $userId = null;
+
+        try {
+            $userId = $this->authenticationService->getUserId();
+        } catch (InvalidToken $e) {
+        }
+
+        return $this->bannerInfrastructure->banners($userId);
     }
 }

@@ -18,8 +18,6 @@ use OxidEsales\Eshop\Application\Model\Manufacturer as EshopManufacturerModel;
 use OxidEsales\Eshop\Application\Model\Review as EshopReviewModel;
 use OxidEsales\Eshop\Application\Model\SelectList as EshopSelectionListModel;
 use OxidEsales\Eshop\Application\Model\Vendor as EshopVendorModel;
-use OxidEsales\GraphQL\Catalogue\Category\DataType\Category as CategoryDataType;
-use OxidEsales\GraphQL\Catalogue\Category\Service\Category as CategoryService;
 use OxidEsales\GraphQL\Catalogue\Manufacturer\DataType\Manufacturer as ManufacturerDataType;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\Product as ProductDataType;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\ProductAttribute as ProductAttributeDataType;
@@ -34,15 +32,6 @@ use function is_iterable;
 
 final class Product
 {
-    /** @var CategoryService */
-    private $categoryService;
-
-    public function __construct(
-        CategoryService $categoryService
-    ) {
-        $this->categoryService = $categoryService;
-    }
-
     /**
      * @return ProductScalePriceDataType[]
      */
@@ -87,38 +76,27 @@ final class Product
     }
 
     /**
-     * @return CategoryDataType[]
+     * @return EshopCategoryModel
      */
-    public function getCategories(
-        ProductDataType $product,
-        bool $onlyMainCategory
-    ): array {
-        $categories = [];
+    public function getMainCategory(ProductDataType $product): ?EshopCategoryModel
+    {
+        /** @var null|EshopCategoryModel $category */
+        $category = $product->getEshopModel()->getCategory();
 
-        if ($onlyMainCategory) {
-            /** @var null|EshopCategoryModel $category */
-            $category = $product->getEshopModel()->getCategory();
-
-            if (
-                $category === null ||
-                !$category->getId()
-            ) {
-                return [];
-            }
-
-            $categories[] = new CategoryDataType(
-                $category
-            );
-        } else {
-            /** @var array $categoryIds */
-            $categoryIds = $product->getEshopModel()->getCategoryIds();
-
-            foreach ($categoryIds as $categoryId) {
-                $categories[] = $this->categoryService->category($categoryId);
-            }
+        if (
+            $category === null ||
+            !$category->getId()
+        ) {
+            return null;
         }
 
-        return $categories;
+        return $category;
+    }
+
+    public function getCategories(
+        ProductDataType $product
+    ): array {
+        return $product->getEshopModel()->getCategoryIds();
     }
 
     /**

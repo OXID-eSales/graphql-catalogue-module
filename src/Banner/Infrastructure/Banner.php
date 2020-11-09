@@ -11,40 +11,27 @@ namespace OxidEsales\GraphQL\Catalogue\Banner\Infrastructure;
 
 use OxidEsales\Eshop\Application\Model\ActionList;
 use OxidEsales\Eshop\Application\Model\User;
-use OxidEsales\GraphQL\Base\Exception\InvalidToken;
-use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Catalogue\Banner\DataType\Banner as BannerDataType;
 
 final class Banner
 {
-    /** @var Authentication */
-    private $authenticationService;
-
-    public function __construct(
-        Authentication $authenticationService
-    ) {
-        $this->authenticationService = $authenticationService;
-    }
-
     /**
      * @return BannerDataType[]
      */
-    public function banners(): array
+    public function banners(?string $userId): array
     {
         /** @var ActionList $actionList */
         $actionList = oxNew(ActionList::class);
         $actionList->loadBanners();
 
-        try {
-            $userId = $this->authenticationService->getUserId();
+        if ($userId) {
             /** @var User $user */
-            $user   = oxNew(User::class);
+            $user = oxNew(User::class);
             $user->load($userId);
 
             if ($user->isLoaded()) {
                 $actionList->setUser($user);
             }
-        } catch (InvalidToken $e) {
         }
 
         $result = [];

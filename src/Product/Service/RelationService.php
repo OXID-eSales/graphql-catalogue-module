@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Catalogue\Product\Service;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Catalogue\Category\DataType\Category;
+use OxidEsales\GraphQL\Catalogue\Category\Service\Category as CategoryService;
 use OxidEsales\GraphQL\Catalogue\Manufacturer\DataType\Manufacturer;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\Product;
 use OxidEsales\GraphQL\Catalogue\Product\DataType\ProductAttribute;
@@ -42,14 +43,19 @@ final class RelationService
     /** @var ProductService */
     private $productService;
 
+    /** @var CategoryService */
+    private $categoryService;
+
     /** @var ProductInfrastructure */
     private $productInfrastructure;
 
     public function __construct(
         ProductService $productService,
+        CategoryService $categoryService,
         ProductInfrastructure $productInfrastructure
     ) {
         $this->productService        = $productService;
+        $this->categoryService       = $categoryService;
         $this->productInfrastructure = $productInfrastructure;
     }
 
@@ -179,7 +185,26 @@ final class RelationService
         Product $product,
         bool $onlyMainCategory = true
     ): array {
-        return $this->productInfrastructure->getCategories($product, $onlyMainCategory);
+        $categories = [];
+
+        if ($onlyMainCategory) {
+            $category = $this->productInfrastructure->getMainCategory($product);
+
+            if (!$category) {
+                return [];
+            }
+
+            $categories[] = new Category($category);
+        } else {
+            /** @var array $categoryIds */
+            $categoryIds = $this->productInfrastructure->getCategories($product);
+
+            foreach ($categoryIds as $categoryId) {
+                $categories[] = $this->categoryService->category($categoryId);
+            }
+        }
+
+        return $categories;
     }
 
     /**

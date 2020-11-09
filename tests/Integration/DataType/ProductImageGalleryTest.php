@@ -130,6 +130,10 @@ final class ProductImageGalleryTest extends TestCase
                 $repo,
                 $this->createMock(Authorization::class)
             ),
+            new CategoryService(
+                $repo,
+                $this->createMock(Authorization::class)
+            ),
             new ProductInfrastructure(
                 new CategoryService(
                     $repo,
